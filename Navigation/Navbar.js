@@ -2,6 +2,7 @@ import React from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { View } from 'react-native';
 import { Entypo, FontAwesome5, MaterialCommunityIcons } from '@expo/vector-icons';
+import Fontisto from '@expo/vector-icons/Fontisto';
 
 import ActivitePage from '../screens/ActivitePage';
 import ReservationPage from '../screens/ReservationPage';
@@ -11,18 +12,25 @@ import AccueilPage from '../screens/AccueilPage';
 const Tab = createBottomTabNavigator();
 
 const screenOptions = {
-  tabBarShowLabel: false,
-  headerShown: false,
-  tabBarStyle: {
-    position: "absolute",
-    bottom: 0,
-    right: 0,
-    left: 0,
-    elevation: 0,
-    height: 70,
-    backgroundColor: "#D9D9D9",
-  },
-};
+    tabBarShowLabel: false,
+    headerShown: false,
+    tabBarStyle: {
+      position: "absolute",
+      bottom: 20,
+      left: 20,
+      right: 20,
+      height: 55,
+      backgroundColor: "#F2E8CF",
+      borderRadius: 45,
+      paddingHorizontal: 10, 
+      marginHorizontal:30,
+      shadowColor: '#510D0A',
+      shadowOffset: { width: 0, height: 10 },
+      shadowOpacity: 0.25,
+      shadowRadius: 10,
+    },
+  };
+  
 
 export default function Navbar() {
   return (
@@ -32,8 +40,10 @@ export default function Navbar() {
         component={AccueilPage}
         options={{
           tabBarIcon: ({ focused }) => (
-            <View>
-              <Entypo name="home" size={30} color={focused ? "#008900" : "#111"} />
+            <View style={{ alignItems: "center", justifyContent: "center", paddingTop: 5 }}>
+              <Fontisto name="tent" size={30} 
+              color="#510D0A" 
+                style={{ opacity: focused ? 1 : 0.4 }} />
             </View>
           ),
         }}
@@ -43,8 +53,12 @@ export default function Navbar() {
         component={ActivitePage}
         options={{
           tabBarIcon: ({ focused }) => (
-            <View>
-              <FontAwesome5 name="map-marker-alt" size={25} color={focused ? "#008900" : "#111"} />
+            <View style={{ alignItems: "center", justifyContent: "center", paddingTop: 5 }}>
+              <MaterialCommunityIcons 
+              name="map-search" 
+              size={25} 
+              color="#510D0A"
+                style={{ opacity: focused ? 1 : 0.4 }} />
             </View>
           ),
         }}
@@ -54,8 +68,10 @@ export default function Navbar() {
         component={ReservationPage}
         options={{
           tabBarIcon: ({ focused }) => (
-            <View>
-              <MaterialCommunityIcons name="ticket-confirmation" size={30} color={focused ? "#008900" : "#111"} />
+            <View style={{ alignItems: "center", justifyContent: "center", paddingTop: 6 }}>
+              <Entypo name="calendar" size={23} 
+              color="#510D0A" 
+              style={{ opacity: focused ? 1 : 0.4 }} />
             </View>
           ),
         }}
@@ -65,8 +81,13 @@ export default function Navbar() {
         component={ProfilPage}
         options={{
           tabBarIcon: ({ focused }) => (
-            <View>
-              <FontAwesome5 name="user-alt" size={25} color={focused ? "#008900" : "#111"} />
+            <View style={{ alignItems: "center", justifyContent: "center", paddingTop: 7 }}>
+                <FontAwesome5
+                name="user-alt"
+                size={20}
+                color="#510D0A" 
+                style={{ opacity: focused ? 1 : 0.4 }} 
+                />            
             </View>
           ),
         }}
