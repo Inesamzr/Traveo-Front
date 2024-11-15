@@ -4,10 +4,10 @@ import { View } from 'react-native';
 import { Entypo, FontAwesome5, MaterialCommunityIcons } from '@expo/vector-icons';
 import Fontisto from '@expo/vector-icons/Fontisto';
 
-import ActivitePage from '../screens/ActivitePage';
-import ReservationPage from '../screens/ReservationPage';
-import ProfilPage from '../screens/ProfilPage';
-import AccueilPage from '../screens/AccueilPage';
+import ActivitePage from '../screens/Activite/ActivitePage';
+import ReservationPage from '../screens/Reservation/ReservationPage';
+import ProfilPage from '../screens/Profil/ProfilPage';
+import AccueilPage from '../screens/Accueil/AccueilPage';
 
 const Tab = createBottomTabNavigator();
 

@@ -1,6 +1,6 @@
 import React from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
-import ReservationPage from '../screens/ReservationPage';
+import ReservationPage from '../screens/Reservation/ReservationPage';
 
 const Stack = createStackNavigator();
 

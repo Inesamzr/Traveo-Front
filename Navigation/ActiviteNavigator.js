@@ -1,6 +1,6 @@
 import React from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
-import ActivitePage from '../screens/ActivitePage';
+import ActivitePage from '../screens/Activite/ActivitePage';
 
 const Stack = createStackNavigator();
 
