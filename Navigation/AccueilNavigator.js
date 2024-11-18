@@ -7,7 +7,11 @@ const Stack = createStackNavigator();
 export default function AccueilNavigator() {
   return (
     <Stack.Navigator>
-      <Stack.Screen name="AccueilPage" component={AccueilPage} />
+      <Stack.Screen 
+      name="AccueilPage" 
+      component={AccueilPage} 
+      options={{ headerShown: false }} 
+      />
     </Stack.Navigator>
   );
 }
