@@ -1,10 +1,14 @@
 import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, StyleSheet, Text } from 'react-native';
+import Header from '../../Components/Header';
 
 export default function ReservationPage() {
   return (
     <View style={styles.container}>
-      <Text style={styles.text}>Page des réservations</Text>
+      <Header title="Mes réservations" />
+      <View style={styles.content}>
+        <Text>Contenu de la page des réservations</Text>
+      </View>
     </View>
   );
 }
@@ -12,13 +16,11 @@ export default function ReservationPage() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: '#F2E8CF', 
+  },
+  content: {
+    flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#f5f5f5',
-  },
-  text: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    color: '#333',
   },
 });
