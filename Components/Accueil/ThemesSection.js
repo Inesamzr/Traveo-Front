@@ -1,27 +1,29 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Animated } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
+import texts from '../../localization/localization';
 
-const themes = [
-  { id: 1, icon: "hiking", title: "Aventure", description: "Explorez des randonnées, des voyages et des défis excitants." },
-  { id: 2, icon: "chef-hat", title: "Cuisine", description: "Apprenez, cuisinez et partagez des plats délicieux." },
-  { id: 3, icon: "meditation", title: "Spiritualité", description: "Reposez votre esprit avec yoga, méditation et plus." },
-  { id: 4, icon: "brush", title: "Créativité", description: "Exprimez votre art à travers la peinture, la musique et la photographie." }
-];
-
-export default function ThemesSection() {
+export default function ThemesSection({ language = 'fr' }) {
+  const currentTexts = texts[language];
   const [flippedCards, setFlippedCards] = useState({});
+
+  const themes = [
+    { id: 1, icon: "hiking", ...currentTexts.themes.adventure },
+    { id: 2, icon: "chef-hat", ...currentTexts.themes.cuisine },
+    { id: 3, icon: "meditation", ...currentTexts.themes.spirituality },
+    { id: 4, icon: "brush", ...currentTexts.themes.creativity },
+  ];
 
   const handleCardPress = (id) => {
     setFlippedCards((prevState) => ({
       ...prevState,
-      [id]: !prevState[id]
+      [id]: !prevState[id],
     }));
   };
 
   return (
     <View style={styles.themesSection}>
-      <Text style={styles.sectionTitle}>Voyagez à travers nos thèmes</Text>
+      <Text style={styles.sectionTitle}>{currentTexts.themesTitle}</Text>
       <View style={styles.themes}>
         {themes.map((theme) => (
           <TouchableOpacity

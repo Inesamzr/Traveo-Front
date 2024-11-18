@@ -1,9 +1,13 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Image, ScrollView, ImageBackground } from 'react-native';
 import { Ionicons, FontAwesome5 } from '@expo/vector-icons';
 import ThemesSection from '../../Components/Accueil/ThemesSection';
+import texts from '../../localization/localization';
 
 export default function AccueilPage() {
+  const [language, setLanguage] = useState('fr');
+  const currentTexts = texts[language];
+
   return (
     <View style={{ flex: 1 }}>
       <ImageBackground 
@@ -17,7 +21,7 @@ export default function AccueilPage() {
               style={styles.logo}
             />
             <View style={styles.welcomeSection}>
-              <Text style={styles.welcomeText}>Bienvenue sur Traveo</Text>
+              <Text style={styles.welcomeText}>{currentTexts.accueilWelcome}</Text>
             </View>
           </View>
 
@@ -25,36 +29,37 @@ export default function AccueilPage() {
           <View style={styles.textSection}>
             <View style={styles.sloganContainer}>
               <Text style={styles.sloganText}>
-                Explorez, créez et partagez des expériences inoubliables.
+                {currentTexts.accueilSlogan}
               </Text>
             </View>
             <View style={styles.descriptionContainer}>
               <Text style={styles.descriptionText}>
-                Trouvez des séjours personnalisés pour vivre des moments inoubliables, où aventure et sérénité se rencontrent.
+                {currentTexts.accueilDescription}
               </Text>
             </View>
           </View>
 
-          {/* Autres sections */}
+          {/* Accès rapide */}
           <View style={styles.shortcutsSection}>
-            <Text style={styles.sectionTitle}>Accès rapide</Text>
+            <Text style={styles.sectionTitle}>{currentTexts.shortcutsTitle}</Text>
             <View style={styles.shortcuts}>
               <TouchableOpacity style={styles.shortcutButton}>
                 <FontAwesome5 name="plus-circle" size={30} color="#510D0A" />
-                <Text style={styles.shortcutText}>Créer une activité</Text>
+                <Text style={styles.shortcutText}>{currentTexts.createActivity}</Text>
               </TouchableOpacity>
               <TouchableOpacity style={styles.shortcutButton}>
                 <Ionicons name="calendar-outline" size={30} color="#510D0A" />
-                <Text style={styles.shortcutText}>Mes réservations</Text>
+                <Text style={styles.shortcutText}>{currentTexts.myReservations}</Text>
               </TouchableOpacity>
               <TouchableOpacity style={styles.shortcutButton}>
                 <Ionicons name="search-outline" size={30} color="#510D0A" />
-                <Text style={styles.shortcutText}>Explorer</Text>
+                <Text style={styles.shortcutText}>{currentTexts.explore}</Text>
               </TouchableOpacity>
             </View>
           </View>
 
-          <ThemesSection />
+          {/* Thèmes populaires */}
+          <ThemesSection title={currentTexts.popularThemes} />
         </ScrollView>
       </ImageBackground>
     </View>
