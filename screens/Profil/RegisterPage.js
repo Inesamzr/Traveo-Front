@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, TextInput, TouchableOpacity, Image, ImageBackground } from 'react-native';
 import texts from '../../localization/localization';
+import { useLanguage } from '../../localization/LanguageContext';
 
 export default function RegisterPage({ navigation }) {
-  const [language, setLanguage] = useState('fr');
-
+  const { language } = useLanguage(); 
   const currentTexts = texts[language];
 
   return (

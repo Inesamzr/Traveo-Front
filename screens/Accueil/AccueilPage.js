@@ -3,11 +3,12 @@ import { View, Text, StyleSheet, TouchableOpacity, Image, ScrollView, ImageBackg
 import { Ionicons, FontAwesome5 } from '@expo/vector-icons';
 import ThemesSection from '../../Components/Accueil/ThemesSection';
 import texts from '../../localization/localization';
+import { useLanguage } from '../../localization/LanguageContext'; 
+
 
 export default function AccueilPage() {
-  const [language, setLanguage] = useState('fr');
+  const { language } = useLanguage(); 
   const currentTexts = texts[language];
-
   return (
     <View style={{ flex: 1 }}>
       <ImageBackground 

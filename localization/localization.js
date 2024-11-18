@@ -75,15 +75,15 @@ const texts = {
     themes: {
       adventure: {
         title: "Adventure",
-        description: "Explore hikes, journeys, and exciting challenges.",
+        description: "Explore hikes, trips, and exciting challenges.",
       },
       cuisine: {
-        title: "Cuisine",
+        title: "Cooking",
         description: "Learn, cook, and share delicious dishes.",
       },
       spirituality: {
         title: "Spirituality",
-        description: "Relax your mind with yoga, meditation, and more.",
+        description: "Rest your mind with yoga, meditation, and more.",
       },
       creativity: {
         title: "Creativity",

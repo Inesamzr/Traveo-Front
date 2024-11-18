@@ -2,17 +2,21 @@ import React, { useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import texts from '../../localization/localization';
+import { useLanguage } from '../../localization/LanguageContext';
 
-export default function ThemesSection({ language = 'fr' }) {
-  const currentTexts = texts[language];
-  const [flippedCards, setFlippedCards] = useState({});
+export default function ThemesSection() {
+    const { language } = useLanguage();
+    const currentTexts = texts[language].themes;
+    const currentText = texts[language];
+    const [flippedCards, setFlippedCards] = useState({});
 
-  const themes = [
-    { id: 1, icon: "hiking", ...currentTexts.themes.adventure },
-    { id: 2, icon: "chef-hat", ...currentTexts.themes.cuisine },
-    { id: 3, icon: "meditation", ...currentTexts.themes.spirituality },
-    { id: 4, icon: "brush", ...currentTexts.themes.creativity },
-  ];
+    const themes = [
+        { id: 1, icon: "hiking", ...currentTexts.adventure },
+        { id: 2, icon: "chef-hat", ...currentTexts.cuisine },
+        { id: 3, icon: "meditation", ...currentTexts.spirituality },
+        { id: 4, icon: "brush", ...currentTexts.creativity },
+      ];
+      
 
   const handleCardPress = (id) => {
     setFlippedCards((prevState) => ({
@@ -20,10 +24,10 @@ export default function ThemesSection({ language = 'fr' }) {
       [id]: !prevState[id],
     }));
   };
-
+  
   return (
     <View style={styles.themesSection}>
-      <Text style={styles.sectionTitle}>{currentTexts.themesTitle}</Text>
+      <Text style={styles.sectionTitle}>{currentText.themesTitle}</Text>
       <View style={styles.themes}>
         {themes.map((theme) => (
           <TouchableOpacity

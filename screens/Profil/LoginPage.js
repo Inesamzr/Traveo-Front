@@ -2,11 +2,11 @@ import React, { useState } from 'react';
 import { View, Text, StyleSheet, TextInput, TouchableOpacity, Image, ImageBackground } from 'react-native';
 import texts from '../../localization/localization';
 import { useNavigation } from '@react-navigation/native';
+import { useLanguage } from '../../localization/LanguageContext';
 
 export default function LoginPage() {
-  const [language, setLanguage] = useState('fr'); 
-
-  const currentTexts = texts[language]; 
+  const { language } = useLanguage(); 
+  const currentTexts = texts[language];
   const navigation = useNavigation();
 
   return (
