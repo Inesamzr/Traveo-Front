@@ -11,11 +11,17 @@ export default function LoginPage() {
 
   return (
     <View style={styles.container}>
-        <ImageBackground 
+      <ImageBackground 
         source={require('../../assets/Login_asset.png')} 
         style={styles.backgroundImage}
         resizeMode="cover"
       ></ImageBackground>
+
+      <Image 
+          source={require('../../assets/Login_asset_2.png')} 
+          style={styles.bottomLeftImage}
+        />
+
       <View style={styles.contenu}>
         <Image 
             source={require('../../assets/Traveo_logo.png')} 
@@ -82,7 +88,7 @@ const styles = StyleSheet.create({
   },
   connectText: {
     fontSize: 24,
-    color: '#008900',
+    color: '#386641',
     fontWeight: '700',
     marginBottom: 20,
     textAlign: 'center',
@@ -127,4 +133,11 @@ const styles = StyleSheet.create({
     color: '#510D0A',
     fontWeight: 'bold',
   },
+  bottomLeftImage: {
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    width: '50%',
+    height: '20%',
+  }, 
 });
