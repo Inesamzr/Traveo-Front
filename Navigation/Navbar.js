@@ -8,6 +8,7 @@ import ActivitePage from '../screens/Activite/ActivitePage';
 import ReservationPage from '../screens/Reservation/ReservationPage';
 import ProfilPage from '../screens/Profil/ProfilPage';
 import AccueilPage from '../screens/Accueil/AccueilPage';
+import LoginPage from '../screens/Profil/LoginPage';
 
 const Tab = createBottomTabNavigator();
 
@@ -78,7 +79,7 @@ export default function Navbar() {
       />
       <Tab.Screen
         name="Profil"
-        component={ProfilPage}
+        component={LoginPage}
         options={{
           tabBarIcon: ({ focused }) => (
             <View style={{ alignItems: "center", justifyContent: "center", paddingTop: 7 }}>
