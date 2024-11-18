@@ -19,7 +19,7 @@ export default function RegisterPage({ navigation }) {
           source={require('../../assets/Traveo_logo.png')} 
           style={styles.logo}
         />
-        <Text style={styles.welcomeText}>{currentTexts.welcome}</Text>
+        <Text style={styles.welcomeText}>{currentTexts.welcomenew}</Text>
         <Text style={styles.connectText}>{currentTexts.registerTitle}</Text>
         <View style={styles.inputContainer}>
           <TextInput 
@@ -55,8 +55,8 @@ export default function RegisterPage({ navigation }) {
         </TouchableOpacity>
         <View style={styles.loginContainer}>
           <Text style={styles.alreadyAccountText}>{currentTexts.alreadyAccount}</Text>
-          <TouchableOpacity onPress={() => navigation.navigate('Navbar', {screen:'Profil',params: { screen: 'Register' }})}>
-            <Text style={styles.loginText}>{currentTexts.login}</Text>
+          <TouchableOpacity onPress={() => navigation.navigate('Login')}>
+          <Text style={styles.loginText}>{currentTexts.login}</Text>
           </TouchableOpacity>
         </View>
       </View>
@@ -71,14 +71,14 @@ const styles = StyleSheet.create({
   },
   backgroundImage: {
     width: '100%',
-    height: '40%', 
+    height: '70%', 
     justifyContent: 'flex-end',
     alignItems: 'center',
   },
   content: {
     alignItems: 'center',
     paddingHorizontal: 20,
-    marginTop: -100, 
+    marginTop: -489, 
   },
   logo: {
     width: 100, 

@@ -12,9 +12,11 @@ const texts = {
       noAccount: "Pas de compte ? ",
       register: "S'inscrire",
       alreadyAccount: "Vous avez déjà un compte ? ",
+      welcomenew:"Bienvenu,"
     },
     en: {
       welcome: "Welcome,",
+      welcomenew: "Welcome,",
       connect: "Log in!",
       registerTitle: "Sign up!",
       firstNamePlaceholder: "First Name",
