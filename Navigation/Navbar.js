@@ -9,6 +9,10 @@ import ReservationPage from '../screens/Reservation/ReservationPage';
 import ProfilPage from '../screens/Profil/ProfilPage';
 import AccueilPage from '../screens/Accueil/AccueilPage';
 import LoginPage from '../screens/Profil/LoginPage';
+import AuthNavigator from './AuthNavigator';
+import ReservationNavigator from './ReservationNavigator';
+import ActiviteNavigator from './ActiviteNavigator';
+import AccueilNavigator from './AccueilNavigator';
 
 const Tab = createBottomTabNavigator();
 
@@ -38,7 +42,7 @@ export default function Navbar() {
     <Tab.Navigator screenOptions={screenOptions}>
       <Tab.Screen
         name="Accueil"
-        component={AccueilPage}
+        component={AccueilNavigator}
         options={{
           tabBarIcon: ({ focused }) => (
             <View style={{ alignItems: "center", justifyContent: "center", paddingTop: 5 }}>
@@ -51,7 +55,7 @@ export default function Navbar() {
       />
       <Tab.Screen
         name="Activité"
-        component={ActivitePage}
+        component={ActiviteNavigator}
         options={{
           tabBarIcon: ({ focused }) => (
             <View style={{ alignItems: "center", justifyContent: "center", paddingTop: 5 }}>
@@ -66,7 +70,7 @@ export default function Navbar() {
       />
       <Tab.Screen
         name="Réservation"
-        component={ReservationPage}
+        component={ReservationNavigator}
         options={{
           tabBarIcon: ({ focused }) => (
             <View style={{ alignItems: "center", justifyContent: "center", paddingTop: 6 }}>
@@ -79,7 +83,7 @@ export default function Navbar() {
       />
       <Tab.Screen
         name="Profil"
-        component={LoginPage}
+        component={AuthNavigator}
         options={{
           tabBarIcon: ({ focused }) => (
             <View style={{ alignItems: "center", justifyContent: "center", paddingTop: 7 }}>

@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, TextInput, TouchableOpacity, Image, ImageBackground } from 'react-native';
 import texts from '../../localization/localization';
+import { useNavigation } from '@react-navigation/native';
 
-export default function LoginPage({ navigation }) {
+export default function LoginPage() {
   const [language, setLanguage] = useState('fr'); 
 
   const currentTexts = texts[language]; 
+  const navigation = useNavigation();
 
   return (
     <View style={styles.container}>
