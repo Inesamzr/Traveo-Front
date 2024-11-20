@@ -1,5 +1,6 @@
 import React from 'react';
-import { View, ScrollView, StyleSheet } from 'react-native';
+import { View, ScrollView, StyleSheet, TextInput, TouchableOpacity, Text } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
 import Map from '../../Components/Activite/Map';
 import Activity from '../../Components/Activite/Activity';
 import Header from '../../Components/Header';
@@ -43,17 +44,25 @@ export default function ActivitePage() {
       <View style={styles.mapContainer}>
         <Map 
           commercants={dummyData} 
-          region={{
-            latitude: 46.603354,
-            longitude: 1.888334,
-            latitudeDelta: 5.0,
-            longitudeDelta: 5.0,
-          }} 
+          region={defaultRegion} 
+          onMarkerPress={(commercant) => {
+            alert(`Vous avez cliqué sur : ${commercant.nom}`);
+          }}
         />
       </View>
 
       {/* Liste d'activités */}
       <View style={styles.activitiesContainer}>
+      <View style={styles.searchContainer}>
+          <TextInput 
+            style={styles.searchInput}
+            placeholder="Adresse"
+            placeholderTextColor="#aaa"
+          />
+          <TouchableOpacity style={styles.filterButton}>
+            <Ionicons name="options-outline" size={20} color="#510D0A" />
+          </TouchableOpacity>
+        </View>
         <ScrollView contentContainerStyle={styles.activitiesList}>
           {dummyData.map((activity) => (
             <Activity key={activity.id} {...activity} />
@@ -73,7 +82,7 @@ const styles = StyleSheet.create({
     flex: 2, 
   },
   activitiesContainer: {
-    flex: 1, 
+    flex: 1.5, 
     backgroundColor: 'rgba(81, 13, 10, 0.5)', 
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
@@ -83,6 +92,31 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 4,
     elevation: 2,
+  },
+  searchContainer: {
+    flexDirection: 'row',
+    backgroundColor: 'rgba(255, 255, 255, 0.9)',
+    alignItems: 'center',
+    borderRadius: 25,
+    paddingHorizontal: 10,
+    zIndex: 2,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 2,
+    marginBottom:10,
+    marginHorizontal:20,
+  },
+  searchInput: {
+    flex: 1,
+    height: 40,
+    paddingHorizontal: 10,
+    fontSize: 14,
+    color: '#333',
+  },
+  filterButton: {
+    padding: 5,
   },
   activitiesList: {
     paddingBottom: 60,
