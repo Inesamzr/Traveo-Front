@@ -1,10 +1,18 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { View, ScrollView, StyleSheet, TextInput, TouchableOpacity, Text } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import Map from '../../Components/Activite/Map';
-import Activity from '../../Components/Activite/Activity';
+import MapView, { Marker, Callout } from 'react-native-maps';
 import Header from '../../Components/Header';
+import Activity from '../../Components/Activite/Activity';
 
+import { MaterialCommunityIcons, FontAwesome5 } from '@expo/vector-icons';
+
+const themeIcons = {
+  Aventure: <MaterialCommunityIcons name="hiking" size={16} color="#BC4749" />,
+  Cuisine: <FontAwesome5 name="utensils" size={14} color="#BC4749" />,
+  Spiritualité: <MaterialCommunityIcons name="meditation" size={16} color="#BC4749" />,
+  Créativité: <MaterialCommunityIcons name="brush" size={16} color="#BC4749" />,
+};
 
 export default function ActivitePage() {
   const dummyData = [
@@ -15,8 +23,9 @@ export default function ActivitePage() {
       adresse: 'Nîmes',
       date: '24/06/2024 06:00-12:00',
       theme: 'Aventure',
-      prix: '3€',
       participants: '2/6',
+      latitude: 43.8372,
+      longitude: 4.3601,
     },
     {
       id: 2,
@@ -25,8 +34,9 @@ export default function ActivitePage() {
       adresse: 'Marseille',
       date: '01/07/2024 14:00-18:00',
       theme: 'Cuisine',
-      prix: '10€',
       participants: '5/10',
+      latitude: 43.2965,
+      longitude: 5.3698,
     },
   ];
 
@@ -39,21 +49,48 @@ export default function ActivitePage() {
 
   return (
     <View style={styles.container}>
+      {/* Header */}
       <Header title="Carte" />
+
       {/* Carte */}
       <View style={styles.mapContainer}>
-        <Map 
-          commercants={dummyData} 
-          region={defaultRegion} 
-          onMarkerPress={(commercant) => {
-            alert(`Vous avez cliqué sur : ${commercant.nom}`);
-          }}
-        />
+        <MapView
+          style={StyleSheet.absoluteFillObject}
+          initialRegion={defaultRegion}
+          showsUserLocation={true}
+        >
+          {dummyData.map((activity) => (
+            <Marker
+              key={activity.id}
+              coordinate={{
+                latitude: activity.latitude,
+                longitude: activity.longitude,
+              }}
+              title={activity.nom}
+            >
+              <Callout>
+                <View style={styles.callout}>
+                  <Text style={styles.activityTitle}>{activity.nom}</Text>
+                  <Text style={styles.activityDetails}>{activity.description}</Text>
+                  <Text style={styles.activityDetails}>
+                    <Ionicons name="location-outline" size={14} color="#BC4749" /> {activity.adresse}
+                  </Text>
+                  <Text style={styles.activityDetails}>
+                    <Ionicons name="calendar-outline" size={14} color="#BC4749" /> {activity.date}
+                  </Text>
+                  <Text style={styles.activityDetails}>
+                  {themeIcons[activity.theme] || <MaterialCommunityIcons name="help-circle-outline" size={16} color="#510D0A" />} {activity.theme}
+                  </Text>
+                </View>
+              </Callout>
+            </Marker>
+          ))}
+        </MapView>
       </View>
 
       {/* Liste d'activités */}
       <View style={styles.activitiesContainer}>
-      <View style={styles.searchContainer}>
+        <View style={styles.searchContainer}>
           <TextInput 
             style={styles.searchInput}
             placeholder="Adresse"
@@ -64,7 +101,7 @@ export default function ActivitePage() {
           </TouchableOpacity>
         </View>
         <ScrollView contentContainerStyle={styles.activitiesList}>
-          {dummyData.map((activity) => (
+        {dummyData.map((activity) => (
             <Activity key={activity.id} {...activity} />
           ))}
         </ScrollView>
@@ -76,16 +113,13 @@ export default function ActivitePage() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F2E8CF',
   },
   mapContainer: {
-    flex: 2, 
+    flex: 2,
   },
   activitiesContainer: {
     flex: 1.5, 
-    backgroundColor: 'rgba(81, 13, 10, 0.5)', 
-    borderTopLeftRadius: 20,
-    borderTopRightRadius: 20,
+    backgroundColor: '#F2E8CF', 
     padding: 10,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: -2 },
@@ -121,6 +155,17 @@ const styles = StyleSheet.create({
   activitiesList: {
     paddingBottom: 60,
   },
+  callout: {
+    padding: 5,
+    maxWidth: 200,
+  },
+  activityTitle: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: '#510D0A',
+  },
+  activityDetails: {
+    fontSize: 12,
+    color: '#555',
+  },
 });
-
-

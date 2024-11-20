@@ -38,7 +38,7 @@ const styles = StyleSheet.create({
   activityCard: {
     flexDirection: 'row',
     backgroundColor: '#FADCD9',
-    borderRadius: 10,
+    borderRadius:30,
     marginBottom: 10,
     padding: 15,
     alignItems: 'center',
