@@ -19,7 +19,7 @@ const Map = ({ commercants, region, onMarkerPress }) => {
             description={commercant.adresse}
             onPress={() => onMarkerPress(commercant)}
           >
-            <Ionicons name="pin-sharp" size={33} color="#BD4F6C" />
+            <Ionicons name="pin-sharp" size={33} color="#BC4749" />
           </Marker>
         ))}
       </MapView>

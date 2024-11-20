@@ -1,8 +1,9 @@
 import React from 'react';
-import { View, Text, StyleSheet, TextInput, TouchableOpacity, FlatList, Image } from 'react-native';
+import { View, TextInput, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
 import Header from '../../Components/Header';
 import Map from '../../Components/Activite/Map';
-import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
+import Activity from '../../Components/Activite/Activity';
+import { Ionicons } from '@expo/vector-icons';
 
 export default function ActivitePage() {
   const dummyData = [
@@ -37,52 +38,40 @@ export default function ActivitePage() {
     longitudeDelta: 5.0,
   };
 
-  const renderActivity = ({ item }) => (
-    <View style={styles.activityCard}>
-      <MaterialCommunityIcons name="image-outline" size={40} color="#510D0A" />
-      <View style={styles.activityInfo}>
-        <Text style={styles.activityTitle}>{item.nom}</Text>
-        <Text style={styles.activityDetails}>{item.adresse}</Text>
-        <Text style={styles.activityDetails}>{item.date}</Text>
-        <Text style={styles.activityDetails}>
-          <MaterialCommunityIcons name="map-marker-outline" size={14} color="#510D0A" /> {item.theme}
-        </Text>
-      </View>
-      <View style={styles.activityRight}>
-        <Text style={styles.activityPrice}>{item.prix}</Text>
-        <Text style={styles.activityParticipants}>{item.participants}</Text>
-      </View>
-    </View>
-  );
-
   return (
     <View style={styles.container}>
-      <Header title="Carte" />
-      <View style={styles.mapContainer}>
-        <Map 
-          commercants={dummyData} 
-          region={defaultRegion} 
-          onMarkerPress={(commercant) => {
-            alert(`Vous avez cliqué sur : ${commercant.nom}`);
-          }}
-        />
-      </View>
-      <View style={styles.searchContainer}>
-        <TextInput 
-          style={styles.searchInput}
-          placeholder="Adresse"
-          placeholderTextColor="#aaa"
-        />
-        <TouchableOpacity style={styles.filterButton}>
-          <Ionicons name="options-outline" size={20} color="#510D0A" />
-        </TouchableOpacity>
-      </View>
-      <FlatList
-        data={dummyData}
-        renderItem={renderActivity}
-        keyExtractor={(item) => item.id.toString()}
-        style={styles.activitiesList}
+      {/* Carte en arrière-plan */}
+      <Map 
+        commercants={dummyData} 
+        region={defaultRegion} 
+        onMarkerPress={(commercant) => {
+          alert(`Vous avez cliqué sur : ${commercant.nom}`);
+        }}
       />
+
+      {/* Contenu au-dessus de la carte */}
+      <View style={styles.overlay}>
+        <Header title="Carte" />
+        
+        {/* Search Container en bas */}
+        <View style={styles.searchContainer}>
+          <TextInput 
+            style={styles.searchInput}
+            placeholder="Adresse"
+            placeholderTextColor="#aaa"
+          />
+          <TouchableOpacity style={styles.filterButton}>
+            <Ionicons name="options-outline" size={20} color="#510D0A" />
+          </TouchableOpacity>
+        </View>
+
+        {/* Liste des activités */}
+        <ScrollView contentContainerStyle={styles.activitiesList}>
+          {dummyData.map((item) => (
+            <Activity key={item.id} data={item} />
+          ))}
+        </ScrollView>
+      </View>
     </View>
   );
 }
@@ -92,15 +81,18 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#F2E8CF',
   },
-  mapContainer: {
-    flex: 1.5,
+  overlay: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: 'transparent',
   },
   searchContainer: {
+    position: 'absolute',
+    bottom: 0,
+    left: 20,
+    right: 20,
     flexDirection: 'row',
     backgroundColor: '#FFFFFF',
     alignItems: 'center',
-    marginHorizontal: 20,
-    marginVertical: 10,
     borderRadius: 25,
     paddingHorizontal: 10,
     shadowColor: '#000',
@@ -108,6 +100,7 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 4,
     elevation: 2,
+    marginBottom: 20,
   },
   searchInput: {
     flex: 1,
@@ -120,45 +113,7 @@ const styles = StyleSheet.create({
     padding: 5,
   },
   activitiesList: {
-    flex: 2,
-    marginHorizontal: 20,
-  },
-  activityCard: {
-    flexDirection: 'row',
-    backgroundColor: '#DDEBC8',
-    borderRadius: 10,
-    marginBottom: 10,
-    padding: 10,
-    alignItems: 'center',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.2,
-    shadowRadius: 2,
-    elevation: 2,
-  },
-  activityInfo: {
-    flex: 1,
-    marginLeft: 10,
-  },
-  activityTitle: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    color: '#333',
-  },
-  activityDetails: {
-    fontSize: 12,
-    color: '#555',
-  },
-  activityRight: {
-    alignItems: 'flex-end',
-  },
-  activityPrice: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    color: '#510D0A',
-  },
-  activityParticipants: {
-    fontSize: 12,
-    color: '#555',
+    padding: 20,
+    paddingBottom: 70,
   },
 });
