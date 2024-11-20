@@ -19,6 +19,9 @@ const styles = StyleSheet.create({
     paddingBottom: 15,
     paddingTop: 40,
     paddingHorizontal: 27,
+    position:'absolute',
+    top: 0,
+    zIndex: 2,
   },
   headerText: {
     color: '#FFF', 

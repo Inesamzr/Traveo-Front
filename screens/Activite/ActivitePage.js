@@ -2,6 +2,8 @@ import React from 'react';
 import { View, ScrollView, StyleSheet } from 'react-native';
 import Map from '../../Components/Activite/Map';
 import Activity from '../../Components/Activite/Activity';
+import Header from '../../Components/Header';
+
 
 export default function ActivitePage() {
   const dummyData = [
@@ -27,8 +29,16 @@ export default function ActivitePage() {
     },
   ];
 
+  const defaultRegion = {
+    latitude: 46.603354,
+    longitude: 1.888334,
+    latitudeDelta: 5.0,
+    longitudeDelta: 5.0,
+  };
+
   return (
     <View style={styles.container}>
+      <Header title="Carte" />
       {/* Carte */}
       <View style={styles.mapContainer}>
         <Map 
