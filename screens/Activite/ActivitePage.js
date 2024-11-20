@@ -2,9 +2,9 @@ import React, { useState } from 'react';
 import { View, ScrollView, StyleSheet, TextInput, TouchableOpacity, Text } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import MapView, { Marker, Callout } from 'react-native-maps';
+import { useNavigation } from '@react-navigation/native';
 import Header from '../../Components/Header';
 import Activity from '../../Components/Activite/Activity';
-
 import { MaterialCommunityIcons, FontAwesome5 } from '@expo/vector-icons';
 
 const themeIcons = {
@@ -15,6 +15,8 @@ const themeIcons = {
 };
 
 export default function ActivitePage() {
+  const navigation = useNavigation();
+  const [searchText, setSearchText] = useState('');
   const dummyData = [
     {
       id: 1,
@@ -24,6 +26,7 @@ export default function ActivitePage() {
       date: '24/06/2024 06:00-12:00',
       theme: 'Aventure',
       participants: '2/6',
+      prix: '3€',
       latitude: 43.8372,
       longitude: 4.3601,
     },
@@ -35,6 +38,7 @@ export default function ActivitePage() {
       date: '01/07/2024 14:00-18:00',
       theme: 'Cuisine',
       participants: '5/10',
+      prix: '6€',
       latitude: 43.2965,
       longitude: 5.3698,
     },
@@ -47,10 +51,21 @@ export default function ActivitePage() {
     longitudeDelta: 5.0,
   };
 
+  const filteredData = dummyData.filter((activity) =>
+    activity.nom.toLowerCase().includes(searchText.toLowerCase()) ||
+    activity.adresse.toLowerCase().includes(searchText.toLowerCase())
+  );
+
   return (
     <View style={styles.container}>
       {/* Header */}
-      <Header title="Carte" />
+      <Header 
+        title="Carte"
+        
+      />
+      <TouchableOpacity style={styles.iconList} onPress={() => navigation.navigate('ActivityList', { filteredData })}>
+            <Ionicons name="list-outline" size={24} color="#510D0A" />
+      </TouchableOpacity>
 
       {/* Carte */}
       <View style={styles.mapContainer}>
@@ -79,7 +94,7 @@ export default function ActivitePage() {
                     <Ionicons name="calendar-outline" size={14} color="#BC4749" /> {activity.date}
                   </Text>
                   <Text style={styles.activityDetails}>
-                  {themeIcons[activity.theme] || <MaterialCommunityIcons name="help-circle-outline" size={16} color="#510D0A" />} {activity.theme}
+                    {themeIcons[activity.theme] || <MaterialCommunityIcons name="help-circle-outline" size={16} color="#510D0A" />} {activity.theme}
                   </Text>
                 </View>
               </Callout>
@@ -93,15 +108,17 @@ export default function ActivitePage() {
         <View style={styles.searchContainer}>
           <TextInput 
             style={styles.searchInput}
-            placeholder="Adresse"
+            placeholder="Activité, ville..."
             placeholderTextColor="#aaa"
+            value={searchText}
+            onChangeText={(text) => setSearchText(text)}
           />
           <TouchableOpacity style={styles.filterButton}>
             <Ionicons name="options-outline" size={20} color="#510D0A" />
           </TouchableOpacity>
         </View>
         <ScrollView contentContainerStyle={styles.activitiesList}>
-        {dummyData.map((activity) => (
+          {filteredData.map((activity) => (
             <Activity key={activity.id} {...activity} />
           ))}
         </ScrollView>
@@ -114,6 +131,20 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
+  iconList:{
+    position: 'absolute',
+    top: 50, // Ajustez cette valeur pour positionner correctement l'icône
+    right: 20, // Place l'icône à droite
+    zIndex: 3, // Utilisation correcte du zIndex pour apparaître au-dessus des autres éléments
+    backgroundColor: 'rgba(255, 255, 255, 0.9)', // Optionnel : ajout d'un fond pour rendre l'icône plus visible
+    borderRadius: 25,
+    padding: 10,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.3,
+    shadowRadius: 4,
+    elevation: 5, // Pour Android
+  },
   mapContainer: {
     flex: 2,
   },
@@ -121,11 +152,6 @@ const styles = StyleSheet.create({
     flex: 1.5, 
     backgroundColor: '#F2E8CF', 
     padding: 10,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: -2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 2,
   },
   searchContainer: {
     flexDirection: 'row',
@@ -133,14 +159,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     borderRadius: 25,
     paddingHorizontal: 10,
-    zIndex: 2,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 2,
-    marginBottom:10,
-    marginHorizontal:20,
+    marginBottom: 10,
+    marginHorizontal: 20,
   },
   searchInput: {
     flex: 1,
