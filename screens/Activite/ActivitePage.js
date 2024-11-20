@@ -1,17 +1,14 @@
 import React from 'react';
-import { View, TextInput, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
-import Header from '../../Components/Header';
+import { View, ScrollView, StyleSheet } from 'react-native';
 import Map from '../../Components/Activite/Map';
 import Activity from '../../Components/Activite/Activity';
-import { Ionicons } from '@expo/vector-icons';
 
 export default function ActivitePage() {
   const dummyData = [
     {
       id: 1,
-      latitude: 48.8566,
-      longitude: 2.3522,
       nom: 'Vélo en groupe',
+      description: 'Un joli tour de vélo groupé en plein air.',
       adresse: 'Nîmes',
       date: '24/06/2024 06:00-12:00',
       theme: 'Aventure',
@@ -20,55 +17,36 @@ export default function ActivitePage() {
     },
     {
       id: 2,
-      latitude: 45.764,
-      longitude: 4.8357,
-      nom: 'Vélo en groupe',
-      adresse: 'Nîmes',
-      date: '24/06/2024 06:00-12:00',
-      theme: 'Aventure',
-      prix: '3€',
-      participants: '2/6',
+      nom: 'Cours de cuisine',
+      description: 'Apprenez à cuisiner des plats délicieux.',
+      adresse: 'Marseille',
+      date: '01/07/2024 14:00-18:00',
+      theme: 'Cuisine',
+      prix: '10€',
+      participants: '5/10',
     },
   ];
 
-  const defaultRegion = {
-    latitude: 46.603354,
-    longitude: 1.888334,
-    latitudeDelta: 5.0,
-    longitudeDelta: 5.0,
-  };
-
   return (
     <View style={styles.container}>
-      {/* Carte en arrière-plan */}
-      <Map 
-        commercants={dummyData} 
-        region={defaultRegion} 
-        onMarkerPress={(commercant) => {
-          alert(`Vous avez cliqué sur : ${commercant.nom}`);
-        }}
-      />
+      {/* Carte */}
+      <View style={styles.mapContainer}>
+        <Map 
+          commercants={dummyData} 
+          region={{
+            latitude: 46.603354,
+            longitude: 1.888334,
+            latitudeDelta: 5.0,
+            longitudeDelta: 5.0,
+          }} 
+        />
+      </View>
 
-      {/* Contenu au-dessus de la carte */}
-      <View style={styles.overlay}>
-        <Header title="Carte" />
-        
-        {/* Search Container en bas */}
-        <View style={styles.searchContainer}>
-          <TextInput 
-            style={styles.searchInput}
-            placeholder="Adresse"
-            placeholderTextColor="#aaa"
-          />
-          <TouchableOpacity style={styles.filterButton}>
-            <Ionicons name="options-outline" size={20} color="#510D0A" />
-          </TouchableOpacity>
-        </View>
-
-        {/* Liste des activités */}
+      {/* Liste d'activités */}
+      <View style={styles.activitiesContainer}>
         <ScrollView contentContainerStyle={styles.activitiesList}>
-          {dummyData.map((item) => (
-            <Activity key={item.id} data={item} />
+          {dummyData.map((activity) => (
+            <Activity key={activity.id} {...activity} />
           ))}
         </ScrollView>
       </View>
@@ -81,39 +59,24 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#F2E8CF',
   },
-  overlay: {
-    ...StyleSheet.absoluteFillObject,
-    backgroundColor: 'transparent',
+  mapContainer: {
+    flex: 2, 
   },
-  searchContainer: {
-    position: 'absolute',
-    bottom: 0,
-    left: 20,
-    right: 20,
-    flexDirection: 'row',
-    backgroundColor: '#FFFFFF',
-    alignItems: 'center',
-    borderRadius: 25,
-    paddingHorizontal: 10,
+  activitiesContainer: {
+    flex: 1, 
+    backgroundColor: 'rgba(81, 13, 10, 0.5)', 
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
+    padding: 10,
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
+    shadowOffset: { width: 0, height: -2 },
     shadowOpacity: 0.1,
     shadowRadius: 4,
     elevation: 2,
-    marginBottom: 20,
-  },
-  searchInput: {
-    flex: 1,
-    height: 40,
-    paddingHorizontal: 10,
-    fontSize: 14,
-    color: '#333',
-  },
-  filterButton: {
-    padding: 5,
   },
   activitiesList: {
-    padding: 20,
-    paddingBottom: 70,
+    paddingBottom: 60,
   },
 });
+
+

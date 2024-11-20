@@ -1,37 +1,46 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
-import { MaterialCommunityIcons } from '@expo/vector-icons';
-import Ionicons from '@expo/vector-icons/Ionicons';
+import { MaterialCommunityIcons, FontAwesome5 } from '@expo/vector-icons';
 
-export default function Activity({ data }) {
+const themeIcons = {
+  Aventure: <MaterialCommunityIcons name="hiking" size={16} color="#BC4749" />,
+  Cuisine: <FontAwesome5 name="utensils" size={14} color="#BC4749" />,
+  Spiritualité: <MaterialCommunityIcons name="meditation" size={16} color="#BC4749" />,
+  Créativité: <MaterialCommunityIcons name="brush" size={16} color="#BC4749" />,
+};
+
+const Activity = ({ nom, description, adresse, date, theme, prix, participants }) => {
   return (
     <View style={styles.activityCard}>
-      <MaterialCommunityIcons name="image-outline" size={40} color="#510D0A" />
+      <MaterialCommunityIcons name="image-outline" size={40} color="#BC4749" />
       <View style={styles.activityInfo}>
-        <Text style={styles.activityTitle}>{data.nom}</Text>
+        <Text style={styles.activityTitle}>{nom}</Text>
+        <Text style={styles.activityDescription}>{description}</Text>
         <Text style={styles.activityDetails}>
-        <MaterialCommunityIcons name="map-marker-outline" size={14} color="#510D0A" /> {data.adresse}</Text>
+          <MaterialCommunityIcons name="map-marker-outline" size={14} color="#BC4749" /> {adresse}
+        </Text>
         <Text style={styles.activityDetails}>
-        <Ionicons name="calendar" size={12} color="#510D0A" /> {data.date}</Text>
+          <MaterialCommunityIcons name="calendar-outline" size={14} color="#BC4749" /> {date}
+        </Text>
         <Text style={styles.activityDetails}>
-         {data.theme}
+          {themeIcons[theme] || <MaterialCommunityIcons name="help-circle-outline" size={16} color="#510D0A" />} {theme}
         </Text>
       </View>
       <View style={styles.activityRight}>
-        <Text style={styles.activityPrice}>{data.prix}</Text>
-        <Text style={styles.activityParticipants}>{data.participants}</Text>
+        <Text style={styles.activityPrice}>{prix}</Text>
+        <Text style={styles.activityParticipants}>{participants}</Text>
       </View>
     </View>
   );
-}
+};
 
 const styles = StyleSheet.create({
   activityCard: {
     flexDirection: 'row',
-    backgroundColor: '#DDEBC8',
+    backgroundColor: '#FADCD9',
     borderRadius: 10,
     marginBottom: 10,
-    padding: 10,
+    padding: 15,
     alignItems: 'center',
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 1 },
@@ -46,22 +55,30 @@ const styles = StyleSheet.create({
   activityTitle: {
     fontSize: 16,
     fontWeight: 'bold',
-    color: '#333',
+    color: '#510D0A',
+  },
+  activityDescription: {
+    fontSize: 12,
+    color: '#555',
+    marginBottom: 5,
   },
   activityDetails: {
     fontSize: 12,
-    color: '#555',
+    color: '#510D0A',
+    marginBottom: 5,
   },
   activityRight: {
     alignItems: 'flex-end',
   },
   activityPrice: {
-    fontSize: 16,
+    fontSize: 18,
     fontWeight: 'bold',
     color: '#510D0A',
   },
   activityParticipants: {
     fontSize: 12,
-    color: '#555',
+    color: '#510D0A',
   },
 });
+
+export default Activity;
