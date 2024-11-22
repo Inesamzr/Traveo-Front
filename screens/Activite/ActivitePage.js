@@ -127,6 +127,9 @@ export default function ActivitePage() {
               <Activity  {...activity} />
             </TouchableOpacity>
           ))}
+          {filteredData.length === 0 && (
+            <Text style={styles.noActivitiesText}>Aucune activité trouvée</Text>
+          )}
         </ScrollView>
       </View>
     </View>

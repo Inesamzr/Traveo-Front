@@ -34,7 +34,9 @@ export default function ActivityListPage({ route, navigation }) {
       {/* Liste des activités */}
       <ScrollView contentContainerStyle={styles.activitiesList}>
         {filteredData.map((activity) => (
-          <Activity key={activity.id} {...activity} />
+          <TouchableOpacity key={activity.id} onPress={() => navigation.navigate('ActivityDetails', { activity })}>
+            <Activity  {...activity} />
+          </TouchableOpacity>
         ))}
         {filteredData.length === 0 && (
           <Text style={styles.noActivitiesText}>Aucune activité trouvée</Text>
@@ -51,9 +53,10 @@ const styles = StyleSheet.create({
   },
   backIcon: {
     position: 'absolute',
-    top: 45,
-    left: 15,
-    zIndex: 1,
+    top: 40,
+    left: 20,
+    padding: 8,
+    borderRadius: 20,
   },
   searchContainer: {
     flexDirection: 'row',

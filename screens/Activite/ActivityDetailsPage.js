@@ -21,7 +21,7 @@ export default function ActivityDetailsPage({ route, navigation }) {
           style={styles.image}
         />
         <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backIcon}>
-          <Ionicons name="arrow-back" size={24} color="#FFF" />
+            <Ionicons name="arrow-back" size={24} color="#510D0A" />
         </TouchableOpacity>
       </View>
 
@@ -73,7 +73,6 @@ const styles = StyleSheet.create({
     position: 'absolute',
     top: 40,
     left: 20,
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
     padding: 8,
     borderRadius: 20,
   },
