@@ -123,7 +123,9 @@ export default function ActivitePage() {
         </View>
         <ScrollView contentContainerStyle={styles.activitiesList}>
           {filteredData.map((activity) => (
-            <Activity key={activity.id} {...activity} />
+            <TouchableOpacity key={activity.id} onPress={() => navigation.navigate('ActivityDetails', { activity })}>
+              <Activity  {...activity} />
+            </TouchableOpacity>
           ))}
         </ScrollView>
       </View>

@@ -2,6 +2,7 @@ import React from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
 import ActivitePage from '../screens/Activite/ActivitePage';
 import ActivityListPage from '../screens/Activite/ActivityListPage';
+import ActivityDetailsPage from '../screens/Activite/ActivityDetailsPage'
 
 const Stack = createStackNavigator();
 
@@ -16,6 +17,11 @@ export default function ActiviteNavigator() {
       <Stack.Screen 
         name="ActivityList" 
         component={ActivityListPage} 
+        options={{ headerShown: false }} 
+      />
+      <Stack.Screen 
+        name="ActivityDetails" 
+        component={ActivityDetailsPage} 
         options={{ headerShown: false }} 
       />
     </Stack.Navigator>
