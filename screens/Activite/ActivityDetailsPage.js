@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, StyleSheet, Image, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, Image, TouchableOpacity, ScrollView } from 'react-native';
 import { Ionicons, MaterialCommunityIcons, FontAwesome5 } from '@expo/vector-icons';
 
 const themeIcons = {
@@ -14,42 +14,49 @@ export default function ActivityDetailsPage({ route, navigation }) {
 
   return (
     <View style={styles.container}>
-      {/* Image avec l'icône de retour */}
-      <View style={styles.imageContainer}>
-        <Image
-          source={require('../../assets/activity-image-placeholder.png')} // Remplacez par une vraie image si disponible
-          style={styles.image}
-        />
-        <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backIcon}>
+      <ScrollView>
+        {/* Image avec l'icône de retour */}
+        <View style={styles.imageContainer}>
+          <Image
+            source={require('../../assets/activity-image-placeholder.png')}
+            style={styles.image}
+            resizeMode="cover"
+          />
+          <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backIcon}>
             <Ionicons name="arrow-back" size={24} color="#510D0A" />
-        </TouchableOpacity>
-      </View>
-
-      {/* Détails de l'activité */}
-      <View style={styles.detailsContainer}>
-        <Text style={styles.title}>{activity.nom}</Text>
-        <View style={styles.infoRow}>
-          <Text style={styles.infoText}>
-            <Ionicons name="person-circle-outline" size={16} color="#510D0A" /> Ines.A10
-          </Text>
-          <Text style={styles.infoText}>
-            <Ionicons name="people-outline" size={16} color="#510D0A" /> {activity.participants}
-          </Text>
-          <Text style={styles.infoText}>
-            {themeIcons[activity.theme]} {activity.theme}
-          </Text>
+          </TouchableOpacity>
         </View>
 
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Description</Text>
-          <Text style={styles.sectionContent}>{activity.description}</Text>
+        {/* Conteneur avec le titre */}
+        <View style={styles.titleContainer}>
+          <Text style={styles.title}>{activity.nom}</Text>
         </View>
 
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Lieu de RDV</Text>
-          <Text style={styles.sectionContent}>{activity.adresse}</Text>
+        {/* Détails de l'activité */}
+        <View style={styles.detailsContainer}>
+          <View style={styles.infoRow}>
+            <Text style={styles.infoText}>
+              <Ionicons name="person-circle-outline" size={16} color="#FFF" /> Ines.A10
+            </Text>
+            <Text style={styles.infoText}>
+              <Ionicons name="people-outline" size={16} color="#FFF" /> {activity.participants}
+            </Text>
+            <Text style={styles.infoText}>
+              {themeIcons[activity.theme]} {activity.theme}
+            </Text>
+          </View>
+
+          <View style={styles.section}>
+            <Text style={styles.sectionTitle}>Description</Text>
+            <Text style={styles.sectionContent}>{activity.description}</Text>
+          </View>
+
+          <View style={styles.section}>
+            <Text style={styles.sectionTitle}>Lieu de RDV</Text>
+            <Text style={styles.sectionContent}>{activity.adresse}</Text>
+          </View>
         </View>
-      </View>
+      </ScrollView>
     </View>
   );
 }
@@ -60,7 +67,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#F2E8CF',
   },
   imageContainer: {
-    height: 250,
+    height: '350',
     position: 'relative',
   },
   image: {
@@ -68,6 +75,7 @@ const styles = StyleSheet.create({
     height: '100%',
     borderBottomLeftRadius: 30,
     borderBottomRightRadius: 30,
+    zIndex:2,
   },
   backIcon: {
     position: 'absolute',
@@ -76,20 +84,33 @@ const styles = StyleSheet.create({
     padding: 8,
     borderRadius: 20,
   },
+  titleContainer: {
+    position: 'absolute',
+    top: 280,
+    left: 0,
+    right: 0,
+    backgroundColor: '#510D0A',
+    paddingTop:80,
+    paddingBottom:20,
+    paddingHorizontal:15,
+    borderBottomLeftRadius: 30,
+    borderBottomRightRadius: 30,
+    zIndex: 1,
+  },
+  title: {
+    fontSize: 22,
+    fontWeight: 'bold',
+    color: '#FFF',
+    textAlign: 'center',
+  },
   detailsContainer: {
     padding: 20,
     backgroundColor: '#F2E8CF',
     borderTopLeftRadius: 30,
     borderTopRightRadius: 30,
-    marginTop: -30,
-  },
-  title: {
-    fontSize: 22,
-    fontWeight: 'bold',
-    color: '#510D0A',
-    marginBottom: 10,
   },
   infoRow: {
+    marginTop:60,
     flexDirection: 'row',
     justifyContent: 'space-between',
     marginBottom: 20,
