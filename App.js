@@ -3,6 +3,7 @@ import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { LanguageProvider } from './localization/LanguageContext'; 
+import LanguageSelection from './screens/Profil/LanguageSelection';
 
 
 import Navbar from './Navigation/Navbar';
@@ -23,6 +24,7 @@ export default function App() {
           <Stack.Screen name="Accueil" component={AccueilNavigator} />
           <Stack.Screen name="Activite" component={ActiviteNavigator} />
           <Stack.Screen name="Reservation" component={ReservationNavigator} />
+          <Stack.Screen name="LanguageSelection" component={LanguageSelection} />
         </Stack.Navigator>
       </NavigationContainer>
     </LanguageProvider>
