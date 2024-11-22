@@ -104,6 +104,15 @@ export default function ActivityDetailsPage({ route, navigation }) {
             </View>
 
         </View>
+      {/* Boutons en bas */}
+      <View style={styles.buttonContainer}>
+        <TouchableOpacity style={styles.registerButton}>
+          <Text style={styles.registerButtonText}>M'inscrire</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.reviewButton}>
+          <Text style={styles.reviewButtonText}>Avis</Text>
+        </TouchableOpacity>
+      </View>
       </ScrollView>
     </View>
   );
@@ -115,7 +124,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#F2E8CF',
   },
   contenu:{
-    marginBottom:40,
+    marginBottom:90,
   },
   imageContainer: {
     height: 350,
@@ -156,7 +165,8 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   detailsContainer: {
-    padding: 20,
+    paddingHorizontal: 20,
+    paddingTop:20,
     backgroundColor: '#F2E8CF',
     borderTopLeftRadius: 30,
     borderTopRightRadius: 30,
@@ -231,4 +241,40 @@ const styles = StyleSheet.create({
   tagTextOdd: {
     color: '#FFF', 
   },
+  buttonContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-evenly',
+    alignItems: 'center',
+    width: '100%',
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: -2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 5,
+    elevation: 5,
+  },
+  registerButton: {
+    backgroundColor: '#CDD993',
+    paddingVertical: 10,
+    paddingHorizontal: 30,
+    borderRadius: 25,
+  },
+  registerButtonText: {
+    color: '#000',
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
+  reviewButton: {
+    backgroundColor: '#F2D0C9',
+    paddingVertical: 10,
+    paddingHorizontal: 30,
+    borderRadius: 25,
+  },
+  reviewButtonText: {
+    color: '#510D0A',
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
+  
 });
