@@ -133,17 +133,17 @@ const styles = StyleSheet.create({
   },
   iconList:{
     position: 'absolute',
-    top: 50, // Ajustez cette valeur pour positionner correctement l'icône
-    right: 20, // Place l'icône à droite
-    zIndex: 3, // Utilisation correcte du zIndex pour apparaître au-dessus des autres éléments
-    backgroundColor: 'rgba(255, 255, 255, 0.9)', // Optionnel : ajout d'un fond pour rendre l'icône plus visible
+    top: 50, 
+    right: 20, 
+    zIndex: 3, 
+    backgroundColor: 'rgba(255, 255, 255, 0.9)',
     borderRadius: 25,
     padding: 10,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.3,
     shadowRadius: 4,
-    elevation: 5, // Pour Android
+    elevation: 5,
   },
   mapContainer: {
     flex: 2,

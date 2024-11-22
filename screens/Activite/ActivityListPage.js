@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, ScrollView, StyleSheet, Text,TouchableOpacity } from 'react-native';
+import { View, ScrollView, StyleSheet, Text, TouchableOpacity } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import Activity from '../../Components/Activite/Activity';
 import Header from '../../Components/Header';
@@ -9,15 +9,13 @@ export default function ActivityListPage({ route, navigation }) {
 
   return (
     <View style={styles.container}>
+      {/* Icône de retour */}
+      <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backIcon}>
+        <Ionicons name="arrow-back" size={24} color="#510D0A" />
+      </TouchableOpacity>
+
       {/* Header avec le titre "Liste des activités" */}
-      <Header 
-        title="Activités" 
-        leftIcon={
-          <TouchableOpacity onPress={() => navigation.goBack()}>
-            <Ionicons name="arrow-back" size={24} color="#FFF" />
-          </TouchableOpacity>
-        }
-      />
+      <Header title="Activités" />
 
       {/* Liste des activités */}
       <ScrollView contentContainerStyle={styles.activitiesList}>
@@ -33,6 +31,7 @@ export default function ActivityListPage({ route, navigation }) {
   );
 }
 
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -40,7 +39,7 @@ const styles = StyleSheet.create({
   },
   activitiesList: {
     padding: 20,
-    marginTop:80,
+    marginTop: 80,
   },
   noActivitiesText: {
     textAlign: 'center',
@@ -48,4 +47,11 @@ const styles = StyleSheet.create({
     color: '#510D0A',
     marginTop: 20,
   },
+  backIcon: {
+    position: 'absolute', 
+    top: 45,             
+    left: 15,            
+    zIndex: 1,           
+  },
 });
+
