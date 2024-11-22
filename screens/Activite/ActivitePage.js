@@ -63,9 +63,13 @@ export default function ActivitePage() {
         title="Carte"
         
       />
-      <TouchableOpacity style={styles.iconList} onPress={() => navigation.navigate('ActivityList', { filteredData })}>
-            <Ionicons name="list-outline" size={24} color="#510D0A" />
+      <TouchableOpacity 
+        style={styles.iconList} 
+        onPress={() => navigation.navigate('ActivityList', { filteredData, searchText })}
+      >
+        <Ionicons name="list-outline" size={24} color="#510D0A" />
       </TouchableOpacity>
+
 
       {/* Carte */}
       <View style={styles.mapContainer}>
