@@ -29,7 +29,8 @@ export default function ActivitePage() {
       prix: '3€',
       latitude: 43.8372,
       longitude: 4.3601,
-      hote: 'ines.A10'
+      hote: 'ines.A10',
+      tags:"vélo,visite,histoire,rencontre"
     },
     {
       id: 2,
@@ -42,7 +43,8 @@ export default function ActivitePage() {
       prix: '6€',
       latitude: 43.2965,
       longitude: 5.3698,
-      hote: 'Justin.B46'
+      hote: 'Justin.B46',
+      tags:"cuisine,cours,sur-place"
     },
   ];
 
