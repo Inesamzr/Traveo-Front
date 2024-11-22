@@ -9,14 +9,14 @@ const Stack = createStackNavigator();
 export default function AuthNavigator() {
   return (
     <Stack.Navigator>
-       <Stack.Screen 
-        name="Login" 
-        component={LoginPage} 
-        options={{ headerShown: false }} 
-      />
       <Stack.Screen 
         name="Profil" 
         component={ProfilPage} 
+        options={{ headerShown: false }} 
+      />
+       <Stack.Screen 
+        name="Login" 
+        component={LoginPage} 
         options={{ headerShown: false }} 
       />
       <Stack.Screen 

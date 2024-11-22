@@ -65,7 +65,7 @@ const texts = {
     register: "Sign up",
     alreadyAccount: "Already have an account? ",
     flag: "🇬🇧",
-    language: "language",
+    languageSelect: "language",
 
     // Accueil Page
     accueilWelcome: "Welcome to Traveo",
