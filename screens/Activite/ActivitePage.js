@@ -29,6 +29,7 @@ export default function ActivitePage() {
       prix: '3€',
       latitude: 43.8372,
       longitude: 4.3601,
+      hote: 'ines.A10'
     },
     {
       id: 2,
@@ -41,6 +42,7 @@ export default function ActivitePage() {
       prix: '6€',
       latitude: 43.2965,
       longitude: 5.3698,
+      hote: 'Justin.B46'
     },
   ];
 
