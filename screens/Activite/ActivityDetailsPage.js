@@ -108,8 +108,11 @@ export default function ActivityDetailsPage({ route, navigation }) {
       <View style={styles.buttonContainer}>
         <TouchableOpacity style={styles.registerButton}>
           <Text style={styles.registerButtonText}>M'inscrire</Text>
+          
         </TouchableOpacity>
-        <TouchableOpacity style={styles.reviewButton}>
+        <TouchableOpacity style={styles.reviewButton}
+        onPress={() => navigation.navigate('ActivityReviews', { reviews: activity.reviews, rating: 3, reviewsCount: activity.reviews.length })}
+        >
           <Text style={styles.reviewButtonText}>Avis</Text>
         </TouchableOpacity>
       </View>
