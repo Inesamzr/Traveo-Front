@@ -5,7 +5,7 @@ import { useNavigation } from '@react-navigation/native';
 import { useLanguage } from '../../localization/LanguageContext';
 
 export default function LoginPage() {
-  const { language } = useLanguage(); 
+  const { language } = useLanguage();
   const currentTexts = texts[language];
   const navigation = useNavigation();
 
@@ -15,46 +15,55 @@ export default function LoginPage() {
         source={require('../../assets/Login_asset.png')} 
         style={styles.backgroundImage}
         resizeMode="cover"
-      ></ImageBackground>
+      />
 
       <Image 
-          source={require('../../assets/Login_asset_2.png')} 
-          style={styles.bottomLeftImage}
-        />
+        source={require('../../assets/Login_asset_2.png')} 
+        style={styles.bottomLeftImage}
+      />
 
       <View style={styles.contenu}>
         <Image 
-            source={require('../../assets/Traveo_logo.png')} 
-            style={styles.logo}
+          source={require('../../assets/Traveo_logo.png')} 
+          style={styles.logo}
         />
         <Text style={styles.welcomeText}>{currentTexts.welcome}</Text>
         <Text style={styles.connectText}>{currentTexts.connect}</Text>
+        
+        <TouchableOpacity
+          style={styles.languageButton}
+          onPress={() => navigation.navigate('LanguageSelection')}
+        >
+          <Text style={styles.languageText}>{currentTexts.flag}</Text>
+        </TouchableOpacity>
+
         <View style={styles.inputContainer}>
-            <TextInput 
+          <TextInput 
             style={styles.input} 
             placeholder={currentTexts.emailPlaceholder} 
             placeholderTextColor="#aaa" 
-            />
-            <TextInput 
+          />
+          <TextInput 
             style={styles.input} 
             placeholder={currentTexts.passwordPlaceholder} 
             placeholderTextColor="#aaa" 
             secureTextEntry 
-            />
+          />
         </View>
         <TouchableOpacity style={styles.loginButton}>
-            <Text style={styles.loginButtonText}>{currentTexts.login}</Text>
+          <Text style={styles.loginButtonText}>{currentTexts.login}</Text>
         </TouchableOpacity>
         <View style={styles.registerContainer}>
-            <Text style={styles.noAccountText}>{currentTexts.noAccount}</Text>
-            <TouchableOpacity onPress={() => navigation.navigate('Register')}>
+          <Text style={styles.noAccountText}>{currentTexts.noAccount}</Text>
+          <TouchableOpacity onPress={() => navigation.navigate('Register')}>
             <Text style={styles.registerText}>{currentTexts.register}</Text>
-            </TouchableOpacity>
+          </TouchableOpacity>
         </View>
-        </View>
+      </View>
     </View>
   );
 }
+
 
 const styles = StyleSheet.create({
   container: {
@@ -72,7 +81,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingHorizontal: 20,
     justifyContent: 'center',
-    zindex:2,
+    zIndex:2,
     marginTop:-400
   },
   logo: {
@@ -139,5 +148,16 @@ const styles = StyleSheet.create({
     left: 0,
     width: '50%',
     height: '20%',
-  }, 
+  },
+  languageButton: {
+    padding: 10,
+    borderColor: '#ccc',
+    borderRadius: 5,
+    marginBottom: 20
+  },
+  languageText: {
+    fontSize: 40,
+    color: '#333',
+  },
+  
 });

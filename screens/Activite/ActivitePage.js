@@ -29,6 +29,8 @@ export default function ActivitePage() {
       prix: '3€',
       latitude: 43.8372,
       longitude: 4.3601,
+      hote: 'ines.A10',
+      tags:"vélo,visite,histoire,rencontre"
     },
     {
       id: 2,
@@ -41,6 +43,8 @@ export default function ActivitePage() {
       prix: '6€',
       latitude: 43.2965,
       longitude: 5.3698,
+      hote: 'Justin.B46',
+      tags:"cuisine,cours,sur-place"
     },
   ];
 
@@ -63,9 +67,13 @@ export default function ActivitePage() {
         title="Carte"
         
       />
-      <TouchableOpacity style={styles.iconList} onPress={() => navigation.navigate('ActivityList', { filteredData })}>
-            <Ionicons name="list-outline" size={24} color="#510D0A" />
+      <TouchableOpacity 
+        style={styles.iconList} 
+        onPress={() => navigation.navigate('ActivityList', { filteredData, searchText })}
+      >
+        <Ionicons name="list-outline" size={24} color="#510D0A" />
       </TouchableOpacity>
+
 
       {/* Carte */}
       <View style={styles.mapContainer}>
@@ -119,8 +127,13 @@ export default function ActivitePage() {
         </View>
         <ScrollView contentContainerStyle={styles.activitiesList}>
           {filteredData.map((activity) => (
-            <Activity key={activity.id} {...activity} />
+            <TouchableOpacity key={activity.id} onPress={() => navigation.navigate('ActivityDetails', { activity })}>
+              <Activity  {...activity} />
+            </TouchableOpacity>
           ))}
+          {filteredData.length === 0 && (
+            <Text style={styles.noActivitiesText}>Aucune activité trouvée</Text>
+          )}
         </ScrollView>
       </View>
     </View>
@@ -133,17 +146,17 @@ const styles = StyleSheet.create({
   },
   iconList:{
     position: 'absolute',
-    top: 50, // Ajustez cette valeur pour positionner correctement l'icône
-    right: 20, // Place l'icône à droite
-    zIndex: 3, // Utilisation correcte du zIndex pour apparaître au-dessus des autres éléments
-    backgroundColor: 'rgba(255, 255, 255, 0.9)', // Optionnel : ajout d'un fond pour rendre l'icône plus visible
+    top: 50, 
+    right: 20, 
+    zIndex: 3, 
+    backgroundColor: 'rgba(255, 255, 255, 0.9)',
     borderRadius: 25,
     padding: 10,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.3,
     shadowRadius: 4,
-    elevation: 5, // Pour Android
+    elevation: 5,
   },
   mapContainer: {
     flex: 2,

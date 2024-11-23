@@ -1,6 +1,7 @@
 const texts = {
   fr: {
     // Login and Register
+    language: "Français",
     welcome: "Bonjour,",
     connect: "Connectez-vous!",
     registerTitle: "Inscrivez-vous!",
@@ -14,6 +15,8 @@ const texts = {
     register: "S'inscrire",
     alreadyAccount: "Vous avez déjà un compte ? ",
     welcomenew: "Bienvenu,",
+    flag: "🇫🇷",
+    languageSelect: "Langue",
 
     // Accueil Page
     accueilWelcome: "Bienvenue sur Traveo",
@@ -46,7 +49,8 @@ const texts = {
     },
   },
   en: {
-    // Login and Register
+    // Login and Registe
+    language: "English",
     welcome: "Welcome,",
     welcomenew: "Welcome,",
     connect: "Log in!",
@@ -60,6 +64,8 @@ const texts = {
     noAccount: "Don't have an account? ",
     register: "Sign up",
     alreadyAccount: "Already have an account? ",
+    flag: "🇬🇧",
+    language: "language",
 
     // Accueil Page
     accueilWelcome: "Welcome to Traveo",

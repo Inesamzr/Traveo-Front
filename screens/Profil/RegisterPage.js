@@ -27,7 +27,16 @@ export default function RegisterPage({ navigation }) {
         />
         <Text style={styles.welcomeText}>{currentTexts.welcomenew}</Text>
         <Text style={styles.connectText}>{currentTexts.registerTitle}</Text>
+
+        <TouchableOpacity
+          style={styles.languageButton}
+          onPress={() => navigation.navigate('LanguageSelection')}
+        >
+          <Text style={styles.languageText}>{currentTexts.flag}</Text>
+        </TouchableOpacity>
+
         <View style={styles.inputContainer}>
+          
           <TextInput 
             style={styles.input} 
             placeholder={currentTexts.firstNamePlaceholder} 
@@ -152,4 +161,14 @@ const styles = StyleSheet.create({
     width: '50%',
     height: '20%',
   }, 
+    languageButton: {
+    padding: 10,
+    borderColor: '#ccc',
+    borderRadius: 5,
+    marginBottom: 20
+  },
+  languageText: {
+    fontSize: 40,
+    color: '#333',
+  },
 });

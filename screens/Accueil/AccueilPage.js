@@ -7,7 +7,7 @@ import { useLanguage } from '../../localization/LanguageContext';
 
 
 export default function AccueilPage() {
-  const { language } = useLanguage(); 
+  const { language } = useLanguage();
   const currentTexts = texts[language];
   return (
     <View style={{ flex: 1 }}>
