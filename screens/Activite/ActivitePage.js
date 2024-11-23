@@ -35,6 +35,7 @@ export default function ActivitePage() {
         { name: 'Alice Dupont', rating: 5, comment: 'Une expérience extraordinaire !' },
         { name: 'Jean Martin', rating: 4, comment: 'Super, mais un peu trop rapide.' },
       ],
+      tags:"vélo,visite,histoire,rencontre"
     },
     {
       id: 2,
@@ -53,6 +54,7 @@ export default function ActivitePage() {
         { name: 'Marie Curie', rating: 5, comment: 'J’ai adoré ce cours !' },
         { name: 'Paul Simon', rating: 4, comment: 'Très sympa et convivial.' },
       ],
+      tags:"cuisine,cours,sur-place"
     },
   ];
 
