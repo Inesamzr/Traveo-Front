@@ -7,9 +7,11 @@ import ReviewsSection from '../../Components/Review/ReviewsSection';
 import texts from '../../localization/localization';
 import { useLanguage } from '../../localization/LanguageContext';
 
-export default function ProfilePage({ navigation }) {
+export default function ProfilPage({ navigation }) {
   const { language } = useLanguage();
   const currentTexts = texts[language];
+  const [searchText, setSearchText] = useState('');
+
 
   const [firstName, setFirstName] = useState('John');
   const [lastName, setLastName] = useState('Doe');
@@ -20,6 +22,34 @@ export default function ProfilePage({ navigation }) {
     { name: 'Kita Chinhoko', rating: 4, comment: "J'ai appris beaucoup de chose pendant cette activité." },
     { name: 'Kita Chinhoko', rating: 4, comment: "J'ai appris beaucoup de chose pendant cette activité." },
   ]);
+
+  const filteredData = [
+    {
+      id: 1,
+      nom: 'Vélo en groupe',
+      description: 'Un joli tour de vélo groupé en plein air.',
+      adresse: 'Nîmes',
+      date: '24/06/2024 06:00-12:00',
+      theme: 'Aventure',
+      participants: '2/6',
+      prix: '3€',
+      latitude: 43.8372,
+      longitude: 4.3601,
+    },
+    {
+      id: 2,
+      nom: 'Cours de cuisine',
+      description: 'Apprenez à cuisiner des plats délicieux.',
+      adresse: 'Marseille',
+      date: '01/07/2024 14:00-18:00',
+      theme: 'Cuisine',
+      participants: '5/10',
+      prix: '6€',
+      latitude: 43.2965,
+      longitude: 5.3698,
+    },
+  ];
+
 
   const handleFieldChange = (field, value) => {
     if (field === 'firstName') setFirstName(value);
@@ -64,8 +94,10 @@ export default function ProfilePage({ navigation }) {
           <Text style={styles.saveButtonText}>Enregistrer</Text>
         </TouchableOpacity>
       )}
-      <ProfilButton label="Mes activités" onPress={() => navigation.navigate('Activities')} />
-      <ProfilButton label="Mes réservations" onPress={() => navigation.navigate('Reservations')} />
+      <ProfilButton
+        label="Mes activités"
+        onPress={() => navigation.navigate('ActivityList', { filteredData, searchText: '' })}
+      />      <ProfilButton label="Mes réservations" onPress={() => navigation.navigate('Reservations')} />
       <ReviewsSection
         reviews={reviews}
         rating={4.8}
