@@ -379,11 +379,22 @@ const styles = StyleSheet.create({
   },
   createButton: {
     backgroundColor: '#DBBBBA',
-    padding: 15,
+    paddingVertical: 15, 
+    paddingHorizontal: 80, 
     borderRadius: 60,
     alignItems: 'center',
-    marginBottom:80,
+    alignSelf: 'center', 
+    marginBottom: 80,
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5, 
   },
+  
   createButtonText: {
     color: '#510D0A',
     fontSize: 16,
