@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet,TouchableOpacity } from 'react-native';
 import { MaterialCommunityIcons, FontAwesome5 } from '@expo/vector-icons';
+import { getCityFromCoordinates } from '../../services/Nominatim';
 
 const themeIcons = {
   Aventure: <MaterialCommunityIcons name="hiking" size={16} color="#BC4749" />,
@@ -10,25 +11,41 @@ const themeIcons = {
 };
 
 const Activity = ({ ...activity }) => {
+
+  const [adresse, setAdresse] = useState("");
+
+  useEffect(() => {
+    const fetchAdressLoc = async () => {
+
+      const responseAdresse = await getCityFromCoordinates(activity.latitude, activity.longitude)
+      console.log("okofkzeofkzo ", responseAdresse)
+      setAdresse(responseAdresse)
+
+     }
+
+     fetchAdressLoc()
+   }, [])
+
+  console.log("iciiiiii ", activity)
   return (
       <View style={styles.activityCard}>
         <MaterialCommunityIcons name="image-outline" size={40} color="#BC4749" />
         <View style={styles.activityInfo}>
-          <Text style={styles.activityTitle}>{activity.nom}</Text>
+          <Text style={styles.activityTitle}>{activity.nomActivite}</Text>
           <Text style={styles.activityDescription}>{activity.description}</Text>
           <Text style={styles.activityDetails}>
-            <MaterialCommunityIcons name="map-marker-outline" size={14} color="#BC4749" /> {activity.adresse}
+            <MaterialCommunityIcons name="map-marker-outline" size={14} color="#BC4749" /> {adresse}
           </Text>
           <Text style={styles.activityDetails}>
-            <MaterialCommunityIcons name="calendar-outline" size={14} color="#BC4749" /> {activity.date}
+            <MaterialCommunityIcons name="calendar-outline" size={14} color="#BC4749" /> {activity.dateDebut}
           </Text>
           <Text style={styles.activityDetails}>
-            {themeIcons[activity.theme] || <MaterialCommunityIcons name="help-circle-outline" size={16} color="#510D0A" />} {activity.theme}
+            {themeIcons[activity.theme] || <MaterialCommunityIcons name="help-circle-outline" size={16} color="#510D0A" />} {activity.themeId}
           </Text>
         </View>
         <View style={styles.activityRight}>
           <Text style={styles.activityPrice}>{activity.prix}</Text>
-          <Text style={styles.activityParticipants}>{activity.participants}</Text>
+          <Text style={styles.activityParticipants}>{activity.nbPlaces}</Text>
         </View>
       </View>
   );
