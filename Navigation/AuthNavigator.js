@@ -23,16 +23,17 @@ export default function AuthNavigator() {
       />
 
       <Stack.Screen 
+        name="Register" 
+        component={RegisterPage} 
+        options={{ headerShown: false }} 
+      />
+
+      <Stack.Screen 
         name="Profil" 
         component={ProfilPage} 
         options={{ headerShown: false }} 
       />
 
-      <Stack.Screen 
-        name="Register" 
-        component={RegisterPage} 
-        options={{ headerShown: false }} 
-      />
     </Stack.Navigator>
   );
 }

@@ -31,6 +31,23 @@ export const login = async (email, password) => {
   }
 };
 
+export const register = async (data) => {
+    console.log("connexion")
+    console.log(API_URL)
+  try {
+    const response = await apiClient.post('/user/register', data);
+    //await AsyncStorage.setItem('userToken', response.data.token); // Stocke le token
+
+    AsyncStorage.setItem('userId', response.data.id.toString());
+    console.log("user id : " , response.data.id.toString())
+    
+    return response.data
+
+  } catch (error) {
+    throw error.response ? error.response.data : { message: 'Erreur de connexion au serveur' };
+  }
+};
+
 export const logout = async () => {
     await AsyncStorage.removeItem('userToken');
     await AsyncStorage.removeItem('userId');
