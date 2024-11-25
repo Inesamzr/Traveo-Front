@@ -223,6 +223,8 @@ export default function CreerActivitePage() {
       <Popup
         visible={isPopupVisible}
         onClose={() => setPopupVisible(false)}
+        navigation={navigation}
+        targetScreen="Activite"
         message="Votre activité a été créée avec succès !"
       />
     </>
@@ -233,7 +235,7 @@ export default function CreerActivitePage() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F9F4EC',
+    backgroundColor: '#F2E8CF',
   },
   backIcon: {
     position: 'absolute',
@@ -376,14 +378,14 @@ const styles = StyleSheet.create({
     marginBottom: 5, 
   },
   createButton: {
-    backgroundColor: '#510D0A',
+    backgroundColor: '#DBBBBA',
     padding: 15,
     borderRadius: 60,
     alignItems: 'center',
     marginBottom:80,
   },
   createButtonText: {
-    color: 'white',
+    color: '#510D0A',
     fontSize: 16,
     fontWeight: 'bold',
   },

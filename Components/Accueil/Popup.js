@@ -1,13 +1,19 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, Modal } from 'react-native';
 
-export default function Popup({ visible, onClose, message }) {
+export default function Popup({ visible, onClose, message, navigation, targetScreen }) {
   return (
     <Modal transparent={true} visible={visible} animationType="fade">
       <View style={styles.overlay}>
         <View style={styles.popupContainer}>
           <Text style={styles.message}>{message}</Text>
-          <TouchableOpacity style={styles.closeButton} onPress={onClose}>
+          <TouchableOpacity
+            style={styles.closeButton}
+            onPress={() => {
+              onClose();
+              navigation.navigate(targetScreen);
+            }}
+          >
             <Text style={styles.closeButtonText}>Fermer</Text>
           </TouchableOpacity>
         </View>
