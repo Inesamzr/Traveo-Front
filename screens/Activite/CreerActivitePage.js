@@ -6,9 +6,9 @@ import {
   TouchableOpacity,
   StyleSheet,
   ScrollView,
-  Picker,
 } from 'react-native';
 import { Ionicons, FontAwesome5 } from '@expo/vector-icons';
+import { Picker } from '@react-native-picker/picker';
 
 export default function CreerActivitePage() {
   const [nom, setNom] = useState('');
@@ -58,16 +58,19 @@ export default function CreerActivitePage() {
 
         {/* Thème */}
         <Text style={styles.label}>Thème*</Text>
-        <Picker
-          selectedValue={theme}
-          onValueChange={(itemValue) => setTheme(itemValue)}
-          style={styles.picker}
-        >
-          <Picker.Item label="Choisir..." value="" />
-          <Picker.Item label="Randonnée" value="randonnee" />
-          <Picker.Item label="Vélo" value="velo" />
-          <Picker.Item label="Kayak" value="kayak" />
-        </Picker>
+            <View style={styles.pickerContainer}>
+            <Picker
+                selectedValue={theme}
+                onValueChange={(itemValue) => setTheme(itemValue)}
+                style={styles.picker}
+            >
+                <Picker.Item label="Choisir..." value="" />
+                <Picker.Item label="Randonnée" value="randonnee" />
+                <Picker.Item label="Vélo" value="velo" />
+                <Picker.Item label="Kayak" value="kayak" />
+            </Picker>
+            </View>
+
 
         {/* Date */}
         <Text style={styles.label}>Date*</Text>
@@ -199,12 +202,17 @@ const styles = StyleSheet.create({
   textarea: {
     height: 80,
   },
-  picker: {
+  pickerContainer: {
     borderWidth: 1,
     borderColor: '#C5AFAF',
     borderRadius: 5,
     marginBottom: 15,
+    backgroundColor: 'white',
   },
+  picker: {
+    height: 50,
+    color: '#510D0A',
+  },  
   row: {
     flexDirection: 'row',
     alignItems: 'center',
