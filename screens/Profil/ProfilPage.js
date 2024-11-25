@@ -15,6 +15,7 @@ export default function ProfilPage({ route, navigation }) {
   const [loading, setLoading] = useState(true); // Indicateur de chargement
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
+  const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
   const [isModified, setIsModified] = useState(false); // État pour savoir si le profil est modifié
   const [reviews, setReviews] = useState([]); // Avis utilisateur
@@ -31,6 +32,7 @@ export default function ProfilPage({ route, navigation }) {
         setFirstName(userData.firstName);
         setLastName(userData.lastName);
         setEmail(userData.email);
+        setUsername(userData.username);
       } catch (error) {
         Alert.alert('Erreur', "Impossible de charger les données utilisateur.");
       } finally {
@@ -52,7 +54,7 @@ export default function ProfilPage({ route, navigation }) {
   const handleSave = async () => {
     setLoading(true);
     try {
-      await updateUserProfile({ firstName, lastName, email }); // Met à jour les données utilisateur
+      await updateUserProfile(userId, {firstName, lastName, email, userId} ); // Met à jour les données utilisateur
       setIsModified(false); // Réinitialise l'état de modification
       Alert.alert('Succès', 'Profil mis à jour avec succès.');
     } catch (error) {
@@ -73,7 +75,7 @@ export default function ProfilPage({ route, navigation }) {
 
   return (
     <ScrollView style={styles.container} contentContainerStyle={styles.content}>
-      <ProfilHeader name={`${firstName} ${lastName}`} onEdit={() => console.log('Edit profile clicked')} />
+      <ProfilHeader name={`${username}`}/>
       <View style={styles.fields}>
         <ProfilField
           label={currentTexts.firstNamePlaceholder}

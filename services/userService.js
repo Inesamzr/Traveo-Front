@@ -7,6 +7,8 @@ export const getUserById = async (userId) => {
 };
 
 export const updateUserProfile = async (userId, data) => {
-  const response = await apiClient.put(`/user/${userId}`, data);
+    //const userId = AsyncStorage.getItem("userId")
+    console.log(userId)
+  const response = await apiClient.put(`/user/update/${userId}`, data);
   return response.data;
 };
