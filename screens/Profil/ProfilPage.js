@@ -34,6 +34,7 @@ export default function ProfilPage({ route, navigation }) {
         setLastName(userData.lastName);
         setEmail(userData.email);
         setUsername(userData.username);
+        setPhoneNumber(userData.phoneNumber)
       } catch (error) {
         Alert.alert('Erreur', "Impossible de charger les données utilisateur.");
       } finally {
@@ -65,7 +66,7 @@ export default function ProfilPage({ route, navigation }) {
   const handleSave = async () => {
     setLoading(true);
     try {
-      await updateUserProfile(userId, {firstName, lastName, email, userId, username} ); // Met à jour les données utilisateur
+      await updateUserProfile(userId, {firstName, lastName, email, userId, username, phoneNumber} ); // Met à jour les données utilisateur
       setIsModified(false); // Réinitialise l'état de modification
       Alert.alert('Succès', 'Profil mis à jour avec succès.');
     } catch (error) {
