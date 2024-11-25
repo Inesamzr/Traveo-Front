@@ -24,6 +24,9 @@ export default function CreerActivitePage() {
     const [heureArrive, setHeureArrive] = useState('');
     const [altitude, setAltitude] = useState('');
     const [longitude, setLongitude] = useState('');
+    const [isThemeDropdownVisible, setThemeDropdownVisible] = useState(false);
+    const themes = ['Cuisine', 'Créativité', 'Spiritualité','Aventure'];
+
 
   return (
     <ScrollView style={styles.container}>
@@ -47,7 +50,7 @@ export default function CreerActivitePage() {
         {/* Description */}
         <Text style={styles.label}>Description*</Text>
         <TextInput
-          style={[styles.input, styles.textarea]}
+          style={[styles.inputdesc, styles.textarea]}
           placeholder="Nous allons nous balader en groupe..."
           value={description}
           onChangeText={setDescription}
@@ -56,101 +59,145 @@ export default function CreerActivitePage() {
 
         {/* Thème */}
         <Text style={styles.label}>Thème*</Text>
-            <View style={styles.pickerContainer}>
-            <Picker
-                selectedValue={theme}
-                onValueChange={(itemValue) => setTheme(itemValue)}
-                style={styles.picker}
-            >
-                <Picker.Item label="Choisir..." value="" />
-                <Picker.Item label="Randonnée" value="randonnee" />
-                <Picker.Item label="Vélo" value="velo" />
-                <Picker.Item label="Kayak" value="kayak" />
-            </Picker>
-            </View>
-
+        <TouchableOpacity
+          style={styles.dropdown}
+          onPress={() => setThemeDropdownVisible(!isThemeDropdownVisible)}
+        >
+          <Text style={styles.dropdownText}>
+            {theme || 'Choisir...'}
+          </Text>
+          <Ionicons
+            name={isThemeDropdownVisible ? 'chevron-up' : 'chevron-down'}
+            size={24}
+            color="#510D0A"
+          />
+        </TouchableOpacity>
+        {isThemeDropdownVisible && (
+          <View style={styles.dropdownMenu}>
+            {themes.map((item, index) => (
+              <TouchableOpacity
+                key={index}
+                style={styles.dropdownItem}
+                onPress={() => {
+                  setTheme(item);
+                  setThemeDropdownVisible(false);
+                }}
+              >
+                <Text style={styles.dropdownItemText}>{item}</Text>
+              </TouchableOpacity>
+            ))}
+          </View>
+        )}
 
         {/* Date */}
         <Text style={styles.label}>Date*</Text>
-        <View style={styles.row}>
-          <TextInput
-            style={styles.input}
+        <View style={styles.dateContainer}>
+        <Ionicons name="calendar-outline" size={24} color="#510D0A" style={styles.dateIcon} />
+        <TextInput
+            style={styles.dateInput}
             placeholder="JJ/MM/AA"
             value={date}
             onChangeText={setDate}
-          />
-          <Ionicons name="calendar-outline" size={24} color="#510D0A" style={styles.icon} />
+        />
         </View>
 
+        {/* Nombre de Place et Prix */}
+        <View style={styles.rowContainer}>
         {/* Nombre de Place */}
-        <Text style={styles.label}>Nombre de Place*</Text>
-        <View style={styles.row}>
-          <TextInput
-            style={styles.input}
-            placeholder="3"
-            value={nombreDePlace}
-            onChangeText={setNombreDePlace}
-            keyboardType="numeric"
-          />
-          <FontAwesome5 name="users" size={24} color="#510D0A" style={styles.icon} />
+        <View style={styles.rowSection}>
+            <Text style={styles.label}>Nombre de Place*</Text>
+            <View style={styles.rowInputContainer}>
+            <FontAwesome5 name="users" size={24} color="#510D0A" style={styles.rowIcon} />
+            <TextInput
+                style={styles.rowInput}
+                placeholder="3"
+                value={nombreDePlace}
+                onChangeText={setNombreDePlace}
+                keyboardType="numeric"
+            />
+            </View>
         </View>
-
         {/* Prix */}
-        <Text style={styles.label}>Prix*</Text>
-        <View style={styles.row}>
-          <TextInput
-            style={styles.input}
-            placeholder="50"
-            value={prix}
-            onChangeText={setPrix}
-            keyboardType="numeric"
-          />
-          <FontAwesome5 name="euro-sign" size={24} color="#510D0A" style={styles.icon} />
+        <View style={[styles.rowSection, styles.rowSectionMargin]}>
+            <Text style={styles.label}>Prix*</Text>
+            <View style={styles.rowInputContainer}>
+            <FontAwesome5 name="euro-sign" size={24} color="#510D0A" style={styles.rowIcon} />
+            <TextInput
+                style={styles.rowInput}
+                placeholder="50"
+                value={prix}
+                onChangeText={setPrix}
+                keyboardType="numeric"
+            />
+            </View>
+        </View>
         </View>
 
-        {/* Heure Départ */}
-        <Text style={styles.label}>Heure Départ*</Text>
-        <View style={styles.row}>
-          <TextInput
-            style={styles.input}
-            placeholder="6:00"
-            value={heureDepart}
-            onChangeText={setHeureDepart}
-          />
-          <Ionicons name="time-outline" size={24} color="#510D0A" style={styles.icon} />
+
+
+        {/* Heure de Départ et Heure d'Arrivée */}
+        <View style={styles.rowContainer}>
+        {/* Heure de Départ */}
+        <View style={styles.rowSection}>
+            <Text style={styles.label}>Heure Départ*</Text>
+            <View style={styles.rowInputContainer}>
+            <Ionicons name="time-outline" size={24} color="#510D0A" style={styles.rowIcon} />
+            <TextInput
+                style={styles.rowInput}
+                placeholder="6:00"
+                value={heureDepart}
+                onChangeText={setHeureDepart}
+            />
+            </View>
+        </View>
+        {/* Heure d'Arrivée */}
+        <View style={[styles.rowSection, styles.rowSectionMargin]}>
+            <Text style={styles.label}>Heure Retour*</Text>
+            <View style={styles.rowInputContainer}>
+            <Ionicons name="time-outline" size={24} color="#510D0A" style={styles.rowIcon} />
+            <TextInput
+                style={styles.rowInput}
+                placeholder="12:00"
+                value={heureArrive}
+                onChangeText={setHeureArrive}
+            />
+            </View>
+        </View>
         </View>
 
-        {/* Heure Arrivé */}
-        <Text style={styles.label}>Heure Arrivé*</Text>
-        <View style={styles.row}>
-          <TextInput
-            style={styles.input}
-            placeholder="12:00"
-            value={heureArrive}
-            onChangeText={setHeureArrive}
-          />
-          <Ionicons name="time-outline" size={24} color="#510D0A" style={styles.icon} />
-        </View>
 
+        {/* Altitude et Longitude */}
+        <View style={styles.rowContainer}>
         {/* Altitude */}
-        <Text style={styles.label}>Altitude*</Text>
-        <TextInput
-          style={styles.input}
-          placeholder="1234678"
-          value={altitude}
-          onChangeText={setAltitude}
-          keyboardType="numeric"
-        />
-
+        <View style={styles.rowSection}>
+            <Text style={styles.label}>Altitude*</Text>
+            <View style={styles.rowInputContainer}>
+            <Ionicons name="locate-outline" size={24} color="#510D0A" style={styles.rowIcon} />
+            <TextInput
+                style={styles.rowInput}
+                placeholder="1234678"
+                value={altitude}
+                onChangeText={setAltitude}
+                keyboardType="numeric"
+            />
+            </View>
+        </View>
         {/* Longitude */}
-        <Text style={styles.label}>Longitude*</Text>
-        <TextInput
-          style={styles.input}
-          placeholder="1234678"
-          value={longitude}
-          onChangeText={setLongitude}
-          keyboardType="numeric"
-        />
+        <View style={[styles.rowSection, styles.rowSectionMargin]}>
+            <Text style={styles.label}>Longitude*</Text>
+            <View style={styles.rowInputContainer}>
+            <Ionicons name="compass-outline" size={24} color="#510D0A" style={styles.rowIcon} />
+            <TextInput
+                style={styles.rowInput}
+                placeholder="1234678"
+                value={longitude}
+                onChangeText={setLongitude}
+                keyboardType="numeric"
+            />
+            </View>
+        </View>
+        </View>
+
 
         {/* Image */}
         <Text style={styles.label}>Image</Text>
@@ -188,7 +235,15 @@ const styles = StyleSheet.create({
   input: {
     borderWidth: 1,
     borderColor: '#C5AFAF',
-    borderRadius: 5,
+    borderRadius: 60,
+    padding: 10,
+    marginBottom: 15,
+    backgroundColor: 'white',
+  },
+  inputdesc: {
+    borderWidth: 1,
+    borderColor: '#C5AFAF',
+    borderRadius: 20,
     padding: 10,
     marginBottom: 15,
     backgroundColor: 'white',
@@ -196,17 +251,35 @@ const styles = StyleSheet.create({
   textarea: {
     height: 80,
   },
-  pickerContainer: {
+  dropdown: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
     borderWidth: 1,
     borderColor: '#C5AFAF',
-    borderRadius: 5,
+    borderRadius: 60,
+    padding: 10,
     marginBottom: 15,
     backgroundColor: 'white',
   },
-  picker: {
-    height: 50,
+  dropdownText: {
+    fontSize: 14,
     color: '#510D0A',
-  },  
+  },
+  dropdownMenu: {
+    borderWidth: 1,
+    borderColor: '#C5AFAF',
+    borderRadius: 10,
+    backgroundColor: 'white',
+    marginBottom: 15,
+  },
+  dropdownItem: {
+    padding: 10,
+  },
+  dropdownItemText: {
+    fontSize: 14,
+    color: '#510D0A',
+  },
   row: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -229,4 +302,59 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: '#510D0A',
   },
+  dateContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    borderWidth: 1,
+    borderColor: '#C5AFAF',
+    borderRadius: 60,
+    paddingHorizontal: 10,
+    marginBottom: 15,
+    backgroundColor: 'white',
+  },
+  dateIcon: {
+    marginRight: 10,
+  },
+  dateInput: {
+    flex: 1,
+    paddingVertical: 10,
+    fontSize: 14,
+  },
+  rowContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginBottom: 15,
+  },
+  rowSection: {
+    flex: 1,
+  },
+  rowSectionMargin: {
+    marginLeft: 10, 
+  },
+  rowInputContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    borderWidth: 1,
+    borderColor: '#C5AFAF',
+    borderRadius: 60,
+    paddingHorizontal: 10,
+    backgroundColor: 'white',
+    marginTop: 5, 
+  },
+  rowInput: {
+    flex: 1,
+    paddingVertical: 10,
+    fontSize: 14,
+  },
+  rowIcon: {
+    marginRight: 10,
+  },
+  label: {
+    fontSize: 14,
+    fontWeight: 'bold',
+    color: '#510D0A',
+    marginBottom: 5, 
+  },
+  
+  
 });
