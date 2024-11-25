@@ -11,6 +11,7 @@ import { Ionicons, FontAwesome5 } from '@expo/vector-icons';
 import { Picker } from '@react-native-picker/picker';
 import { useNavigation } from '@react-navigation/native';
 import Header from '../../Components/Header';
+import Popup from '../../Components/Accueil/Popup';
 
 export default function CreerActivitePage() {
     const navigation = useNavigation();
@@ -25,10 +26,13 @@ export default function CreerActivitePage() {
     const [altitude, setAltitude] = useState('');
     const [longitude, setLongitude] = useState('');
     const [isThemeDropdownVisible, setThemeDropdownVisible] = useState(false);
+    const [isPopupVisible, setPopupVisible] = useState(false); 
+
     const themes = ['Cuisine', 'Créativité', 'Spiritualité','Aventure'];
 
 
   return (
+    <>
     <ScrollView style={styles.container}>
     <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backIcon}>
         <Ionicons name="arrow-back" size={24} color="#510D0A" />
@@ -205,8 +209,24 @@ export default function CreerActivitePage() {
           <Text style={styles.imageUploadText}>Glisser et déposer ou charger l'image</Text>
           <Ionicons name="cloud-upload-outline" size={24} color="#510D0A" />
         </TouchableOpacity>
-      </View>
-    </ScrollView>
+      
+    <TouchableOpacity
+            style={styles.createButton}
+            onPress={() => setPopupVisible(true)}
+          >
+            <Text style={styles.createButtonText}>Créer</Text>
+          </TouchableOpacity>
+        </View>
+      </ScrollView>
+
+      {/* Popup */}
+      <Popup
+        visible={isPopupVisible}
+        onClose={() => setPopupVisible(false)}
+        message="Votre activité a été créée avec succès !"
+      />
+    </>
+
   );
 }
 
@@ -355,6 +375,16 @@ const styles = StyleSheet.create({
     color: '#510D0A',
     marginBottom: 5, 
   },
-  
-  
+  createButton: {
+    backgroundColor: '#510D0A',
+    padding: 15,
+    borderRadius: 60,
+    alignItems: 'center',
+    marginBottom:80,
+  },
+  createButtonText: {
+    color: 'white',
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
 });
