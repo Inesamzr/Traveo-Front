@@ -9,31 +9,29 @@ import {
 } from 'react-native';
 import { Ionicons, FontAwesome5 } from '@expo/vector-icons';
 import { Picker } from '@react-native-picker/picker';
+import { useNavigation } from '@react-navigation/native';
+import Header from '../../Components/Header';
 
 export default function CreerActivitePage() {
-  const [nom, setNom] = useState('');
-  const [description, setDescription] = useState('');
-  const [theme, setTheme] = useState('');
-  const [date, setDate] = useState('');
-  const [nombreDePlace, setNombreDePlace] = useState('');
-  const [prix, setPrix] = useState('');
-  const [heureDepart, setHeureDepart] = useState('');
-  const [heureArrive, setHeureArrive] = useState('');
-  const [altitude, setAltitude] = useState('');
-  const [longitude, setLongitude] = useState('');
+    const navigation = useNavigation();
+    const [nom, setNom] = useState('');
+    const [description, setDescription] = useState('');
+    const [theme, setTheme] = useState('');
+    const [date, setDate] = useState('');
+    const [nombreDePlace, setNombreDePlace] = useState('');
+    const [prix, setPrix] = useState('');
+    const [heureDepart, setHeureDepart] = useState('');
+    const [heureArrive, setHeureArrive] = useState('');
+    const [altitude, setAltitude] = useState('');
+    const [longitude, setLongitude] = useState('');
 
   return (
     <ScrollView style={styles.container}>
+    <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backIcon}>
+        <Ionicons name="arrow-back" size={24} color="#510D0A" />
+      </TouchableOpacity>
       {/* Header */}
-      <View style={styles.header}>
-        <TouchableOpacity>
-          <Ionicons name="arrow-back" size={24} color="#510D0A" />
-        </TouchableOpacity>
-        <Text style={styles.headerTitle}>Créer une activité</Text>
-        <TouchableOpacity>
-          <FontAwesome5 name="user-circle" size={24} color="#510D0A" />
-        </TouchableOpacity>
-      </View>
+      <Header title ='Créer une activité'/>
 
       {/* Form */}
       <View style={styles.form}>
@@ -170,20 +168,16 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#F9F4EC',
   },
-  header: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    padding: 15,
-    backgroundColor: '#F9E3E2',
-  },
-  headerTitle: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    color: '#510D0A',
+  backIcon: {
+    position: 'absolute',
+    top: 40,
+    left: 20,
+    padding: 8,
+    borderRadius: 20,
   },
   form: {
     padding: 20,
+    marginTop:80
   },
   label: {
     fontSize: 14,
