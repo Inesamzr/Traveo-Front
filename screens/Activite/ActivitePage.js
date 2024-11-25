@@ -74,6 +74,14 @@ export default function ActivitePage() {
         <Ionicons name="list-outline" size={24} color="#510D0A" />
       </TouchableOpacity>
 
+      <TouchableOpacity 
+        style={styles.iconadd} 
+        onPress={() => navigation.navigate('CreerActivite')}
+      >
+        <Ionicons name="add" size={24} color="#510D0A" />
+      </TouchableOpacity>
+
+
 
       {/* Carte */}
       <View style={styles.mapContainer}>
@@ -148,6 +156,20 @@ const styles = StyleSheet.create({
     position: 'absolute',
     top: 50, 
     right: 20, 
+    zIndex: 3, 
+    backgroundColor: 'rgba(255, 255, 255, 0.9)',
+    borderRadius: 25,
+    padding: 10,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.3,
+    shadowRadius: 4,
+    elevation: 5,
+  },
+  iconadd:{
+    position: 'absolute',
+    top: 50, 
+    left: 20, 
     zIndex: 3, 
     backgroundColor: 'rgba(255, 255, 255, 0.9)',
     borderRadius: 25,
