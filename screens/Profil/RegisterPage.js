@@ -1,81 +1,89 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, TextInput, TouchableOpacity, Image, ImageBackground } from 'react-native';
+import { TouchableOpacity, View, StyleSheet, ScrollView, Text } from 'react-native';
+import ProfilHeader from '../../Components/Profil/ProfilHeader';
+import ProfilField from '../../Components/Profil/ProfilField';
+import ProfilButton from '../../Components/Profil/ProfilButton';
 import texts from '../../localization/localization';
 import { useLanguage } from '../../localization/LanguageContext';
 
-export default function RegisterPage({ navigation }) {
-  const { language } = useLanguage(); 
+export default function ProfilePage({ navigation }) {
+  const { language } = useLanguage();
   const currentTexts = texts[language];
 
+  // États pour les champs du profil
+  const [firstName, setFirstName] = useState('John');
+  const [lastName, setLastName] = useState('Doe');
+  const [email, setEmail] = useState('johndoe@gmail.com');
+  const [isModified, setIsModified] = useState(false); // État pour vérifier si des modifications ont été faites
+
+  const handleSave = () => {
+    console.log('Enregistrement des modifications :', { firstName, lastName, email });
+    setIsModified(false); // Réinitialise l'état après enregistrement
+  };
+
+  const handleFieldChange = (field, value) => {
+    // Met à jour l'état correspondant et active le bouton "Enregistrer"
+    if (field === 'firstName') setFirstName(value);
+    if (field === 'lastName') setLastName(value);
+    if (field === 'email') setEmail(value);
+    setIsModified(true);
+  };
+
+  const handleLanguageChange = () => {
+    navigation.navigate('LanguageSelection');
+  };
+
+  const handleActivities = () => {
+    navigation.navigate('Activities'); // Remplacez par votre écran d'activités
+  };
+
+  const handleReservations = () => {
+    navigation.navigate('Reservations'); // Remplacez par votre écran de réservations
+  };
+
   return (
-    <View style={styles.container}>
-      <ImageBackground 
-        source={require('../../assets/Login_asset.png')} 
-        style={styles.backgroundImage}
-        resizeMode="cover"
-      />
+    <ScrollView style={styles.container} contentContainerStyle={styles.content}>
+      <ProfilHeader name={`${firstName} ${lastName}`} onEdit={() => console.log('Edit profile clicked')} />
 
-        <Image 
-          source={require('../../assets/Login_asset_2.png')} 
-          style={styles.bottomLeftImage}
+      <View style={styles.fields}>
+        {/* Champs éditables */}
+        <ProfilField
+          label={currentTexts.firstNamePlaceholder}
+          value={firstName}
+          icon="person"
+          editable
+          onChangeText={(value) => handleFieldChange('firstName', value)}
         />
-
-      <View style={styles.content}>
-        <Image 
-          source={require('../../assets/Traveo_logo.png')} 
-          style={styles.logo}
+        <ProfilField
+          label={currentTexts.lastNamePlaceholder}
+          value={lastName}
+          icon="person"
+          editable
+          onChangeText={(value) => handleFieldChange('lastName', value)}
         />
-        <Text style={styles.welcomeText}>{currentTexts.welcomenew}</Text>
-        <Text style={styles.connectText}>{currentTexts.registerTitle}</Text>
-
-        <TouchableOpacity
-          style={styles.languageButton}
-          onPress={() => navigation.navigate('LanguageSelection')}
-        >
-          <Text style={styles.languageText}>{currentTexts.flag}</Text>
-        </TouchableOpacity>
-
-        <View style={styles.inputContainer}>
-          
-          <TextInput 
-            style={styles.input} 
-            placeholder={currentTexts.firstNamePlaceholder} 
-            placeholderTextColor="#aaa" 
-          />
-          <TextInput 
-            style={styles.input} 
-            placeholder={currentTexts.lastNamePlaceholder} 
-            placeholderTextColor="#aaa" 
-          />
-          <TextInput 
-            style={styles.input} 
-            placeholder={currentTexts.emailPlaceholder} 
-            placeholderTextColor="#aaa" 
-          />
-          <TextInput 
-            style={styles.input} 
-            placeholder={currentTexts.passwordPlaceholder} 
-            placeholderTextColor="#aaa" 
-            secureTextEntry 
-          />
-          <TextInput 
-            style={styles.input} 
-            placeholder={currentTexts.confirmPasswordPlaceholder} 
-            placeholderTextColor="#aaa" 
-            secureTextEntry 
-          />
-        </View>
-        <TouchableOpacity style={styles.registerButton}>
-          <Text style={styles.registerButtonText}>{currentTexts.register}</Text>
-        </TouchableOpacity>
-        <View style={styles.loginContainer}>
-          <Text style={styles.alreadyAccountText}>{currentTexts.alreadyAccount}</Text>
-          <TouchableOpacity onPress={() => navigation.navigate('Login')}>
-          <Text style={styles.loginText}>{currentTexts.login}</Text>
-          </TouchableOpacity>
-        </View>
+        <ProfilField
+          label="Email"
+          value={email}
+          icon="mail"
+          editable
+          onChangeText={(value) => handleFieldChange('email', value)}
+        />
       </View>
-    </View>
+
+      <TouchableOpacity style={styles.languageButton} onPress={handleLanguageChange}>
+        <Text style={styles.languageText}>{currentTexts.flag}</Text>
+      </TouchableOpacity>
+
+      <ProfilButton label="Mes activités" onPress={handleActivities} />
+      <ProfilButton label="Mes réservations" onPress={handleReservations} />
+
+      {/* Bouton Enregistrer conditionnel */}
+      {isModified && (
+        <TouchableOpacity style={styles.saveButton} onPress={handleSave}>
+          <Text style={styles.saveButtonText}>Enregistrer</Text>
+        </TouchableOpacity>
+      )}
+    </ScrollView>
   );
 }
 
@@ -84,91 +92,32 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#F2E8CF',
   },
-  backgroundImage: {
-    width: '100%',
-    height: '70%', 
-    justifyContent: 'flex-end',
-    alignItems: 'center',
-  },
   content: {
-    alignItems: 'center',
-    paddingHorizontal: 20,
-    marginTop: -489, 
+    padding: 20,
   },
-  logo: {
-    width: 100, 
-    height: 100,
-    marginBottom: 30,
+  fields: {
+    marginTop: 30,
   },
-  welcomeText: {
-    fontSize: 24,
-    color: '#111',
-    fontWeight: '300',
-    textAlign: 'center',
-  },
-  connectText: {
-    fontSize: 24,
-    color: '#386641',
-    fontWeight: '700',
-    marginBottom: 20,
-    textAlign: 'center',
-  },
-  inputContainer: {
-    width: '100%',
-    marginBottom: 20,
-  },
-  input: {
-    backgroundColor: '#F5F5F5',
-    borderRadius: 10,
-    paddingVertical: 15,
-    paddingHorizontal: 20,
-    fontSize: 16,
-    color: '#333',
-    marginBottom: 15,
-  },
-  registerButton: {
-    backgroundColor: '#D9A5B3',
-    paddingVertical: 15,
-    paddingHorizontal: 40,
-    borderRadius: 25,
-    marginBottom: 20,
-    alignSelf: 'stretch',
-    alignItems: 'center',
-    width: '100%',
-  },
-  registerButtonText: {
-    color: '#FFF',
-    fontSize: 16,
-    fontWeight: 'bold',
-  },
-  loginContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  alreadyAccountText: {
-    fontSize: 14,
-    color: '#111',
-  },
-  loginText: {
-    fontSize: 14,
-    color: '#510D0A',
-    fontWeight: 'bold',
-  },
-  bottomLeftImage: {
-    position: 'absolute',
-    bottom: 0,
-    left: 0,
-    width: '50%',
-    height: '20%',
-  }, 
-    languageButton: {
+  languageButton: {
     padding: 10,
     borderColor: '#ccc',
     borderRadius: 5,
-    marginBottom: 20
   },
   languageText: {
     fontSize: 40,
     color: '#333',
+  },
+  saveButton: {
+    backgroundColor: '#386641',
+    borderRadius: 10,
+    paddingVertical: 15,
+    paddingHorizontal: 20,
+    marginTop: 20,
+    alignItems: 'center',
+  },
+  saveButtonText: {
+    color: '#fff',
+    fontSize: 16,
+    fontWeight: 'bold',
   },
 });

@@ -30,6 +30,11 @@ export default function ActivitePage() {
       latitude: 43.8372,
       longitude: 4.3601,
       hote: 'ines.A10',
+      tags:"vélo,visite,histoire,rencontre",
+      reviews: [
+        { name: 'Alice Dupont', rating: 5, comment: 'Une expérience extraordinaire !' },
+        { name: 'Jean Martin', rating: 4, comment: 'Super, mais un peu trop rapide.' },
+      ],
       tags:"vélo,visite,histoire,rencontre"
     },
     {
@@ -44,6 +49,11 @@ export default function ActivitePage() {
       latitude: 43.2965,
       longitude: 5.3698,
       hote: 'Justin.B46',
+      tags:"cuisine,cours,sur-place",
+      reviews: [
+        { name: 'Marie Curie', rating: 5, comment: 'J’ai adoré ce cours !' },
+        { name: 'Paul Simon', rating: 4, comment: 'Très sympa et convivial.' },
+      ],
       tags:"cuisine,cours,sur-place"
     },
   ];
