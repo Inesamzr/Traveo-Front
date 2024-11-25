@@ -102,6 +102,14 @@ export default function ProfilPage({ route, navigation }) {
           editable
           onChangeText={(value) => handleFieldChange('lastName', value)}
         />
+          <ProfilField
+          label={currentTexts.phoneNumber}
+          value={firstName}
+          icon="call-outline"
+          editable
+          keyboardType="phone-pad"
+          onChangeText={(value) => handleFieldChange('phoneNumber', value)}
+        />
         <ProfilField
           label="Email"
           value={email}

@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { View, Text, StyleSheet, TextInput, TouchableOpacity } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 
-export default function ProfilField({ label, value, icon, editable = false, onChangeText }) {
+export default function ProfilField({ label, value, icon, editable = false, onChangeText, keyboardType = 'default'  }) {
   const [isEditing, setIsEditing] = useState(false); // État local pour activer/désactiver le mode édition
 
   const handlePress = () => {
@@ -33,6 +33,7 @@ export default function ProfilField({ label, value, icon, editable = false, onCh
             onChangeText={onChangeText}
             onBlur={handleBlur} // Désactive le mode édition après modification
             autoFocus={true} // Met automatiquement le champ en focus
+            keyboardType={keyboardType}
           />
         ) : (
           <Text style={styles.value}>{value}</Text>

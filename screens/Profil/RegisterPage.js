@@ -106,6 +106,7 @@ export default function RegisterPage() {
             placeholderTextColor="#aaa" 
             value={phoneNumber}
             onChangeText={setPhoneNumber}
+            keyboardType="phone-pad"
           />
           <TextInput 
             style={styles.input} 
