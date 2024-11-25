@@ -16,6 +16,7 @@ export default function ProfilPage({ route, navigation }) {
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
   const [username, setUsername] = useState('');
+  const [phoneNumber, setPhoneNumber] = useState('');
   const [email, setEmail] = useState('');
   const [isModified, setIsModified] = useState(false); // État pour savoir si le profil est modifié
   const [reviews, setReviews] = useState([]); // Avis utilisateur
@@ -45,16 +46,26 @@ export default function ProfilPage({ route, navigation }) {
 
 
   const handleFieldChange = (field, value) => {
-    if (field === 'firstName') setFirstName(value);
-    if (field === 'lastName') setLastName(value);
-    if (field === 'email') setEmail(value);
+    if (field === 'firstName') {
+      setFirstName(value);
+      if (lastName) {
+        setUsername(`${value}.${lastName.substring(0, 2).toLowerCase()}`); // Met à jour le username par défaut
+      }
+    }
+  
+    if (field === 'lastName') {
+      setLastName(value);
+      if (firstName) {
+        setUsername(`${firstName}.${value.substring(0, 2).toLowerCase()}`); // Met à jour le username par défaut
+      }
+    }
     setIsModified(true); // Indique que des modifications ont été faites
   };
 
   const handleSave = async () => {
     setLoading(true);
     try {
-      await updateUserProfile(userId, {firstName, lastName, email, userId} ); // Met à jour les données utilisateur
+      await updateUserProfile(userId, {firstName, lastName, email, userId, username} ); // Met à jour les données utilisateur
       setIsModified(false); // Réinitialise l'état de modification
       Alert.alert('Succès', 'Profil mis à jour avec succès.');
     } catch (error) {
@@ -95,7 +106,6 @@ export default function ProfilPage({ route, navigation }) {
           label="Email"
           value={email}
           icon="mail"
-          editable
           onChangeText={(value) => handleFieldChange('email', value)}
         />
       </View>
