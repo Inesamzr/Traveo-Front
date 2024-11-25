@@ -1,67 +1,75 @@
-import React, { useState } from 'react';
-import { TouchableOpacity, View, StyleSheet, ScrollView, Text } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { TouchableOpacity, View, StyleSheet, ScrollView, Text, ActivityIndicator, Alert } from 'react-native';
 import ProfilHeader from '../../Components/Profil/ProfilHeader';
 import ProfilField from '../../Components/Profil/ProfilField';
 import ProfilButton from '../../Components/Profil/ProfilButton';
 import ReviewsSection from '../../Components/Review/ReviewsSection';
 import texts from '../../localization/localization';
 import { useLanguage } from '../../localization/LanguageContext';
+import { getUserById, updateUserProfile } from '../../services/userService';
 
-export default function ProfilPage({ navigation }) {
+export default function ProfilPage({ route, navigation }) {
   const { language } = useLanguage();
   const currentTexts = texts[language];
-  const [searchText, setSearchText] = useState('');
 
+  const [loading, setLoading] = useState(true); // Indicateur de chargement
+  const [firstName, setFirstName] = useState('');
+  const [lastName, setLastName] = useState('');
+  const [email, setEmail] = useState('');
+  const [isModified, setIsModified] = useState(false); // État pour savoir si le profil est modifié
+  const [reviews, setReviews] = useState([]); // Avis utilisateur
 
-  const [firstName, setFirstName] = useState('John');
-  const [lastName, setLastName] = useState('Doe');
-  const [email, setEmail] = useState('johndoe@gmail.com');
-  const [isModified, setIsModified] = useState(false); // Ajouter l'état pour suivre les modifications
-  const [reviews] = useState([
-    { name: 'Francisco Maia', rating: 5, comment: 'Une expérience extraordinaire à refaire.' },
-    { name: 'Kita Chinhoko', rating: 4, comment: "J'ai appris beaucoup de chose pendant cette activité." },
-    { name: 'Kita Chinhoko', rating: 4, comment: "J'ai appris beaucoup de chose pendant cette activité." },
-  ]);
+  const { userId } = route.params;
 
-  const filteredData = [
-    {
-      id: 1,
-      nom: 'Vélo en groupe',
-      description: 'Un joli tour de vélo groupé en plein air.',
-      adresse: 'Nîmes',
-      date: '24/06/2024 06:00-12:00',
-      theme: 'Aventure',
-      participants: '2/6',
-      prix: '3€',
-      latitude: 43.8372,
-      longitude: 4.3601,
-    },
-    {
-      id: 2,
-      nom: 'Cours de cuisine',
-      description: 'Apprenez à cuisiner des plats délicieux.',
-      adresse: 'Marseille',
-      date: '01/07/2024 14:00-18:00',
-      theme: 'Cuisine',
-      participants: '5/10',
-      prix: '6€',
-      latitude: 43.2965,
-      longitude: 5.3698,
-    },
-  ];
+  useEffect(() => {
+    const fetchUserData = async () => {
+      try {
+        if (!userId) {
+          throw new Error("L'ID utilisateur est introuvable.");
+        }
+        const userData = await getUserById(userId);
+        setFirstName(userData.firstName);
+        setLastName(userData.lastName);
+        setEmail(userData.email);
+      } catch (error) {
+        Alert.alert('Erreur', "Impossible de charger les données utilisateur.");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchUserData();
+  }, [userId]);
 
 
   const handleFieldChange = (field, value) => {
     if (field === 'firstName') setFirstName(value);
     if (field === 'lastName') setLastName(value);
     if (field === 'email') setEmail(value);
-    setIsModified(true); // Activer l'état de modification
+    setIsModified(true); // Indique que des modifications ont été faites
   };
 
-  const handleSave = () => {
-    console.log('Modifications enregistrées :', { firstName, lastName, email });
-    setIsModified(false); // Réinitialiser après sauvegarde
+  const handleSave = async () => {
+    setLoading(true);
+    try {
+      await updateUserProfile({ firstName, lastName, email }); // Met à jour les données utilisateur
+      setIsModified(false); // Réinitialise l'état de modification
+      Alert.alert('Succès', 'Profil mis à jour avec succès.');
+    } catch (error) {
+      Alert.alert('Erreur', "Impossible d'enregistrer les modifications.");
+      console.error(error);
+    } finally {
+      setLoading(false);
+    }
   };
+
+  if (loading) {
+    return (
+      <View style={styles.loadingContainer}>
+        <ActivityIndicator size="large" color="#510D0A" />
+      </View>
+    );
+  }
 
   return (
     <ScrollView style={styles.container} contentContainerStyle={styles.content}>
@@ -94,15 +102,9 @@ export default function ProfilPage({ navigation }) {
           <Text style={styles.saveButtonText}>Enregistrer</Text>
         </TouchableOpacity>
       )}
-      <ProfilButton
-        label="Mes activités"
-        onPress={() => navigation.navigate('ActivityList', { filteredData, searchText: '' })}
-      />      <ProfilButton label="Mes réservations" onPress={() => navigation.navigate('Reservations')} />
-      <ReviewsSection
-        reviews={reviews}
-        rating={4.8}
-        reviewsCount={reviews.length}
-      />
+      <ProfilButton label="Mes activités" onPress={() => navigation.navigate('ActivityList')} />
+      <ProfilButton label="Mes réservations" onPress={() => navigation.navigate('Reservations')} />
+      <ReviewsSection reviews={reviews} rating={4.8} reviewsCount={reviews.length} />
     </ScrollView>
   );
 }
@@ -130,5 +132,10 @@ const styles = StyleSheet.create({
     color: '#fff',
     fontSize: 16,
     fontWeight: 'bold',
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });
