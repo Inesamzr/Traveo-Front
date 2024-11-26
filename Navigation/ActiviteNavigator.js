@@ -3,6 +3,7 @@ import { createStackNavigator } from '@react-navigation/stack';
 import ActivitePage from '../screens/Activite/ActivitePage';
 import ActivityListPage from '../screens/Activite/ActivityListPage';
 import ActivityDetailsPage from '../screens/Activite/ActivityDetailsPage'
+import ActivityReviewsPage from '../screens/Activite/ActivityReviewsPage'
 
 const Stack = createStackNavigator();
 
@@ -27,11 +28,6 @@ export default function ActiviteNavigator() {
       <Stack.Screen name="ActivityReviews" 
       component={ActivityReviewsPage} 
       options={{ headerShown: false }} 
-      />
-      <Stack.Screen 
-        name="CreerActivite" 
-        component={CreerActivitePage} 
-        options={{ headerShown: false }} 
       />
     </Stack.Navigator>
   );
