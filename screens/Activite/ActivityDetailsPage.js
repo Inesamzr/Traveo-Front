@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, Image, TouchableOpacity, ScrollView } from 'react-native';
 import { Ionicons, MaterialCommunityIcons, FontAwesome5 } from '@expo/vector-icons';
 import { getCityFromCoordinates } from '../../services/Nominatim';
+import { getUserById } from '../../services/userService';
 
 
 const themeIcons = {
@@ -14,14 +15,32 @@ const themeIcons = {
 export default function ActivityDetailsPage({ route, navigation }) {
   const { activity } = route.params;
   const [adresse, setAdresse] = useState("");
+  const [username, setUsername] = useState(""); 
 
   useEffect(() => {
+    // Récupérer la ville basée sur les coordonnées
     const fetchAdressLoc = async () => {
-      const responseAdresse = await getCityFromCoordinates(activity.latitude, activity.longitude)
-      setAdresse(responseAdresse)
-     }
-     fetchAdressLoc()
-   }, [])
+      try {
+        const responseAdresse = await getCityFromCoordinates(activity.latitude, activity.longitude);
+        setAdresse(responseAdresse);
+      } catch (error) {
+        Alert.alert('Erreur', "Impossible de récupérer l'adresse.");
+      }
+    };
+
+    // Récupérer le username de l'utilisateur
+    const fetchUsername = async () => {
+      try {
+        const userData = await getUserById(activity.userId); 
+        setUsername(userData.firstName+'.'+userData.lastName);
+      } catch (error) {
+        Alert.alert('Erreur', "Impossible de récupérer les informations de l'utilisateur.");
+      }
+    };
+
+    fetchAdressLoc();
+    fetchUsername();
+  }, [activity.userId]);
 
   return (
     <View style={styles.container}>
@@ -48,7 +67,7 @@ export default function ActivityDetailsPage({ route, navigation }) {
           <View style={styles.infoRow}>
             <View style={styles.infoItem}>
               <Ionicons name="person-circle-outline" size={20} color="#BC4749" />
-              <Text style={styles.infoText}>{activity.userId}</Text>
+              <Text style={styles.infoText}>{username}</Text>
             </View>
             <View style={styles.infoItem}>
               <Ionicons name="people-outline" size={20} color="#BC4749" />
