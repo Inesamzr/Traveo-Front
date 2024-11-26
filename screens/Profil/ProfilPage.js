@@ -9,6 +9,7 @@ import { useLanguage } from '../../localization/LanguageContext';
 import { getUserById, updateUserProfile } from '../../services/userService';
 import { getUserActivities } from '../../services/activityService';
 
+
 export default function ProfilPage({ route, navigation }) {
   const { language } = useLanguage();
   const currentTexts = texts[language];

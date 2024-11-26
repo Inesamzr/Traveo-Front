@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, ScrollView, StyleSheet, TextInput, TouchableOpacity, Text } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import MapView, { Marker, Callout } from 'react-native-maps';
@@ -6,6 +6,7 @@ import { useNavigation } from '@react-navigation/native';
 import Header from '../../Components/Header';
 import Activity from '../../Components/Activite/Activity';
 import { MaterialCommunityIcons, FontAwesome5 } from '@expo/vector-icons';
+import { getAllActivities } from '../../services/activityService';
 
 const themeIcons = {
   Aventure: <MaterialCommunityIcons name="hiking" size={16} color="#BC4749" />,
@@ -17,6 +18,8 @@ const themeIcons = {
 export default function ActivitePage() {
   const navigation = useNavigation();
   const [searchText, setSearchText] = useState('');
+  const [activities, setActivities] = useState([]);
+  const [loading, setLoading] = useState(true);
   const dummyData = [
     {
       id: 1,
@@ -64,11 +67,34 @@ export default function ActivitePage() {
     latitudeDelta: 5.0,
     longitudeDelta: 5.0,
   };
+   // Récupérer les activités depuis l'API
+   useEffect(() => {
+    const fetchActivities = async () => {
+      try {
+        const data = await getAllActivities();
+        setActivities(data);
+      } catch (error) {
+        Alert.alert("Erreur", "Impossible de charger les activités.");
+      } finally {
+        setLoading(false);
+      }
+    };
 
-  const filteredData = dummyData.filter((activity) =>
-    activity.nom.toLowerCase().includes(searchText.toLowerCase()) ||
-    activity.adresse.toLowerCase().includes(searchText.toLowerCase())
+    fetchActivities();
+  }, []);
+
+  const filteredData = activities.filter((activity) =>
+    activity.nomActivite.toLowerCase().includes(searchText.toLowerCase()) 
+    //||activity.adresse.toLowerCase().includes(searchText.toLowerCase())
   );
+
+  if (loading) {
+    return (
+      <View style={styles.loadingContainer}>
+        <Text>Chargement des activités...</Text>
+      </View>
+    );
+  }
 
   return (
     <View style={styles.container}>
@@ -100,7 +126,7 @@ export default function ActivitePage() {
           initialRegion={defaultRegion}
           showsUserLocation={true}
         >
-          {dummyData.map((activity) => (
+          {filteredData.map((activity) => (
             <Marker
               key={activity.id}
               coordinate={{
@@ -145,7 +171,7 @@ export default function ActivitePage() {
         </View>
         <ScrollView contentContainerStyle={styles.activitiesList}>
           {filteredData.map((activity) => (
-            <TouchableOpacity key={activity.id} onPress={() => navigation.navigate('ActivityDetails', { activity })}>
+            <TouchableOpacity key={activity.idActivite} onPress={() => navigation.navigate('ActivityDetails', { activity })}>
               <Activity  {...activity} />
             </TouchableOpacity>
           ))}
