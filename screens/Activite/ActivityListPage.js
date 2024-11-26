@@ -19,6 +19,14 @@ export default function ActivityListPage({ route, navigation }) {
 
       <Header title='Activités'/>
 
+      <TouchableOpacity 
+        style={styles.iconadd} 
+        onPress={() => navigation.navigate('CreerActivite')}
+      >
+        <Ionicons name="add" size={26} color="#510D0A" />
+      </TouchableOpacity>
+
+
       {/* Barre de recherche */}
       <View style={styles.searchContainer}>
         <TextInput
@@ -53,12 +61,18 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#F2E8CF',
   },
+  iconadd:{
+    position: 'absolute',
+    top: 40, 
+    right: 20, 
+    zIndex: 3, 
+    padding: 8,
+  },
   backIcon: {
     position: 'absolute',
     top: 40,
     left: 20,
     padding: 8,
-    borderRadius: 20,
   },
   searchContainer: {
     flexDirection: 'row',
