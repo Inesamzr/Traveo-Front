@@ -4,11 +4,14 @@ import { Ionicons, FontAwesome5 } from '@expo/vector-icons';
 import ThemesSection from '../../Components/Accueil/ThemesSection';
 import texts from '../../localization/localization';
 import { useLanguage } from '../../localization/LanguageContext'; 
+import { useNavigation } from '@react-navigation/native';
 
 
 export default function AccueilPage() {
   const { language } = useLanguage();
   const currentTexts = texts[language];
+  const navigation = useNavigation();
+
   return (
     <View style={{ flex: 1 }}>
       <ImageBackground 
@@ -45,14 +48,14 @@ export default function AccueilPage() {
             <Text style={styles.sectionTitle}>{currentTexts.shortcutsTitle}</Text>
             <View style={styles.shortcuts}>
               <TouchableOpacity style={styles.shortcutButton}>
-                <FontAwesome5 name="plus-circle" size={30} color="#510D0A" />
+                <FontAwesome5 name="plus-circle" size={30} color="#510D0A" onPress={() => navigation.navigate('CreerActivite')}/>
                 <Text style={styles.shortcutText}>{currentTexts.createActivity}</Text>
               </TouchableOpacity>
-              <TouchableOpacity style={styles.shortcutButton}>
-                <Ionicons name="calendar-outline" size={30} color="#510D0A" />
+              <TouchableOpacity style={styles.shortcutButton} >
+                <Ionicons name="calendar-outline" size={30} color="#510D0A"/>
                 <Text style={styles.shortcutText}>{currentTexts.myReservations}</Text>
               </TouchableOpacity>
-              <TouchableOpacity style={styles.shortcutButton}>
+              <TouchableOpacity style={styles.shortcutButton} onPress={() => navigation.navigate('Activite')}>
                 <Ionicons name="search-outline" size={30} color="#510D0A" />
                 <Text style={styles.shortcutText}>{currentTexts.explore}</Text>
               </TouchableOpacity>
