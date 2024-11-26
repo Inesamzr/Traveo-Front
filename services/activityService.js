@@ -1,7 +1,7 @@
 import axios from 'axios';
 import apiClient from './apiClient';
 
-const ACTIVITY_API_URL = 'http://162.38.32.231:8086/api/activities';
+const ACTIVITY_API_URL = 'http://10.193.2.198:8086/api/activities';
 
 // Récupérer toutes les activités
 export const getAllActivities = async () => {
