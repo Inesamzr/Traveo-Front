@@ -47,6 +47,28 @@ const texts = {
         description: "Exprimez votre art à travers la peinture, la musique et la photographie.",
       },
     },
+
+    // Reservation Page
+    reservations: {
+      title: "Mes Réservations",
+      details: "Détails de la Réservation",
+      noReservations: "Aucune réservation trouvée.",
+      reserveNow: "Réserver maintenant",
+      description: "Description",
+      location: "Lieu de RDV",
+      dateAndTime: "Date et Heure",
+      price: "Prix",
+      availablePlaces: "Places Disponibles",
+      tags: "Tags",
+      status: {
+        upcoming: "À venir",
+        past: "Passée",
+      },
+      buttons: {
+        leaveReview: "Laisser un avis",
+        cancelReservation: "Annuler ma réservation",
+      },
+    },
   },
   en: {
     // Login and Registe
@@ -94,6 +116,28 @@ const texts = {
       creativity: {
         title: "Creativity",
         description: "Express your art through painting, music, and photography.",
+      },
+    },
+
+    //Reservation Page
+    reservations: {
+      title: "My Reservations",
+      details: "Reservation Details",
+      noReservations: "No reservations found.",
+      reserveNow: "Reserve Now",
+      description: "Description",
+      location: "Meeting Location",
+      dateAndTime: "Date and Time",
+      price: "Price",
+      availablePlaces: "Available Places",
+      tags: "Tags",
+      status: {
+        upcoming: "Upcoming",
+        past: "Past",
+      },
+      buttons: {
+        leaveReview: "Leave a Review",
+        cancelReservation: "Cancel Reservation",
       },
     },
   },

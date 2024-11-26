@@ -1,13 +1,17 @@
 import React from 'react';
-import { View, StyleSheet, Text } from 'react-native';
+import { View, StyleSheet } from 'react-native';
+import ReservationListPage from './ReservationListPage'; // Assurez-vous que le chemin est correct
 import Header from '../../Components/Header';
 
-export default function ReservationPage() {
+export default function ReservationPage({ navigation }) {
   return (
     <View style={styles.container}>
-      <Header title="Mes réservations" />
+      {/* En-tête */}
+      <Header title="Mes Réservations" />
+
+      {/* Liste des réservations */}
       <View style={styles.content}>
-        <Text>Contenu de la page des réservations</Text>
+        <ReservationListPage navigation={navigation} />
       </View>
     </View>
   );
@@ -16,11 +20,9 @@ export default function ReservationPage() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F2E8CF', 
+    backgroundColor: '#F2E8CF',
   },
   content: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
   },
 });
