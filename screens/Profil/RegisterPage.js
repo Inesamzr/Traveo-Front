@@ -1,11 +1,61 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, TextInput, TouchableOpacity, Image, ImageBackground } from 'react-native';
-import texts from '../../localization/localization';
+import { View, Text, StyleSheet, TextInput, TouchableOpacity, Alert, Image, ImageBackground } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
 import { useLanguage } from '../../localization/LanguageContext';
+import texts from '../../localization/localization';
+import { login, register } from '../../services/authService'; 
 
-export default function RegisterPage({ navigation }) {
-  const { language } = useLanguage(); 
+export default function RegisterPage() {
+  const { language } = useLanguage();
   const currentTexts = texts[language];
+  const navigation = useNavigation();
+
+  // États pour les champs d'inscription
+  const [firstName, setFirstName] = useState('');
+  const [lastName, setLastName] = useState('');
+  const [username, setUsername] = useState('');
+  const [email, setEmail] = useState('');
+  const [phoneNumber, setPhoneNumber] = useState('');
+  const [password, setPassword] = useState('');
+  const [loading, setLoading] = useState(false);
+  
+
+  const handleRegister = async () => {
+    if (!firstName || !lastName || !email || !phoneNumber || !password) {
+      Alert.alert('Erreur', 'Veuillez remplir tous les champs.');
+      return;
+    }
+    console.log(firstName)
+
+
+    //setLoading(true);
+    setUsername(`${firstName}.${lastName.substring(0, 2).toLowerCase()}`);
+    console.log(username)
+
+    try {
+      const userData = {
+        firstName,
+        lastName,
+        username,
+        email,
+        phoneNumber,
+        password,
+        role: 'user'
+      };
+
+      const response = await register(userData);
+      const userId = response.id
+      console.log("user idddddd : ", userId)
+
+      Alert.alert('Succès', 'Compte créé avec succès.');
+      navigation.navigate('Profil', {userId}); // Redirection vers la page de connexion après l'inscription
+    } catch (error) {
+      console.error(error);
+      Alert.alert('Erreur', "Impossible de créer l'utilisateur. Veuillez réessayer.");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <View style={styles.container}>
@@ -15,12 +65,12 @@ export default function RegisterPage({ navigation }) {
         resizeMode="cover"
       />
 
-        <Image 
-          source={require('../../assets/Login_asset_2.png')} 
-          style={styles.bottomLeftImage}
-        />
+      <Image 
+        source={require('../../assets/Login_asset_2.png')} 
+        style={styles.bottomLeftImage}
+      />
 
-      <View style={styles.content}>
+      <View style={styles.contenu}>
         <Image 
           source={require('../../assets/Traveo_logo.png')} 
           style={styles.logo}
@@ -28,50 +78,55 @@ export default function RegisterPage({ navigation }) {
         <Text style={styles.welcomeText}>{currentTexts.welcomenew}</Text>
         <Text style={styles.connectText}>{currentTexts.registerTitle}</Text>
 
-        <TouchableOpacity
-          style={styles.languageButton}
-          onPress={() => navigation.navigate('LanguageSelection')}
-        >
-          <Text style={styles.languageText}>{currentTexts.flag}</Text>
-        </TouchableOpacity>
-
         <View style={styles.inputContainer}>
-          
           <TextInput 
             style={styles.input} 
-            placeholder={currentTexts.firstNamePlaceholder} 
+            placeholder="Prénom" 
             placeholderTextColor="#aaa" 
+            value={firstName}
+            onChangeText={setFirstName}
           />
           <TextInput 
             style={styles.input} 
-            placeholder={currentTexts.lastNamePlaceholder} 
+            placeholder="Nom" 
             placeholderTextColor="#aaa" 
+            value={lastName}
+            onChangeText={setLastName}
           />
           <TextInput 
             style={styles.input} 
-            placeholder={currentTexts.emailPlaceholder} 
+            placeholder="Email" 
             placeholderTextColor="#aaa" 
+            value={email}
+            onChangeText={setEmail}
           />
           <TextInput 
             style={styles.input} 
-            placeholder={currentTexts.passwordPlaceholder} 
+            placeholder="Numéro de téléphone" 
             placeholderTextColor="#aaa" 
-            secureTextEntry 
+            value={phoneNumber}
+            onChangeText={setPhoneNumber}
+            keyboardType="phone-pad"
           />
           <TextInput 
             style={styles.input} 
-            placeholder={currentTexts.confirmPasswordPlaceholder} 
+            placeholder="Mot de passe" 
             placeholderTextColor="#aaa" 
-            secureTextEntry 
+            secureTextEntry
+            value={password}
+            onChangeText={setPassword}
           />
         </View>
-        <TouchableOpacity style={styles.registerButton}>
-          <Text style={styles.registerButtonText}>{currentTexts.register}</Text>
+
+        <TouchableOpacity style={styles.registerButton} onPress={handleRegister}>
+          <Text style={styles.registerButtonText}>
+            {currentTexts.register}
+          </Text>
         </TouchableOpacity>
         <View style={styles.loginContainer}>
           <Text style={styles.alreadyAccountText}>{currentTexts.alreadyAccount}</Text>
           <TouchableOpacity onPress={() => navigation.navigate('Login')}>
-          <Text style={styles.loginText}>{currentTexts.login}</Text>
+            <Text style={styles.loginText}>{currentTexts.login}</Text>
           </TouchableOpacity>
         </View>
       </View>
@@ -89,11 +144,14 @@ const styles = StyleSheet.create({
     height: '70%', 
     justifyContent: 'flex-end',
     alignItems: 'center',
+    zIndex:0,
   },
-  content: {
+  contenu:{
     alignItems: 'center',
     paddingHorizontal: 20,
-    marginTop: -489, 
+    justifyContent: 'center',
+    zIndex:2,
+    marginTop:-400,
   },
   logo: {
     width: 100, 
@@ -134,7 +192,6 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     alignSelf: 'stretch',
     alignItems: 'center',
-    width: '100%',
   },
   registerButtonText: {
     color: '#FFF',
@@ -160,15 +217,5 @@ const styles = StyleSheet.create({
     left: 0,
     width: '50%',
     height: '20%',
-  }, 
-    languageButton: {
-    padding: 10,
-    borderColor: '#ccc',
-    borderRadius: 5,
-    marginBottom: 20
-  },
-  languageText: {
-    fontSize: 40,
-    color: '#333',
   },
 });

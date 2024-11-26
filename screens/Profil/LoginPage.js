@@ -1,13 +1,28 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, TextInput, TouchableOpacity, Image, ImageBackground } from 'react-native';
-import texts from '../../localization/localization';
+import { View, Text, StyleSheet, TextInput, TouchableOpacity, Alert, Image, ImageBackground } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { useLanguage } from '../../localization/LanguageContext';
+import texts from '../../localization/localization';
+import { login } from '../../services/authService'; // Importez la fonction login
 
 export default function LoginPage() {
   const { language } = useLanguage();
   const currentTexts = texts[language];
   const navigation = useNavigation();
+
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [loading, setLoading] = useState(false);
+
+  const handleLogin = async () => {
+    try {
+      const response = await login(email, password); // Fonction de connexion
+      const userId = response.id; // Récupération de l'ID utilisateur depuis la réponse
+      navigation.navigate('Profil', { userId }); // Passez l'ID utilisateur via la navigation
+    } catch (error) {
+      Alert.alert('Erreur', 'Connexion échouée');
+    }
+  };
 
   return (
     <View style={styles.container}>
@@ -42,16 +57,22 @@ export default function LoginPage() {
             style={styles.input} 
             placeholder={currentTexts.emailPlaceholder} 
             placeholderTextColor="#aaa" 
+            value={email}
+            onChangeText={setEmail}
           />
           <TextInput 
             style={styles.input} 
             placeholder={currentTexts.passwordPlaceholder} 
             placeholderTextColor="#aaa" 
-            secureTextEntry 
+            secureTextEntry
+            value={password}
+            onChangeText={setPassword}
           />
         </View>
-        <TouchableOpacity style={styles.loginButton}>
-          <Text style={styles.loginButtonText}>{currentTexts.login}</Text>
+        <TouchableOpacity style={styles.loginButton} onPress={handleLogin} disabled={loading}>
+          <Text style={styles.loginButtonText}>
+            {loading ? 'Connexion...' : currentTexts.login}
+          </Text>
         </TouchableOpacity>
         <View style={styles.registerContainer}>
           <Text style={styles.noAccountText}>{currentTexts.noAccount}</Text>

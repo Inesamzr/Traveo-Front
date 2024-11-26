@@ -5,8 +5,10 @@ import Activity from '../../Components/Activite/Activity';
 import Header from '../../Components/Header';
 
 export default function ActivityListPage({ route, navigation }) {
-  const { filteredData, searchText: initialSearchText } = route.params;
+  const { activities, searchText: initialSearchText } = route.params;
   const [searchText, setSearchText] = useState(initialSearchText);
+
+  console.log("Activités reçues :", activities);
 
   return (
     <View style={styles.container}>
@@ -41,12 +43,12 @@ export default function ActivityListPage({ route, navigation }) {
 
       {/* Liste des activités */}
       <ScrollView contentContainerStyle={styles.activitiesList}>
-        {filteredData.map((activity) => (
-          <TouchableOpacity key={activity.id} onPress={() => navigation.navigate('ActivityDetails', { activity })}>
+        {activities && activities.map((activity) => (
+          <TouchableOpacity key={activity.idActivite} onPress={() => navigation.navigate('ActivityDetails', { activity })}>
             <Activity  {...activity} />
           </TouchableOpacity>
         ))}
-        {filteredData.length === 0 && (
+        {activities && activities.length === 0 && (
           <Text style={styles.noActivitiesText}>Aucune activité trouvée</Text>
         )}
       </ScrollView>

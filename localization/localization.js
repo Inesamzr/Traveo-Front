@@ -10,6 +10,7 @@ const texts = {
     emailPlaceholder: "Adresse email",
     passwordPlaceholder: "Mot de passe",
     confirmPasswordPlaceholder: "Confirmation de mot de passe",
+    phoneNumber: "Numéro de téléphone",
     login: "Connectez-vous",
     noAccount: "Pas de compte ? ",
     register: "S'inscrire",
@@ -60,12 +61,13 @@ const texts = {
     emailPlaceholder: "Email Address",
     passwordPlaceholder: "Password",
     confirmPasswordPlaceholder: "Confirm Password",
+    phoneNumber: "Phone number",
     login: "Log in",
     noAccount: "Don't have an account? ",
     register: "Sign up",
     alreadyAccount: "Already have an account? ",
     flag: "🇬🇧",
-    language: "language",
+    languageSelect: "language",
 
     // Accueil Page
     accueilWelcome: "Welcome to Traveo",
