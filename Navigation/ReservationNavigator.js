@@ -1,17 +1,27 @@
 import React from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
-import ReservationPage from '../screens/Reservation/ReservationPage';
+import ReservationListPage from '../screens/Reservation/ReservationListPage';
+import ReservationDetailsPage from '../screens/Reservation/ReservationDetailsPage';
 
 const Stack = createStackNavigator();
 
 export default function ReservationNavigator() {
   return (
     <Stack.Navigator>
+      {/* Liste des réservations */}
       <Stack.Screen 
-        name="ReservationPage" 
-        component={ReservationPage} 
+        name="ReservationList" 
+        component={ReservationListPage} 
+        options={{ headerShown: false }} 
+      />
+      
+      {/* Détails de la réservation */}
+      <Stack.Screen 
+        name="ReservationDetails" 
+        component={ReservationDetailsPage} 
         options={{ headerShown: false }} 
       />
     </Stack.Navigator>
   );
 }
+
