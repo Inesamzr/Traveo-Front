@@ -2,7 +2,9 @@
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-const API_URL = `http://10.193.2.198:8080/api/user`;
+//const API_URL = 'http://162.38.37.37:8080/api/user';
+const API_URL = 'http://192.168.1.54:8080/api/user';
+
 
 // Fonction pour se connecter
 export const login = async (email, password) => {
@@ -44,9 +46,11 @@ export const register = async (data) => {
     return response.data
 
   } catch (error) {
-    throw error.response ? error.response.data : { message: 'Erreur de connexion au serveur' };
+      console.error("Register Error:", error);
+      throw error.response ? error.response.data : { message: 'Erreur de connexion au serveur' };
   }
 };
+
 
 export const logout = async () => {
     await AsyncStorage.removeItem('userToken');

@@ -26,7 +26,6 @@ const Activity = ({ ...activity }) => {
      fetchAdressLoc()
    }, [])
 
-  console.log("iciiiiii ", activity)
   return (
       <View style={styles.activityCard}>
         <MaterialCommunityIcons name="image-outline" size={40} color="#BC4749" />
@@ -37,15 +36,15 @@ const Activity = ({ ...activity }) => {
             <MaterialCommunityIcons name="map-marker-outline" size={14} color="#BC4749" /> {adresse}
           </Text>
           <Text style={styles.activityDetails}>
-            <MaterialCommunityIcons name="calendar-outline" size={14} color="#BC4749" /> {activity.dateDebut}
+            <MaterialCommunityIcons name="calendar-outline" size={14} color="#BC4749" /> {activity.dateDebut} / {activity.dateFin}
           </Text>
           <Text style={styles.activityDetails}>
             {themeIcons[activity.theme] || <MaterialCommunityIcons name="help-circle-outline" size={16} color="#510D0A" />} {activity.themeId}
           </Text>
         </View>
         <View style={styles.activityRight}>
-          <Text style={styles.activityPrice}>{activity.prix}</Text>
-          <Text style={styles.activityParticipants}>{activity.nbPlaces}</Text>
+          <Text style={styles.activityPrice}>{activity.prix}€</Text>
+          <Text style={styles.activityParticipants}>x / {activity.nbPlaces}</Text>
         </View>
       </View>
   );

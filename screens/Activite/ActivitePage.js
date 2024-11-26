@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, ScrollView, StyleSheet, TextInput, TouchableOpacity, Text } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import MapView, { Marker, Callout } from 'react-native-maps';
@@ -6,6 +6,9 @@ import { useNavigation } from '@react-navigation/native';
 import Header from '../../Components/Header';
 import Activity from '../../Components/Activite/Activity';
 import { MaterialCommunityIcons, FontAwesome5 } from '@expo/vector-icons';
+import { getAllActivities } from '../../services/activityService';
+import { getCityFromCoordinates } from '../../services/Nominatim';
+
 
 const themeIcons = {
   Aventure: <MaterialCommunityIcons name="hiking" size={16} color="#BC4749" />,
@@ -17,46 +20,22 @@ const themeIcons = {
 export default function ActivitePage() {
   const navigation = useNavigation();
   const [searchText, setSearchText] = useState('');
-  const dummyData = [
-    {
-      id: 1,
-      nom: 'Vélo en groupe',
-      description: 'Un joli tour de vélo groupé en plein air.',
-      adresse: 'Nîmes',
-      date: '24/06/2024 06:00-12:00',
-      theme: 'Aventure',
-      participants: '2/6',
-      prix: '3€',
-      latitude: 43.8372,
-      longitude: 4.3601,
-      hote: 'ines.A10',
-      tags:"vélo,visite,histoire,rencontre",
-      reviews: [
-        { name: 'Alice Dupont', rating: 5, comment: 'Une expérience extraordinaire !' },
-        { name: 'Jean Martin', rating: 4, comment: 'Super, mais un peu trop rapide.' },
-      ],
-      tags:"vélo,visite,histoire,rencontre"
-    },
-    {
-      id: 2,
-      nom: 'Cours de cuisine',
-      description: 'Apprenez à cuisiner des plats délicieux.',
-      adresse: 'Marseille',
-      date: '01/07/2024 14:00-18:00',
-      theme: 'Cuisine',
-      participants: '5/10',
-      prix: '6€',
-      latitude: 43.2965,
-      longitude: 5.3698,
-      hote: 'Justin.B46',
-      tags:"cuisine,cours,sur-place",
-      reviews: [
-        { name: 'Marie Curie', rating: 5, comment: 'J’ai adoré ce cours !' },
-        { name: 'Paul Simon', rating: 4, comment: 'Très sympa et convivial.' },
-      ],
-      tags:"cuisine,cours,sur-place"
-    },
-  ];
+  const [activities, setActivities] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [adresse, setAdresse] = useState("");
+  const [addresses, setAddresses] = useState({}); 
+
+  useEffect(() => {
+    // Récupérer la ville basée sur les coordonnées
+    const fetchAdressLoc = async () => {
+      try {
+        const responseAdresse = await getCityFromCoordinates(activity.latitude, activity.longitude);
+        setAdresse(responseAdresse);
+      } catch (error) {
+        Alert.alert('Erreur', "Impossible de récupérer l'adresse.");
+      }
+    };
+  })
 
   const defaultRegion = {
     latitude: 46.603354,
@@ -64,11 +43,48 @@ export default function ActivitePage() {
     latitudeDelta: 5.0,
     longitudeDelta: 5.0,
   };
+   // Récupérer les activités depuis l'API
+   useEffect(() => {
+    const fetchActivities = async () => {
+      try {
+        const data = await getAllActivities();
+        setActivities(data);
 
-  const filteredData = dummyData.filter((activity) =>
-    activity.nom.toLowerCase().includes(searchText.toLowerCase()) ||
-    activity.adresse.toLowerCase().includes(searchText.toLowerCase())
+        // Récupérer les adresses pour chaque activité
+        const addressPromises = data.map(async (activity) => {
+          const address = await getCityFromCoordinates(activity.latitude, activity.longitude);
+          return { id: activity.idActivite, address };
+        });
+
+        const resolvedAddresses = await Promise.all(addressPromises);
+        const addressMap = resolvedAddresses.reduce((acc, { id, address }) => {
+          acc[id] = address;
+          return acc;
+        }, {});
+
+        setAddresses(addressMap);
+      } catch (error) {
+        Alert.alert("Erreur", "Impossible de charger les activités.");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchActivities();
+  }, []);
+
+  const filteredData = activities.filter((activity) =>
+    activity.nomActivite.toLowerCase().includes(searchText.toLowerCase()) 
+    //||activity.adresse.toLowerCase().includes(searchText.toLowerCase())
   );
+
+  if (loading) {
+    return (
+      <View style={styles.loadingContainer}>
+        <Text>Chargement des activités...</Text>
+      </View>
+    );
+  }
 
   return (
     <View style={styles.container}>
@@ -100,7 +116,7 @@ export default function ActivitePage() {
           initialRegion={defaultRegion}
           showsUserLocation={true}
         >
-          {dummyData.map((activity) => (
+          {filteredData.map((activity) => (
             <Marker
               key={activity.id}
               coordinate={{
@@ -111,13 +127,14 @@ export default function ActivitePage() {
             >
               <Callout>
                 <View style={styles.callout}>
-                  <Text style={styles.activityTitle}>{activity.nom}</Text>
+                  <Text style={styles.activityTitle}>{activity.nomActivite}</Text>
                   <Text style={styles.activityDetails}>{activity.description}</Text>
                   <Text style={styles.activityDetails}>
-                    <Ionicons name="location-outline" size={14} color="#BC4749" /> {activity.adresse}
+                    <Ionicons name="location-outline" size={14} color="#BC4749" /> 
+                    {addresses[activity.idActivite] || 'Adresse inconnue'}
                   </Text>
                   <Text style={styles.activityDetails}>
-                    <Ionicons name="calendar-outline" size={14} color="#BC4749" /> {activity.date}
+                    <Ionicons name="calendar-outline" size={14} color="#BC4749" /> {activity.dateDebut} / {activity.dateFin}
                   </Text>
                   <Text style={styles.activityDetails}>
                     {themeIcons[activity.theme] || <MaterialCommunityIcons name="help-circle-outline" size={16} color="#510D0A" />} {activity.theme}
@@ -145,7 +162,7 @@ export default function ActivitePage() {
         </View>
         <ScrollView contentContainerStyle={styles.activitiesList}>
           {filteredData.map((activity) => (
-            <TouchableOpacity key={activity.id} onPress={() => navigation.navigate('ActivityDetails', { activity })}>
+            <TouchableOpacity key={activity.idActivite} onPress={() => navigation.navigate('ActivityDetails', { activity })}>
               <Activity  {...activity} />
             </TouchableOpacity>
           ))}
