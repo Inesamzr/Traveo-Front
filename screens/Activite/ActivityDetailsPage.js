@@ -1,6 +1,8 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, Image, TouchableOpacity, ScrollView } from 'react-native';
 import { Ionicons, MaterialCommunityIcons, FontAwesome5 } from '@expo/vector-icons';
+import { getCityFromCoordinates } from '../../services/Nominatim';
+
 
 const themeIcons = {
   Aventure: <MaterialCommunityIcons name="hiking" size={16} color="#BC4749" />,
@@ -11,6 +13,15 @@ const themeIcons = {
 
 export default function ActivityDetailsPage({ route, navigation }) {
   const { activity } = route.params;
+  const [adresse, setAdresse] = useState("");
+
+  useEffect(() => {
+    const fetchAdressLoc = async () => {
+      const responseAdresse = await getCityFromCoordinates(activity.latitude, activity.longitude)
+      setAdresse(responseAdresse)
+     }
+     fetchAdressLoc()
+   }, [])
 
   return (
     <View style={styles.container}>
@@ -59,7 +70,7 @@ export default function ActivityDetailsPage({ route, navigation }) {
           <View style={styles.sectionTitleContainer}>
             <Text style={styles.sectionTitle}>Lieu de RDV</Text>
             </View>
-            <Text style={styles.sectionContent}>{activity.adresse}</Text>
+            <Text style={styles.sectionContent}>{adresse}</Text>
           </View>
           <View style={styles.section}>
             <View style={styles.sectionTitleContainer}>
