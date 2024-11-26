@@ -48,7 +48,8 @@ export default function ThemesSection({themes}) {
 const styles = StyleSheet.create({
   themesSection: {
     padding: 20,
-    marginTop: 80
+    marginTop: 20,
+    marginBottom: 80
   },
   sectionTitle: {
     fontSize: 18,
