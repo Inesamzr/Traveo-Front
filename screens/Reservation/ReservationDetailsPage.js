@@ -1,6 +1,7 @@
 import React from 'react';
-import { View, Text, StyleSheet, Image, TouchableOpacity, ScrollView } from 'react-native';
+import { View, Text, StyleSheet, Image, TouchableOpacity, ScrollView, Alert } from 'react-native';
 import { Ionicons, MaterialCommunityIcons, FontAwesome5 } from '@expo/vector-icons';
+import { fetchReviewsByReservationId } from '../../services/reviewService'; // Remplacez par votre service d'API pour les avis
 
 const themeIcons = {
   Aventure: <MaterialCommunityIcons name="hiking" size={16} color="#BC4749" />,
@@ -12,10 +13,38 @@ const themeIcons = {
 export default function ReservationDetailsPage({ route, navigation }) {
   const { reservation } = route.params;
 
+  const handleAvisPress = async () => {
+    try {
+      // Récupérer les avis à partir de l'ID de réservation
+      const reviewsData = await fetchReviewsByReservationId(1); // ID par défaut : 1
+  
+      if (!reviewsData || reviewsData.length === 0) {
+        Alert.alert('Avis', 'Aucun avis disponible pour cette réservation.');
+        return;
+      }
+  
+      // Calculer la moyenne des notes
+      const totalRating = reviewsData.reduce((sum, review) => sum + review.note, 0);
+      const averageRating = totalRating / reviewsData.length;
+
+      console.log(averageRating)
+  
+      // Naviguer vers la page ActivityReviews avec les avis et la moyenne
+      navigation.navigate('ActivityReviews', {
+        reviews: reviewsData,
+        rating: averageRating.toFixed(1), // Arrondi à une décimale
+        reviewsCount: reviewsData.length,
+      });
+    } catch (error) {
+      Alert.alert('Erreur', "Impossible de charger les avis pour cette réservation.");
+      console.error(error);
+    }
+  };
+  
+
   return (
     <View style={styles.container}>
       <ScrollView style={styles.contenu}>
-        {/* Image avec l'icône de retour */}
         <View style={styles.imageContainer}>
           <Image
             source={require('../../assets/activity-image-placeholder.png')}
@@ -27,13 +56,12 @@ export default function ReservationDetailsPage({ route, navigation }) {
           </TouchableOpacity>
         </View>
 
-        {/* Conteneur avec le titre */}
         <View style={styles.titleContainer}>
           <Text style={styles.title}>{reservation.nom}</Text>
         </View>
 
-        {/* Détails de la réservation */}
         <View style={styles.detailsContainer}>
+          {/* Détails de la réservation */}
           <View style={styles.infoRow}>
             <View style={styles.infoItem}>
               <Ionicons name="person-circle-outline" size={20} color="#BC4749" />
@@ -49,42 +77,31 @@ export default function ReservationDetailsPage({ route, navigation }) {
             </View>
           </View>
 
+          {/* Sections supplémentaires */}
           <View style={styles.section}>
-            <View style={styles.sectionTitleContainer}>
-              <Text style={styles.sectionTitle}>Description</Text>
-            </View>
+            <Text style={styles.sectionTitle}>Description</Text>
             <Text style={styles.sectionContent}>{reservation.description}</Text>
           </View>
           <View style={styles.section}>
-            <View style={styles.sectionTitleContainer}>
-              <Text style={styles.sectionTitle}>Lieu de RDV</Text>
-            </View>
+            <Text style={styles.sectionTitle}>Lieu de RDV</Text>
             <Text style={styles.sectionContent}>{reservation.lieu}</Text>
           </View>
           <View style={styles.section}>
-            <View style={styles.sectionTitleContainer}>
-              <Text style={styles.sectionTitle}>Date et Heure</Text>
-            </View>
+            <Text style={styles.sectionTitle}>Date et Heure</Text>
             <Text style={styles.sectionContent}>{reservation.date}</Text>
           </View>
           <View style={styles.section}>
-            <View style={styles.sectionTitleContainer}>
-              <Text style={styles.sectionTitle}>Prix</Text>
-            </View>
+            <Text style={styles.sectionTitle}>Prix</Text>
             <Text style={styles.sectionContent}>{reservation.prix}</Text>
           </View>
           <View style={styles.section}>
-            <View style={styles.sectionTitleContainer}>
-              <Text style={styles.sectionTitle}>Places Disponibles</Text>
-            </View>
+            <Text style={styles.sectionTitle}>Places Disponibles</Text>
             <Text style={styles.sectionContent}>
               {reservation.placesDisponibles} place(s) restante(s)
             </Text>
           </View>
           <View style={styles.section}>
-            <View style={styles.sectionTitleContainer}>
-              <Text style={styles.sectionTitle}>Tags</Text>
-            </View>
+            <Text style={styles.sectionTitle}>Tags</Text>
             <View style={styles.tagsContainer}>
               {reservation.tags.split(',').map((tag, index) => (
                 <View
@@ -105,10 +122,13 @@ export default function ReservationDetailsPage({ route, navigation }) {
           </View>
         </View>
 
-        {/* Bouton en bas */}
+        {/* Boutons */}
         <View style={styles.buttonContainer}>
           <TouchableOpacity style={styles.cancelButton}>
             <Text style={styles.cancelButtonText}>Annuler ma réservation</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.avisButton} onPress={handleAvisPress}>
+            <Text style={styles.avisButtonText}>Avis</Text>
           </TouchableOpacity>
         </View>
       </ScrollView>
@@ -259,6 +279,18 @@ const styles = StyleSheet.create({
     borderRadius: 25,
   },
   cancelButtonText: {
+    color: '#FFF',
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
+  avisButton: {
+    backgroundColor: '#DBBBBA',
+    paddingVertical: 10,
+    paddingHorizontal: 30,
+    borderRadius: 25,
+    margin: 20
+  },
+  avisButtonText: {
     color: '#FFF',
     fontSize: 16,
     fontWeight: 'bold',
