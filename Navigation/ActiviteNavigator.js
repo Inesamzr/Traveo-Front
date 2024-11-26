@@ -3,8 +3,6 @@ import { createStackNavigator } from '@react-navigation/stack';
 import ActivitePage from '../screens/Activite/ActivitePage';
 import ActivityListPage from '../screens/Activite/ActivityListPage';
 import ActivityDetailsPage from '../screens/Activite/ActivityDetailsPage'
-import ActivityReviewsPage from '../screens/Activite/ActivityReviewsPage';
-import ActivityReviewsPage from '../screens/Activite/ActivityReviewsPage';
 
 const Stack = createStackNavigator();
 
