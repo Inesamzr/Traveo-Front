@@ -26,7 +26,6 @@ const Activity = ({ ...activity }) => {
      fetchAdressLoc()
    }, [])
 
-  console.log("iciiiiii ", activity)
   return (
       <View style={styles.activityCard}>
         <MaterialCommunityIcons name="image-outline" size={40} color="#BC4749" />
@@ -44,8 +43,8 @@ const Activity = ({ ...activity }) => {
           </Text>
         </View>
         <View style={styles.activityRight}>
-          <Text style={styles.activityPrice}>{activity.prix}</Text>
-          <Text style={styles.activityParticipants}>{activity.nbPlaces}</Text>
+          <Text style={styles.activityPrice}>{activity.prix}€</Text>
+          <Text style={styles.activityParticipants}>x / {activity.nbPlaces}</Text>
         </View>
       </View>
   );
