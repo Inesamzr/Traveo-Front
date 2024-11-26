@@ -7,6 +7,7 @@ import ReviewsSection from '../../Components/Review/ReviewsSection';
 import texts from '../../localization/localization';
 import { useLanguage } from '../../localization/LanguageContext';
 import { getUserById, updateUserProfile } from '../../services/userService';
+import { getUserActivities } from '../../services/activityService';
 
 export default function ProfilPage({ route, navigation }) {
   const { language } = useLanguage();
@@ -19,6 +20,7 @@ export default function ProfilPage({ route, navigation }) {
   const [phoneNumber, setPhoneNumber] = useState('');
   const [email, setEmail] = useState('');
   const [isModified, setIsModified] = useState(false); // État pour savoir si le profil est modifié
+  const [activities, setActivities] = useState([]);
   const [reviews, setReviews] = useState([]); // Avis utilisateur
 
   const { userId } = route.params;
@@ -34,6 +36,7 @@ export default function ProfilPage({ route, navigation }) {
         setLastName(userData.lastName);
         setEmail(userData.email);
         setUsername(userData.username);
+        setPhoneNumber(userData.phoneNumber)
       } catch (error) {
         Alert.alert('Erreur', "Impossible de charger les données utilisateur.");
       } finally {
@@ -41,7 +44,18 @@ export default function ProfilPage({ route, navigation }) {
       }
     };
 
+    const fetchActiviteData = async () => {
+      try {
+        const ActivitesData = await getUserActivities(userId)
+        setActivities(ActivitesData)
+
+      } catch (error) {
+        Alert.alert('Erreur', "Impossible de charger les données des activites de l'utilisateurs");
+      }
+    }
+
     fetchUserData();
+    fetchActiviteData()
   }, [userId]);
 
 
@@ -65,7 +79,7 @@ export default function ProfilPage({ route, navigation }) {
   const handleSave = async () => {
     setLoading(true);
     try {
-      await updateUserProfile(userId, {firstName, lastName, email, userId, username} ); // Met à jour les données utilisateur
+      await updateUserProfile(userId, {firstName, lastName, email, userId, username, phoneNumber} ); // Met à jour les données utilisateur
       setIsModified(false); // Réinitialise l'état de modification
       Alert.alert('Succès', 'Profil mis à jour avec succès.');
     } catch (error) {
@@ -122,7 +136,7 @@ export default function ProfilPage({ route, navigation }) {
           <Text style={styles.saveButtonText}>Enregistrer</Text>
         </TouchableOpacity>
       )}
-      <ProfilButton label="Mes activités" onPress={() => navigation.navigate('ActivityList')} />
+      <ProfilButton label="Mes activités" onPress={() => navigation.navigate('ActivityList', {activities})} />
       <ProfilButton label="Mes réservations" onPress={() => navigation.navigate('Reservations')} />
       <ReviewsSection reviews={reviews} rating={4.8} reviewsCount={reviews.length} />
     </ScrollView>

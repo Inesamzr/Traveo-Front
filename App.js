@@ -13,6 +13,8 @@ import AccueilNavigator from './Navigation/AccueilNavigator';
 import ActiviteNavigator from './Navigation/ActiviteNavigator';
 import ReservationNavigator from './Navigation/ReservationNavigator';
 import ProfilNavigator from './Navigation/ProfilNavigator';
+import ActivityDetailsPage from './screens/Activite/ActivityDetailsPage'
+
 
 const Stack = createStackNavigator();
 
@@ -29,6 +31,7 @@ export default function App() {
           <Stack.Screen name="Reservation" component={ReservationNavigator} />
           <Stack.Screen name="LanguageSelection" component={LanguageSelection} />
           <Stack.Screen name="ActivityList" component={ActivityListPage} />
+          <Stack.Screen name="ActivityDetails" component={ActivityDetailsPage} />
         </Stack.Navigator>
       </NavigationContainer>
     </LanguageProvider>
