@@ -5,6 +5,7 @@ import { useNavigation } from '@react-navigation/native';
 import { getThemes } from '../../services/themeService'; // Import du service
 import Header from '../../Components/Header';
 import { Ionicons } from '@expo/vector-icons';
+import { ScrollView } from 'react-native-gesture-handler';
 
 
 export default function ThemesPage() {
@@ -41,7 +42,9 @@ export default function ThemesPage() {
       <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backIcon}>
         <Ionicons name="arrow-back" size={24} color="#510D0A" />
       </TouchableOpacity>
-      <ThemesSection themes={themes} />
+      <ScrollView style={styles.themeSection}>
+        <ThemesSection themes={themes} />
+      </ScrollView>
       <TouchableOpacity
         style={styles.addButton}
         onPress={() => navigation.navigate('AddTheme')}
@@ -64,6 +67,9 @@ const styles = StyleSheet.create({
     marginVertical: 20,
     color: '#510D0A',
   },
+  themeSection: {
+    marginTop: 80,
+  },
   addButton: {
     backgroundColor: '#386641',
     paddingVertical: 15,
@@ -71,6 +77,7 @@ const styles = StyleSheet.create({
     marginHorizontal: 20,
     alignItems: 'center',
     marginTop: 20,
+    marginBottom: 100
   },
   backIcon: {
     position: 'absolute',
