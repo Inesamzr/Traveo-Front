@@ -4,18 +4,11 @@ import { MaterialCommunityIcons } from '@expo/vector-icons';
 import texts from '../../localization/localization';
 import { useLanguage } from '../../localization/LanguageContext';
 
-export default function ThemesSection() {
+export default function ThemesSection({themes}) {
     const { language } = useLanguage();
     const currentTexts = texts[language].themes;
     const currentText = texts[language];
     const [flippedCards, setFlippedCards] = useState({});
-
-    const themes = [
-        { id: 1, icon: "hiking", ...currentTexts.adventure },
-        { id: 2, icon: "chef-hat", ...currentTexts.cuisine },
-        { id: 3, icon: "meditation", ...currentTexts.spirituality },
-        { id: 4, icon: "brush", ...currentTexts.creativity },
-      ];
       
 
   const handleCardPress = (id) => {
@@ -29,16 +22,16 @@ export default function ThemesSection() {
     <View style={styles.themesSection}>
       <Text style={styles.sectionTitle}>{currentText.themesTitle}</Text>
       <View style={styles.themes}>
-        {themes.map((theme) => (
+        {themes && themes.map((theme) => (
           <TouchableOpacity
             key={theme.id}
             style={styles.themeCard}
-            onPress={() => handleCardPress(theme.id)}
+            onPress={() => handleCardPress(theme.idTheme)}
           >
-            {!flippedCards[theme.id] ? (
+            {!flippedCards[theme.idTheme] ? (
               <View style={styles.cardFront}>
-                <MaterialCommunityIcons name={theme.icon} size={30} color="#510D0A" />
-                <Text style={styles.themeText}>{theme.title}</Text>
+                <MaterialCommunityIcons name={theme.image_default} size={30} color="#510D0A" />
+                <Text style={styles.themeText}>{theme.label}</Text>
               </View>
             ) : (
               <View style={styles.cardBack}>
@@ -55,6 +48,7 @@ export default function ThemesSection() {
 const styles = StyleSheet.create({
   themesSection: {
     padding: 20,
+    marginTop: 80
   },
   sectionTitle: {
     fontSize: 18,

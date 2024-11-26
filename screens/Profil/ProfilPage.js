@@ -19,6 +19,7 @@ export default function ProfilPage({ route, navigation }) {
   const [username, setUsername] = useState('');
   const [phoneNumber, setPhoneNumber] = useState('');
   const [email, setEmail] = useState('');
+  const [role, setRole] = useState('user');
   const [isModified, setIsModified] = useState(false); // État pour savoir si le profil est modifié
   const [activities, setActivities] = useState([]);
   const [reviews, setReviews] = useState([]); // Avis utilisateur
@@ -37,6 +38,7 @@ export default function ProfilPage({ route, navigation }) {
         setEmail(userData.email);
         setUsername(userData.username);
         setPhoneNumber(userData.phoneNumber)
+        setRole(userData.role)
       } catch (error) {
         Alert.alert('Erreur', "Impossible de charger les données utilisateur.");
       } finally {
@@ -138,6 +140,9 @@ export default function ProfilPage({ route, navigation }) {
       )}
       <ProfilButton label="Mes activités" onPress={() => navigation.navigate('ActivityList', {activities})} />
       <ProfilButton label="Mes réservations" onPress={() => navigation.navigate('Reservations')} />
+      { role === "admin" &&
+        <ProfilButton label="Thèmes d'activités" onPress={() => navigation.navigate('Themes')}/>
+      }
       <ReviewsSection reviews={reviews} rating={4.8} reviewsCount={reviews.length} />
     </ScrollView>
   );
