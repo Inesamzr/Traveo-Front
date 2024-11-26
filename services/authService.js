@@ -3,16 +3,16 @@ import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import apiClient from './apiClient';
 
-const API_URL = `${apiClient}/user`;
+const API_URL = `http://162.38.32.231:8080/api/user`;
 
 // Fonction pour se connecter
 export const login = async (email, password) => {
     console.log("connexion")
     console.log(API_URL)
   try {
-    const response = await apiClient.post('/user/login', { email, password });
-    //await AsyncStorage.setItem('userToken', response.data.token); // Stocke le token
-    AsyncStorage.setItem('userId', response.data.id.toString());
+    const response = await axios.post(`${API_URL}/login`, { email, password });
+    await AsyncStorage.setItem('userToken', response.data.token); // Stocke le token
+    await AsyncStorage.setItem('userId', response.data.id.toString());
     console.log("user id : " , response.data.id.toString())
 
     const keys = await AsyncStorage.getAllKeys();
@@ -32,15 +32,14 @@ export const login = async (email, password) => {
 };
 
 export const register = async (data) => {
-    console.log("connexion")
     console.log(API_URL)
   try {
-    const response = await apiClient.post('/user/register', data);
+    const response = await axios.post(`${API_URL}/register`, data);
     //await AsyncStorage.setItem('userToken', response.data.token); // Stocke le token
 
     AsyncStorage.setItem('userId', response.data.id.toString());
     console.log("user id : " , response.data.id.toString())
-    
+
     return response.data
 
   } catch (error) {
