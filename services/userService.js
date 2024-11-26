@@ -2,7 +2,9 @@
 import axios from 'axios';
 import apiClient from './apiClient';
 
-const USER_API_URL = 'http://10.193.2.198:8080/api/user';
+//const USER_API_URL = 'http://10.193.2.198:8080/api/user';
+const USER_API_URL = 'http://162.38.37.37:8080/api/user';
+
 
 
 export const getUserById = async (userId) => {
