@@ -37,7 +37,7 @@ const Activity = ({ ...activity }) => {
             <MaterialCommunityIcons name="map-marker-outline" size={14} color="#BC4749" /> {adresse}
           </Text>
           <Text style={styles.activityDetails}>
-            <MaterialCommunityIcons name="calendar-outline" size={14} color="#BC4749" /> {activity.dateDebut}
+            <MaterialCommunityIcons name="calendar-outline" size={14} color="#BC4749" /> {activity.dateDebut} / {activity.dateFin}
           </Text>
           <Text style={styles.activityDetails}>
             {themeIcons[activity.theme] || <MaterialCommunityIcons name="help-circle-outline" size={16} color="#510D0A" />} {activity.themeId}

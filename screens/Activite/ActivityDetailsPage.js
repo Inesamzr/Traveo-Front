@@ -95,7 +95,7 @@ export default function ActivityDetailsPage({ route, navigation }) {
             <View style={styles.sectionTitleContainer}>
                 <Text style={styles.sectionTitle}>Dates</Text>
             </View>
-            <Text style={styles.sectionContent}>{activity.dateDebut} - {activity.dateFin}</Text>
+            <Text style={styles.sectionContent}>du {activity.dateDebut} au {activity.dateFin}</Text>
             </View>
             <View style={styles.section}>
             <View style={styles.sectionTitleContainer}>
