@@ -1,16 +1,19 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { MaterialCommunityIcons, Ionicons } from '@expo/vector-icons';
 import texts from '../../localization/localization';
 import { useLanguage } from '../../localization/LanguageContext';
 import { useNavigation } from '@react-navigation/native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function ThemesSection({ themes }) {
   const { language } = useLanguage();
   const currentTexts = texts[language].themes;
   const currentText = texts[language];
   const [flippedCards, setFlippedCards] = useState({});
+  const [userRole, setUserRole] = useState("");
   const navigation = useNavigation();
+
 
   const handleCardPress = (id) => {
     setFlippedCards((prevState) => ({
@@ -22,6 +25,22 @@ export default function ThemesSection({ themes }) {
   const handleEditPress = (theme) => {
     navigation.navigate('EditTheme', { theme });
   };
+
+  useEffect(()=> {
+    const fetchedData = async () => {
+      try {
+        const fetchUser = await AsyncStorage.getItem("userRole"); // Récupération des thèmes depuis l'API
+        setUserRole(fetchUser);
+        console.log(userRole)
+      } catch (error) {
+        console.log('Erreur', 'Impossible de charger le userRole');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchedData()
+  }, [])
 
   return (
     <View style={styles.themesSection}>
@@ -49,12 +68,14 @@ export default function ThemesSection({ themes }) {
                   </View>
                 )}
               </TouchableOpacity>
-              <TouchableOpacity
-                style={styles.editButton}
-                onPress={() => handleEditPress(theme)}
-              >
-                <Ionicons name="pencil-outline" size={20} color="#FFF" />
-              </TouchableOpacity>
+              {userRole && userRole === "admin"  && (
+                <TouchableOpacity
+                  style={styles.editButton}
+                  onPress={() => handleEditPress(theme)}
+                  >
+                    <Ionicons name="pencil-outline" size={20} color="#FFF" />
+                  </TouchableOpacity>
+                )}
             </View>
           ))}
       </View>
