@@ -17,16 +17,16 @@ export default function ReviewsSection({ reviews, rating, reviewsCount }) {
   return (
     <View style={styles.container}>
       <ReviewSummary rating={rating} reviewsCount={reviewsCount} />
-      {reviews.slice(0, visibleReviews).map((review, index) => (
+      {reviews && reviews.slice(0, visibleReviews).map((review, index) => (
         <ReviewCard
           key={index}
-          name={review.name}
-          rating={review.rating}
-          comment={review.comment}
+          name={review.userId}
+          rating={review.note}
+          comment={review.commentaire}
           avatarColor={index % 2 === 0 ? '#DDE6C7' : '#F5D4DB'}
         />
       ))}
-      {visibleReviews < reviews.length && (
+      {reviews && visibleReviews < reviews.length && (
         <TouchableOpacity style={styles.button} onPress={handleSeeMore}>
           <Text style={styles.buttonText}>Voir plus d'avis</Text>
         </TouchableOpacity>

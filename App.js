@@ -39,7 +39,7 @@ export default function App() {
           <Stack.Screen name="Themes" component={ThemesPage} />
           <Stack.Screen name="AddTheme" component={AddActivityThemePage} />
           <Stack.Screen name="EditTheme" component={EditThemePage} />
-          <Stack.Screen name="EditTheme" component={ActivityReviewsPage} />
+          <Stack.Screen name="ActivityReviews" component={ActivityReviewsPage} />
 
         </Stack.Navigator>
       </NavigationContainer>
