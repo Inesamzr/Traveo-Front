@@ -4,6 +4,9 @@ import DropDownPicker from 'react-native-dropdown-picker';
 import Header from '../../Components/Header';
 import { logoOptions } from '../../Utils/logoOptions';
 import { updateTheme, deleteTheme } from '../../services/themeService';
+import { ScrollView } from 'react-native-gesture-handler';
+import { Ionicons } from '@expo/vector-icons';
+
 
 export default function EditThemePage({ route, navigation }) {
   const { theme } = route.params;
@@ -46,36 +49,41 @@ export default function EditThemePage({ route, navigation }) {
   return (
     <View style={styles.container}>
       <Header title="Modifier un thème" />
-      <TextInput
-        style={styles.input}
-        placeholder="Nom du thème"
-        value={label}
-        onChangeText={setLabel}
-      />
-      <TextInput
-        style={[styles.input, styles.textArea]}
-        placeholder="Description du thème"
-        value={description}
-        onChangeText={setDescription}
-        multiline
-      />
-      <DropDownPicker
-        open={open}
-        value={image_default}
-        items={items}
-        setOpen={setOpen}
-        setValue={setImage}
-        setItems={setItems}
-        placeholder="Sélectionnez un logo"
-        style={styles.dropdown}
-        dropDownContainerStyle={styles.dropdownContainer}
-      />
-      <TouchableOpacity style={styles.confirmButton} onPress={handleUpdate}>
-        <Text style={styles.buttonText}>Mettre à jour</Text>
+      <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backIcon}>
+        <Ionicons name="arrow-back" size={24} color="#510D0A" />
       </TouchableOpacity>
-      <TouchableOpacity style={styles.deleteButton} onPress={handleDelete}>
-        <Text style={styles.buttonText}>Supprimer</Text>
-      </TouchableOpacity>
+      <ScrollView style={styles.containInput}>
+        <TextInput
+            style={styles.input}
+            placeholder="Nom du thème"
+            value={label}
+            onChangeText={setLabel}
+        />
+        <TextInput
+            style={[styles.input, styles.textArea]}
+            placeholder="Description du thème"
+            value={description}
+            onChangeText={setDescription}
+            multiline
+        />
+        <DropDownPicker
+            open={open}
+            value={image_default}
+            items={items}
+            setOpen={setOpen}
+            setValue={setImage}
+            setItems={setItems}
+            placeholder="Sélectionnez un logo"
+            style={styles.dropdown}
+            dropDownContainerStyle={styles.dropdownContainer}
+        />
+        <TouchableOpacity style={styles.confirmButton} onPress={handleUpdate}>
+            <Text style={styles.buttonText}>Mettre à jour</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.deleteButton} onPress={handleDelete}>
+            <Text style={styles.buttonText}>Supprimer</Text>
+        </TouchableOpacity>
+      </ScrollView>
     </View>
   );
 }
@@ -85,6 +93,16 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#F2E8CF',
     padding: 20,
+  },
+  backIcon: {
+    position: 'absolute',
+    top: 40,
+    left: 20,
+    padding: 8,
+    borderRadius: 20,
+  },
+  containInput: {
+    marginTop: 80
   },
   input: {
     backgroundColor: '#FFF',
