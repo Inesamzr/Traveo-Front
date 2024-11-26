@@ -4,12 +4,14 @@ import { Ionicons, FontAwesome5 } from '@expo/vector-icons';
 import ThemesSection from '../../Components/Accueil/ThemesSection';
 import texts from '../../localization/localization';
 import { useLanguage } from '../../localization/LanguageContext'; 
+import { useNavigation } from '@react-navigation/native';
 import { getThemes } from '../../services/themeService';
 
 
 export default function AccueilPage() {
   const { language } = useLanguage();
   const currentTexts = texts[language];
+  const navigation = useNavigation();
   const [themes, setThemes] = useState([])
 
   useEffect(() => {
