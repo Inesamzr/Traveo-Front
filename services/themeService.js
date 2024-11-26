@@ -21,3 +21,10 @@ export const deleteTheme = async (themeId) => {
     const response = await axios.delete(`${USER_API_URL}${themeId}`)
     return response.data
 }
+
+export const updateTheme = async (themeId, data) => {
+    console.log(themeId)
+    console.log(`${USER_API_URL}/${themeId}`)
+    const response = await axios.put(`${USER_API_URL}${themeId}`, data)
+    return response.data
+}
