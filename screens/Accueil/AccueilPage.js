@@ -1,16 +1,33 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect} from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Image, ScrollView, ImageBackground } from 'react-native';
 import { Ionicons, FontAwesome5 } from '@expo/vector-icons';
 import ThemesSection from '../../Components/Accueil/ThemesSection';
 import texts from '../../localization/localization';
 import { useLanguage } from '../../localization/LanguageContext'; 
 import { useNavigation } from '@react-navigation/native';
+import { getThemes } from '../../services/themeService';
 
 
 export default function AccueilPage() {
   const { language } = useLanguage();
   const currentTexts = texts[language];
   const navigation = useNavigation();
+  const [themes, setThemes] = useState([])
+
+  useEffect(() => {
+    const fetchThemes = async () => {
+      try {
+        const fetchedThemes = await getThemes(); // Récupération des thèmes depuis l'API
+        setThemes(fetchedThemes);
+      } catch (error) {
+        Alert.alert('Erreur', 'Impossible de charger les thèmes depuis le serveur.');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchThemes();
+  }, []);
 
   return (
     <View style={{ flex: 1 }}>
@@ -63,7 +80,7 @@ export default function AccueilPage() {
           </View>
 
           {/* Thèmes populaires */}
-          <ThemesSection title={currentTexts.popularThemes} />
+          <ThemesSection themes={themes} />
         </ScrollView>
       </ImageBackground>
     </View>
