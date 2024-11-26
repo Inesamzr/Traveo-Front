@@ -120,7 +120,7 @@ export default function ProfilPage({ route, navigation }) {
         />
           <ProfilField
           label={currentTexts.phoneNumber}
-          value={firstName}
+          value={phoneNumber}
           icon="call-outline"
           editable
           keyboardType="phone-pad"
