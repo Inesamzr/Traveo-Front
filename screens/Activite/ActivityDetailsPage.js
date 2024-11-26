@@ -29,7 +29,7 @@ export default function ActivityDetailsPage({ route, navigation }) {
 
         {/* Conteneur avec le titre */}
         <View style={styles.titleContainer}>
-          <Text style={styles.title}>{activity.nom}</Text>
+          <Text style={styles.title}>{activity.nomActivite}</Text>
         </View>
 
         {/* Détails de l'activité */}
@@ -37,15 +37,15 @@ export default function ActivityDetailsPage({ route, navigation }) {
           <View style={styles.infoRow}>
             <View style={styles.infoItem}>
               <Ionicons name="person-circle-outline" size={20} color="#BC4749" />
-              <Text style={styles.infoText}>{activity.hote}</Text>
+              <Text style={styles.infoText}>{activity.userId}</Text>
             </View>
             <View style={styles.infoItem}>
               <Ionicons name="people-outline" size={20} color="#BC4749" />
-              <Text style={styles.infoText}>{activity.participants}</Text>
+              <Text style={styles.infoText}>x / {activity.nbPlaces}</Text>
             </View>
             <View style={styles.infoItem}>
               {themeIcons[activity.theme]}
-              <Text style={styles.infoText}>{activity.theme}</Text>
+              <Text style={styles.infoText}>{activity.themeId}</Text>
             </View>
           </View>
 
@@ -63,22 +63,22 @@ export default function ActivityDetailsPage({ route, navigation }) {
           </View>
           <View style={styles.section}>
             <View style={styles.sectionTitleContainer}>
-                <Text style={styles.sectionTitle}>Date et Heure</Text>
+                <Text style={styles.sectionTitle}>Dates</Text>
             </View>
-            <Text style={styles.sectionContent}>{activity.date}</Text>
+            <Text style={styles.sectionContent}>{activity.dateDebut} - {activity.dateFin}</Text>
             </View>
             <View style={styles.section}>
             <View style={styles.sectionTitleContainer}>
                 <Text style={styles.sectionTitle}>Prix</Text>
             </View>
-            <Text style={styles.sectionContent}>{activity.prix}</Text>
+            <Text style={styles.sectionContent}>{activity.prix} €</Text>
             </View>
             
             <View style={styles.section}>
             <View style={styles.sectionTitleContainer}>
                 <Text style={styles.sectionTitle}>Place Diponibles</Text>
             </View>
-            <Text style={styles.sectionContent}>{activity.participants}</Text>
+            <Text style={styles.sectionContent}>x / {activity.nbPlaces}</Text>
             </View>
             <View style={styles.section}>
             <View style={styles.sectionTitleContainer}>
