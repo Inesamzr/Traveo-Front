@@ -3,19 +3,13 @@ import { View, Text, StyleSheet, Image, TouchableOpacity, ScrollView } from 'rea
 import { Ionicons, MaterialCommunityIcons, FontAwesome5 } from '@expo/vector-icons';
 import { getCityFromCoordinates } from '../../services/Nominatim';
 import { getUserById } from '../../services/userService';
-
-
-const themeIcons = {
-  Aventure: <MaterialCommunityIcons name="hiking" size={16} color="#BC4749" />,
-  Cuisine: <FontAwesome5 name="utensils" size={14} color="#BC4749" />,
-  Spiritualité: <MaterialCommunityIcons name="meditation" size={16} color="#BC4749" />,
-  Créativité: <MaterialCommunityIcons name="brush" size={16} color="#BC4749" />,
-};
+import { getThemeById } from '../../services/themeService';
 
 export default function ActivityDetailsPage({ route, navigation }) {
   const { activity } = route.params;
   const [adresse, setAdresse] = useState("");
   const [username, setUsername] = useState(""); 
+  const [theme, setTheme] = useState("");
 
   useEffect(() => {
     // Récupérer la ville basée sur les coordonnées
@@ -37,9 +31,14 @@ export default function ActivityDetailsPage({ route, navigation }) {
         Alert.alert('Erreur', "Impossible de récupérer les informations de l'utilisateur.");
       }
     };
+    const fetchTheme = async () => {
+      const responseTheme = await getThemeById(activity.themeId)
+      setTheme(responseTheme)
+     }
 
     fetchAdressLoc();
     fetchUsername();
+    fetchTheme()
   }, [activity.userId]);
 
   return (
@@ -74,8 +73,8 @@ export default function ActivityDetailsPage({ route, navigation }) {
               <Text style={styles.infoText}>x / {activity.nbPlaces}</Text>
             </View>
             <View style={styles.infoItem}>
-              {themeIcons[activity.theme]}
-              <Text style={styles.infoText}>{activity.themeId}</Text>
+              <MaterialCommunityIcons name={theme.image_default} size={22} color="#BC4749" /> {theme.label}
+              <Text style={styles.infoText}>{theme.label}</Text>
             </View>
           </View>
 

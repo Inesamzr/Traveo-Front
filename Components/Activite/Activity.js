@@ -4,13 +4,6 @@ import { MaterialCommunityIcons, FontAwesome5 } from '@expo/vector-icons';
 import { getCityFromCoordinates } from '../../services/Nominatim';
 import { getThemeById } from '../../services/themeService';
 
-const themeIcons = {
-  Aventure: <MaterialCommunityIcons name="hiking" size={16} color="#BC4749" />,
-  Cuisine: <FontAwesome5 name="utensils" size={14} color="#BC4749" />,
-  Spiritualité: <MaterialCommunityIcons name="meditation" size={16} color="#BC4749" />,
-  Créativité: <MaterialCommunityIcons name="brush" size={16} color="#BC4749" />,
-};
-
 const Activity = ({ ...activity }) => {
 
   const [adresse, setAdresse] = useState("");
