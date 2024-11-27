@@ -5,9 +5,6 @@ import axios from "axios";
 const USER_API_URL = 'http://10.193.2.198:8087/api/themes';
 //const USER_API_URL = 'http://162.38.32.231:8087/api/themes/';
 //const USER_API_URL = 'http://162.38.37.37:8087/api/themes/';
-//const USER_API_URL = 'http://10.193.2.198:8087/api/themes';
-//const USER_API_URL = 'http://162.38.32.231:8087/api/themes';
-
 
 export const getThemes = async () => {
   const response = await axios.get(`${USER_API_URL}`);
@@ -16,7 +13,7 @@ export const getThemes = async () => {
 };
 
 export const getThemeById = async (themeId) => {
-  const response = await axios.get(`${USER_API_URL}${themeId}`);
+  const response = await axios.get(`${USER_API_URL}/${themeId}`);
   return response.data;
 };
 

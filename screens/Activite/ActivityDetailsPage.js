@@ -15,7 +15,7 @@ import { getCityFromCoordinates } from '../../services/Nominatim';
 import { getUserById } from '../../services/userService';
 import { getThemeById } from '../../services/themeService';
 import { deleteActivity } from '../../services/activityService'; 
-
+import { checkReservation, createReservation } from '../../services/reservationService'; // Assurez-vous que ces services existent
 
 export default function ActivityDetailsPage({ route, navigation }) {
   const { activity } = route.params;
@@ -25,7 +25,8 @@ export default function ActivityDetailsPage({ route, navigation }) {
   const [userId, setUserId] = useState(null);
   const [isOwner, setIsOwner] = useState(false);
   const [isDeletePopupVisible, setDeletePopupVisible] = useState(false);
-
+  const [isRegistered, setIsRegistered] = useState(false);
+  const [isReservationPopupVisible, setReservationPopupVisible] = useState(false);
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -36,8 +37,12 @@ export default function ActivityDetailsPage({ route, navigation }) {
         if (Number(storedUserId) === activity.userId) {
           setIsOwner(true);
         }
+
+        //const reservationStatus = await checkReservation(numericUserId, activity.idActivite);
+        setIsRegistered(storedUserId !== null);
+
       } catch (error) {
-        Alert.alert('Erreur', "Impossible de récupérer l'identifiant utilisateur.");
+        console.log('Erreur', "Impossible de récupérer l'identifiant utilisateur.");
       }
     };
 
@@ -46,7 +51,7 @@ export default function ActivityDetailsPage({ route, navigation }) {
         const responseAdresse = await getCityFromCoordinates(activity.latitude, activity.longitude);
         setAdresse(responseAdresse);
       } catch (error) {
-        Alert.alert('Erreur', "Impossible de récupérer l'adresse.");
+        console.log('Erreur', "Impossible de récupérer l'adresse.");
       }
     };
 
@@ -55,7 +60,7 @@ export default function ActivityDetailsPage({ route, navigation }) {
         const userData = await getUserById(activity.userId);
         setUsername(userData.firstName + '.' + userData.lastName);
       } catch (error) {
-        Alert.alert('Erreur', "Impossible de récupérer les informations de l'utilisateur.");
+        console.log('Erreur', "Impossible de récupérer les informations de l'utilisateur.");
       }
     };
 
@@ -65,7 +70,7 @@ export default function ActivityDetailsPage({ route, navigation }) {
         const responseTheme = await getThemeById(activity.themeId);
         setTheme(responseTheme);
       } catch (error) {
-        Alert.alert('Erreur', "Impossible de récupérer le thème.");
+        console.log('Erreur', "Impossible de récupérer le thème.");
       }
     };
 
@@ -82,6 +87,30 @@ export default function ActivityDetailsPage({ route, navigation }) {
       navigation.navigate('ActivitePage'); 
     } catch (error) {
       Alert.alert('Erreur', "Impossible de supprimer l'activité.");
+    }
+  };
+
+  const handleRegister = async () => {
+    console.log('check')
+    const today = new Date();
+    const year = today.getFullYear();
+    const month = String(today.getMonth() + 1).padStart(2, '0');
+    const day = String(today.getDate()).padStart(2, '0');
+    const dateReservation = `${year}-${month}-${day}`; // Obtenez la date actuelle
+    try {
+      // Exemple de payload pour l'API
+      const reservationData = {
+        utilisateurId: userId,
+        activiteId: activity.idActivite,
+        dateReservation, // Ajoutez la date
+      };
+  
+      console.log(reservationData)
+      const response = await createReservation(reservationData);
+      navigation.navigate("ReservationList")
+    } catch (error) {
+      console.error('Erreur lors de la création de la réservation :', error);
+      throw error;
     }
   };
 
@@ -212,8 +241,10 @@ export default function ActivityDetailsPage({ route, navigation }) {
               </TouchableOpacity>
             </>
           )}
-          {!isOwner && (
-            <TouchableOpacity style={styles.registerButton}>
+          {!isOwner && isRegistered &&(
+            <TouchableOpacity style={styles.registerButton}
+              onPress={() => setReservationPopupVisible(true)}
+            >
               <Text style={styles.registerButtonText}>M'inscrire</Text>
             </TouchableOpacity>
           )}
@@ -224,6 +255,33 @@ export default function ActivityDetailsPage({ route, navigation }) {
         </TouchableOpacity>
         </View>
       </ScrollView>
+
+      <Modal transparent visible={isReservationPopupVisible} animationType="fade">
+        <View style={styles.overlay}>
+          <View style={styles.popupContainer}>
+            <Text style={styles.popupMessage}>
+              Voulez-vous vraiment vous inscrire à l'activité "{activity.nomActivite}" ?
+            </Text>
+            <View style={styles.popupButtons}>
+              <TouchableOpacity
+                style={styles.cancelButton}
+                onPress={() => setReservationPopupVisible(false)}
+              >
+                <Text style={styles.cancelButtonText}>Annuler</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={styles.confirmButton}
+                onPress={() => {
+                  handleRegister();
+                  setReservationPopupVisible(false);
+                }}
+              >
+                <Text style={styles.confirmButtonText}>Confirmer</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+      </Modal>
 
       {/* Popup de suppression */}
       <Modal transparent visible={isDeletePopupVisible} animationType="fade">
@@ -462,23 +520,23 @@ const styles = StyleSheet.create({
     width: '100%',
   },
   cancelButton: {
-    backgroundColor: '#CDD993',
-    paddingVertical: 10,
-    paddingHorizontal: 20,
-    borderRadius: 5,
-  },
-  cancelButtonText: {
-    color: '#000',
-    fontWeight: 'bold',
-  },
-  confirmButton: {
     backgroundColor: '#BC4749',
     paddingVertical: 10,
     paddingHorizontal: 20,
     borderRadius: 5,
   },
+  cancelButtonText: {
+    color: '#fff',
+    fontWeight: 'bold',
+  },
+  confirmButton: {
+    backgroundColor: '#CDD993',
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    borderRadius: 5,
+  },
   confirmButtonText: {
-    color: '#FFF',
+    color: '#000',
     fontWeight: 'bold',
   },
   reservationsButton: {
