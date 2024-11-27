@@ -35,8 +35,8 @@ export default function ActivitePage() {
   const defaultRegion = {
     latitude: 46.603354,
     longitude: 1.888334,
-    latitudeDelta: 5.0,
-    longitudeDelta: 5.0,
+    latitudeDelta: 9.0,
+    longitudeDelta: 9.0,
   };
    // Récupérer les activités depuis l'API
    useEffect(() => {
