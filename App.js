@@ -19,6 +19,7 @@ import AddActivityThemePage from './screens/Theme/AddActivityThemePage';
 import EditThemePage from './screens/Theme/EditThemePage';
 import ActivityReviewsPage from './screens/Activite/ActivityReviewsPage';
 import AddReviewPage from './screens/Activite/AddReviewPage';
+import EditReviewPage from './screens/Activite/EditReviewPage';
 
 
 const Stack = createStackNavigator();
@@ -42,6 +43,8 @@ export default function App() {
           <Stack.Screen name="EditTheme" component={EditThemePage} />
           <Stack.Screen name="ActivityReviews" component={ActivityReviewsPage} />
           <Stack.Screen name="AddReview" component={AddReviewPage} />
+          <Stack.Screen name="EditReview" component={EditReviewPage} />
+
 
 
         </Stack.Navigator>
