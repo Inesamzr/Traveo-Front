@@ -206,7 +206,7 @@ export default function CreerActivitePage() {
         </View>
 
 
-
+        
         {/* Heure de Départ et Heure d'Arrivée */}
         <View style={styles.rowContainer}>
         {/* Heure de Départ */}
@@ -242,7 +242,7 @@ export default function CreerActivitePage() {
         <View style={styles.rowContainer}>
         {/* Altitude */}
         <View style={styles.rowSection}>
-            <Text style={styles.label}>Altitude*</Text>
+            <Text style={styles.label}>Latitude*</Text>
             <View style={styles.rowInputContainer}>
             <Ionicons name="locate-outline" size={24} color="#510D0A" style={styles.rowIcon} />
             <TextInput

@@ -1,17 +1,44 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, Image, TouchableOpacity, ScrollView } from 'react-native';
-import { Ionicons, MaterialCommunityIcons, FontAwesome5 } from '@expo/vector-icons';
+import {
+  View,
+  Text,
+  StyleSheet,
+  Image,
+  TouchableOpacity,
+  ScrollView,
+  Alert,
+} from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
 import { getCityFromCoordinates } from '../../services/Nominatim';
 import { getUserById } from '../../services/userService';
 import { getThemeById } from '../../services/themeService';
 
 export default function ActivityDetailsPage({ route, navigation }) {
   const { activity } = route.params;
-  const [adresse, setAdresse] = useState("");
-  const [username, setUsername] = useState(""); 
-  const [theme, setTheme] = useState("");
+  const [adresse, setAdresse] = useState('');
+  const [username, setUsername] = useState('');
+  const [theme, setTheme] = useState('');
+  const [userId, setUserId] = useState(null);
+  const [isOwner, setIsOwner] = useState(false);
 
   useEffect(() => {
+    // Récupérer les informations utilisateur
+    const fetchUserData = async () => {
+      try {
+        // Récupérer le userId depuis AsyncStorage
+        const storedUserId = await AsyncStorage.getItem('userId');
+        setUserId(Number(storedUserId));
+
+        // Comparer le userId
+        if (Number(storedUserId) === activity.userId) {
+          setIsOwner(true);
+        }
+      } catch (error) {
+        Alert.alert('Erreur', "Impossible de récupérer l'identifiant utilisateur.");
+      }
+    };
+
     // Récupérer la ville basée sur les coordonnées
     const fetchAdressLoc = async () => {
       try {
@@ -25,25 +52,32 @@ export default function ActivityDetailsPage({ route, navigation }) {
     // Récupérer le username de l'utilisateur
     const fetchUsername = async () => {
       try {
-        const userData = await getUserById(activity.userId); 
-        setUsername(userData.firstName+'.'+userData.lastName);
+        const userData = await getUserById(activity.userId);
+        setUsername(userData.firstName + '.' + userData.lastName);
       } catch (error) {
         Alert.alert('Erreur', "Impossible de récupérer les informations de l'utilisateur.");
       }
     };
-    const fetchTheme = async () => {
-      const responseTheme = await getThemeById(activity.themeId)
-      setTheme(responseTheme)
-     }
 
+    // Récupérer le thème
+    const fetchTheme = async () => {
+      try {
+        const responseTheme = await getThemeById(activity.themeId);
+        setTheme(responseTheme);
+      } catch (error) {
+        Alert.alert('Erreur', "Impossible de récupérer le thème.");
+      }
+    };
+
+    fetchUserData();
     fetchAdressLoc();
     fetchUsername();
-    fetchTheme()
+    fetchTheme();
   }, [activity.userId]);
 
   return (
     <View style={styles.container}>
-      <ScrollView style = {styles.contenu}>
+      <ScrollView style={styles.contenu}>
         {/* Image avec l'icône de retour */}
         <View style={styles.imageContainer}>
           <Image
@@ -73,37 +107,40 @@ export default function ActivityDetailsPage({ route, navigation }) {
               <Text style={styles.infoText}>x / {activity.nbPlaces}</Text>
             </View>
             <View style={styles.infoItem}>
-              <MaterialCommunityIcons name={theme.image_default} size={22} color="#BC4749" /> {theme.label}
-              <Text style={styles.infoText}>{theme.label}</Text>
+              <MaterialCommunityIcons name={theme.image_default || 'help-circle-outline'} size={22} color="#BC4749" />
+              <Text style={styles.infoText}>{theme.label || 'Thème inconnu'}</Text>
             </View>
           </View>
 
+          {/* Sections détaillées */}
           <View style={styles.section}>
             <View style={styles.sectionTitleContainer}>
-                <Text style={styles.sectionTitle}>Description</Text>
+              <Text style={styles.sectionTitle}>Description</Text>
             </View>
             <Text style={styles.sectionContent}>{activity.description}</Text>
-            </View>
+          </View>
           <View style={styles.section}>
-          <View style={styles.sectionTitleContainer}>
-            <Text style={styles.sectionTitle}>Lieu de RDV</Text>
+            <View style={styles.sectionTitleContainer}>
+              <Text style={styles.sectionTitle}>Lieu de RDV</Text>
             </View>
             <Text style={styles.sectionContent}>{adresse}</Text>
           </View>
           <View style={styles.section}>
             <View style={styles.sectionTitleContainer}>
-                <Text style={styles.sectionTitle}>Dates</Text>
+              <Text style={styles.sectionTitle}>Dates</Text>
             </View>
-            <Text style={styles.sectionContent}>du {activity.dateDebut} au {activity.dateFin}</Text>
-            </View>
-            <View style={styles.section}>
+            <Text style={styles.sectionContent}>
+              du {activity.dateDebut} au {activity.dateFin}
+            </Text>
+          </View>
+          <View style={styles.section}>
             <View style={styles.sectionTitleContainer}>
-                <Text style={styles.sectionTitle}>Prix</Text>
+              <Text style={styles.sectionTitle}>Prix</Text>
             </View>
             <Text style={styles.sectionContent}>{activity.prix} €</Text>
-            </View>
-            
-            <View style={styles.section}>
+          </View>
+          
+          <View style={styles.section}>
             <View style={styles.sectionTitleContainer}>
                 <Text style={styles.sectionTitle}>Place Diponibles</Text>
             </View>
@@ -133,18 +170,26 @@ export default function ActivityDetailsPage({ route, navigation }) {
             </View>
 
         </View>
-      {/* Boutons en bas */}
-      <View style={styles.buttonContainer}>
-        <TouchableOpacity style={styles.registerButton}>
-          <Text style={styles.registerButtonText}>M'inscrire</Text>
 
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.reviewButton}
+        {/* Boutons en bas */}
+        <View style={styles.buttonContainer}>
+          {isOwner && (
+            <TouchableOpacity
+              style={styles.editButton}
+              onPress={() => navigation.navigate('EditActivite', { activity })}
+            >
+              <Text style={styles.editButtonText}>Modifier</Text>
+            </TouchableOpacity>
+          )}
+          <TouchableOpacity style={styles.registerButton}>
+            <Text style={styles.registerButtonText}>M'inscrire</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.reviewButton}
         onPress={() => navigation.navigate('ActivityReviews', { reviews: activity.reviews, rating: 3, reviewsCount: activity.reviews.length })}
         >
           <Text style={styles.reviewButtonText}>Avis</Text>
         </TouchableOpacity>
-      </View>
+        </View>
       </ScrollView>
     </View>
   );
@@ -305,6 +350,17 @@ const styles = StyleSheet.create({
   },
   reviewButtonText: {
     color: '#510D0A',
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
+  editButton: 
+  { 
+    backgroundColor: '#510D0A', 
+    padding: 10, 
+    borderRadius: 20 
+  },
+  editButtonText: { 
+    color: 'white',
     fontSize: 16,
     fontWeight: 'bold',
   },
