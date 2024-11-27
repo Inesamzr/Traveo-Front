@@ -20,7 +20,7 @@ export default function ReviewsSection({ reviews, rating, reviewsCount }) {
       {reviews && reviews.slice(0, visibleReviews).map((review, index) => (
         <ReviewCard
           key={index}
-          name={review.userId}
+          userId={review.userId}
           rating={review.note}
           comment={review.commentaire}
           avatarColor={index % 2 === 0 ? '#DDE6C7' : '#F5D4DB'}
