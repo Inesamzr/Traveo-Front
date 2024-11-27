@@ -2,7 +2,13 @@
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
+<<<<<<< HEAD
 const API_URL = `http://162.38.32.231:8080/api/user`;
+=======
+const API_URL = 'http://162.38.37.37:8080/api/user';
+//const API_URL = 'http://192.168.1.54:8080/api/user';
+
+>>>>>>> 10f36af (recuperation par id de theme)
 
 // Fonction pour se connecter
 export const login = async (email, password) => {
