@@ -3,17 +3,27 @@ import { View, ScrollView, StyleSheet, Text, TouchableOpacity } from 'react-nati
 import Reservation from '../../Components/Reservation/Reservation';
 import Header from '../../Components/Header';
 import { getAllReservations } from '../../services/reservationService'; // Service pour récupérer les réservations
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 function ReservationListPage({ navigation }) {
   const [reservations, setReservations] = useState([]); // Liste des réservations
+  const [userId, setUserId] = useState(null); // Stockage de l'utilisateur connecté
   const [loading, setLoading] = useState(true); // Indicateur de chargement
 
-  // Récupération des réservations depuis le backend
   useEffect(() => {
-    const fetchReservations = async () => {
+    const fetchUserAndReservations = async () => {
       try {
+        // Récupération de l'ID utilisateur connecté depuis AsyncStorage
+        const storedUserId = await AsyncStorage.getItem('userId');
+        setUserId(storedUserId);
+
+        // Récupération des réservations depuis l'API
         const response = await getAllReservations();
-        setReservations(response); // On met à jour les réservations
+        // Filtrer les réservations pour l'utilisateur connecté
+        const userReservations = response.filter(
+          (reservation) => reservation.userId === parseInt(storedUserId)
+        );
+        setReservations(userReservations);
       } catch (error) {
         console.error('Erreur lors de la récupération des réservations :', error);
       } finally {
@@ -21,15 +31,8 @@ function ReservationListPage({ navigation }) {
       }
     };
 
-    fetchReservations();
+    fetchUserAndReservations();
   }, []);
-
-  // Fonction pour calculer le statut de chaque réservation
-  const calculateStatus = (date) => {
-    const reservationDate = new Date(date);
-    const now = new Date();
-    return reservationDate > now ? "À venir" : "Passée";
-  };
 
   if (loading) {
     return <Text style={styles.loadingText}>Chargement des réservations...</Text>;
@@ -44,7 +47,7 @@ function ReservationListPage({ navigation }) {
       {/* En-tête */}
       <Header title="Mes Réservations" />
       <ScrollView contentContainerStyle={styles.reservationList}>
-        {/* Parcours des réservations */}
+        {/* Afficher uniquement les réservations filtrées */}
         {reservations.map((reservation) => (
           <TouchableOpacity
             key={reservation.reservationId}
