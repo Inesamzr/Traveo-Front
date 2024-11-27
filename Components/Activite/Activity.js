@@ -2,17 +2,13 @@ import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet,TouchableOpacity } from 'react-native';
 import { MaterialCommunityIcons, FontAwesome5 } from '@expo/vector-icons';
 import { getCityFromCoordinates } from '../../services/Nominatim';
-
-const themeIcons = {
-  Aventure: <MaterialCommunityIcons name="hiking" size={16} color="#BC4749" />,
-  Cuisine: <FontAwesome5 name="utensils" size={14} color="#BC4749" />,
-  Spiritualité: <MaterialCommunityIcons name="meditation" size={16} color="#BC4749" />,
-  Créativité: <MaterialCommunityIcons name="brush" size={16} color="#BC4749" />,
-};
+import { getThemeById } from '../../services/themeService';
 
 const Activity = ({ ...activity }) => {
 
   const [adresse, setAdresse] = useState("");
+  const [theme, setTheme] = useState("");
+
 
   useEffect(() => {
     const fetchAdressLoc = async () => {
@@ -22,8 +18,12 @@ const Activity = ({ ...activity }) => {
       setAdresse(responseAdresse)
 
      }
-
+     const fetchTheme = async () => {
+      const responseTheme = await getThemeById(activity.themeId)
+      setTheme(responseTheme)
+     }
      fetchAdressLoc()
+     fetchTheme()
    }, [])
 
   return (
@@ -39,7 +39,7 @@ const Activity = ({ ...activity }) => {
             <MaterialCommunityIcons name="calendar-outline" size={14} color="#BC4749" /> {activity.dateDebut} / {activity.dateFin}
           </Text>
           <Text style={styles.activityDetails}>
-            {themeIcons[activity.theme] || <MaterialCommunityIcons name="help-circle-outline" size={16} color="#510D0A" />} {activity.themeId}
+            <MaterialCommunityIcons name={theme.image_default} size={16} color="#BC4749" /> {theme.label}
           </Text>
         </View>
         <View style={styles.activityRight}>

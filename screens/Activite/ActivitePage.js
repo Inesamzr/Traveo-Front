@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, ScrollView, StyleSheet, TextInput, TouchableOpacity, Text } from 'react-native';
+import { View, ScrollView, StyleSheet, TextInput, TouchableOpacity, Text,ActivityIndicator } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import MapView, { Marker, Callout } from 'react-native-maps';
 import { useNavigation } from '@react-navigation/native';
@@ -8,14 +8,7 @@ import Activity from '../../Components/Activite/Activity';
 import { MaterialCommunityIcons, FontAwesome5 } from '@expo/vector-icons';
 import { getAllActivities } from '../../services/activityService';
 import { getCityFromCoordinates } from '../../services/Nominatim';
-
-
-const themeIcons = {
-  Aventure: <MaterialCommunityIcons name="hiking" size={16} color="#BC4749" />,
-  Cuisine: <FontAwesome5 name="utensils" size={14} color="#BC4749" />,
-  Spiritualité: <MaterialCommunityIcons name="meditation" size={16} color="#BC4749" />,
-  Créativité: <MaterialCommunityIcons name="brush" size={16} color="#BC4749" />,
-};
+import { getThemes } from '../../services/themeService';
 
 export default function ActivitePage() {
   const navigation = useNavigation();
@@ -24,6 +17,8 @@ export default function ActivitePage() {
   const [loading, setLoading] = useState(true);
   const [adresse, setAdresse] = useState("");
   const [addresses, setAddresses] = useState({}); 
+  const [themes, setThemes] = useState([]); 
+
 
   useEffect(() => {
     // Récupérer la ville basée sur les coordonnées
@@ -45,7 +40,7 @@ export default function ActivitePage() {
   };
    // Récupérer les activités depuis l'API
    useEffect(() => {
-    const fetchActivities = async () => {
+    const fetchData = async () => {
       try {
         const data = await getAllActivities();
         setActivities(data);
@@ -55,6 +50,14 @@ export default function ActivitePage() {
           const address = await getCityFromCoordinates(activity.latitude, activity.longitude);
           return { id: activity.idActivite, address };
         });
+
+        // Récupérer tous les thèmes
+        const themesData = await getThemes();
+        const themesMap = themesData.reduce((acc, theme) => {
+          acc[theme.idTheme] = theme; 
+          return acc;
+        }, {});
+        setThemes(themesMap);
 
         const resolvedAddresses = await Promise.all(addressPromises);
         const addressMap = resolvedAddresses.reduce((acc, { id, address }) => {
@@ -70,7 +73,7 @@ export default function ActivitePage() {
       }
     };
 
-    fetchActivities();
+    fetchData();
   }, []);
 
   const filteredData = activities.filter((activity) =>
@@ -81,7 +84,7 @@ export default function ActivitePage() {
   if (loading) {
     return (
       <View style={styles.loadingContainer}>
-        <Text>Chargement des activités...</Text>
+        <ActivityIndicator size="large" color="#510D0A" />
       </View>
     );
   }
@@ -116,33 +119,42 @@ export default function ActivitePage() {
           initialRegion={defaultRegion}
           showsUserLocation={true}
         >
-          {filteredData.map((activity) => (
-            <Marker
-              key={activity.id}
-              coordinate={{
-                latitude: activity.latitude,
-                longitude: activity.longitude,
-              }}
-              title={activity.nom}
-            >
-              <Callout>
-                <View style={styles.callout}>
-                  <Text style={styles.activityTitle}>{activity.nomActivite}</Text>
-                  <Text style={styles.activityDetails}>{activity.description}</Text>
-                  <Text style={styles.activityDetails}>
-                    <Ionicons name="location-outline" size={14} color="#BC4749" /> 
-                    {addresses[activity.idActivite] || 'Adresse inconnue'}
-                  </Text>
-                  <Text style={styles.activityDetails}>
-                    <Ionicons name="calendar-outline" size={14} color="#BC4749" /> {activity.dateDebut} / {activity.dateFin}
-                  </Text>
-                  <Text style={styles.activityDetails}>
-                    {themeIcons[activity.theme] || <MaterialCommunityIcons name="help-circle-outline" size={16} color="#510D0A" />} {activity.theme}
-                  </Text>
-                </View>
-              </Callout>
-            </Marker>
-          ))}
+          {filteredData.map((activity) => {
+            const theme = themes[activity.themeId] || {};
+            return (
+              <Marker
+                key={activity.idActivite}
+                coordinate={{
+                  latitude: activity.latitude,
+                  longitude: activity.longitude,
+                }}
+                title={activity.nomActivite}
+              >
+                <Callout>
+                  <View style={styles.callout}>
+                    <Text style={styles.activityTitle}>{activity.nomActivite}</Text>
+                    <Text style={styles.activityDetails}>{activity.description}</Text>
+                    <Text style={styles.activityDetails}>
+                      <Ionicons name="location-outline" size={14} color="#BC4749" />{' '}
+                      {addresses[activity.idActivite] || 'Adresse inconnue'}
+                    </Text>
+                    <Text style={styles.activityDetails}>
+                      <Ionicons name="calendar-outline" size={14} color="#BC4749" />{' '}
+                      {activity.dateDebut} / {activity.dateFin}
+                    </Text>
+                    <Text style={styles.activityDetails}>
+                      <MaterialCommunityIcons
+                        name={theme.image_default || 'help-circle-outline'}
+                        size={16}
+                        color="#BC4749"
+                      />{' '}
+                      {theme.label || 'Thème inconnu'}
+                    </Text>
+                  </View>
+                </Callout>
+              </Marker>
+            );
+          })}
         </MapView>
       </View>
 

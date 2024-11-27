@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   Text,
@@ -12,25 +12,91 @@ import { Picker } from '@react-native-picker/picker';
 import { useNavigation } from '@react-navigation/native';
 import Header from '../../Components/Header';
 import Popup from '../../Components/Accueil/Popup';
+import { getThemes } from '../../services/themeService';
+import { createActivity } from '../../services/activityService';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
 
 export default function CreerActivitePage() {
-    const navigation = useNavigation();
-    const [nom, setNom] = useState('');
-    const [description, setDescription] = useState('');
-    const [theme, setTheme] = useState('');
-    const [date, setDate] = useState('');
-    const [nombreDePlace, setNombreDePlace] = useState('');
-    const [prix, setPrix] = useState('');
-    const [heureDepart, setHeureDepart] = useState('');
-    const [heureArrive, setHeureArrive] = useState('');
-    const [altitude, setAltitude] = useState('');
-    const [longitude, setLongitude] = useState('');
-    const [isThemeDropdownVisible, setThemeDropdownVisible] = useState(false);
-    const [isPopupVisible, setPopupVisible] = useState(false); 
+  const navigation = useNavigation();
+  const [nom, setNom] = useState('');
+  const [description, setDescription] = useState('');
+  const [themeId, setThemeId] = useState(null);
+  const [themes, setThemes] = useState([]);
+  const [date, setDate] = useState('');
+  const [nombreDePlace, setNombreDePlace] = useState('');
+  const [prix, setPrix] = useState('');
+  const [heureDepart, setHeureDepart] = useState('');
+  const [heureArrive, setHeureArrive] = useState('');
+  const [altitude, setAltitude] = useState('');
+  const [longitude, setLongitude] = useState('');
+  const [tags, setTags] = useState('');
+  const [isThemeDropdownVisible, setThemeDropdownVisible] = useState(false);
+  const [isPopupVisible, setPopupVisible] = useState(false);
 
-    const themes = ['Cuisine', 'Créativité', 'Spiritualité','Aventure'];
+  // Récupérer les thèmes depuis l'API
+  useEffect(() => {
+    const fetchThemes = async () => {
+      try {
+        const response = await getThemes();
+        setThemes(response); 
+      } catch (error) {
+        Alert.alert('Erreur', 'Impossible de charger les thèmes.');
+      }
+    };
+    fetchThemes();
+  }, []);
 
+  // Convertir une date au format dd/MM/yyyy en ISO-8601 (yyyy-MM-dd)
+  const convertDateToISO = (dateStr) => {
+    const [day, month, year] = dateStr.split('/').map(Number);
+    if (!day || !month || !year) return null; // Vérifiez si la date est valide
+    return new Date(year, month - 1, day).toISOString().split('T')[0];
+  };
 
+  // Gestion de la soumission du formulaire
+  const handleCreateActivity = async () => {
+    if (!nom || !description || !themeId || !date || !nombreDePlace || !prix || !altitude || !longitude) {
+      Alert.alert('Erreur', 'Veuillez remplir tous les champs obligatoires.');
+      return;
+    }
+
+    // Convertir la date en format ISO-8601
+    const dateISO = convertDateToISO(date);
+    if (!dateISO) {
+      Alert.alert('Erreur', 'La date entrée est invalide. Utilisez le format JJ/MM/AAAA.');
+      return;
+    }
+
+    const userId = await AsyncStorage.getItem('userId'); // Récupère le userId
+      if (!userId) {
+        Alert.alert('Erreur', 'Utilisateur non identifié.');
+        return;
+      }
+
+    const newActivity = {
+      nomActivite: nom,
+      description,
+      themeId,
+      dateDebut: dateISO,
+      dateFin: dateISO, 
+      nbPlaces: parseInt(nombreDePlace),
+      prix: parseFloat(prix),
+      latitude: parseFloat(altitude),
+      longitude: parseFloat(longitude),
+      tags: rags || '', 
+      image: 'https://example.com/default-image.jpg', 
+      userId: parseInt(userId), 
+    };
+
+    try {
+      await createActivity(newActivity);
+      setPopupVisible(true); // Affiche le popup en cas de succès
+    } catch (error) {
+      Alert.alert('Erreur', 'Impossible de créer l\'activité.');
+    }
+  };
+  
   return (
     <>
     <ScrollView style={styles.container}>
@@ -68,8 +134,9 @@ export default function CreerActivitePage() {
           onPress={() => setThemeDropdownVisible(!isThemeDropdownVisible)}
         >
           <Text style={styles.dropdownText}>
-            {theme || 'Choisir...'}
+            {themeId ? themes.find(theme => theme.idTheme === themeId)?.label || 'Choisir...' : 'Choisir...'}
           </Text>
+
           <Ionicons
             name={isThemeDropdownVisible ? 'chevron-up' : 'chevron-down'}
             size={24}
@@ -78,18 +145,19 @@ export default function CreerActivitePage() {
         </TouchableOpacity>
         {isThemeDropdownVisible && (
           <View style={styles.dropdownMenu}>
-            {themes.map((item, index) => (
-              <TouchableOpacity
-                key={index}
-                style={styles.dropdownItem}
-                onPress={() => {
-                  setTheme(item);
-                  setThemeDropdownVisible(false);
-                }}
-              >
-                <Text style={styles.dropdownItemText}>{item}</Text>
-              </TouchableOpacity>
-            ))}
+            {themes.map((item) => (
+            <TouchableOpacity
+              key={item.idTheme}
+              style={styles.dropdownItem}
+              onPress={() => {
+                setThemeId(item.idTheme); // Utilisez l'ID du thème
+                setThemeDropdownVisible(false);
+              }}
+            >
+              <Text style={styles.dropdownItemText}>{item.label}</Text>
+            </TouchableOpacity>
+          ))}
+
           </View>
         )}
 
@@ -143,7 +211,7 @@ export default function CreerActivitePage() {
         <View style={styles.rowContainer}>
         {/* Heure de Départ */}
         <View style={styles.rowSection}>
-            <Text style={styles.label}>Heure Départ*</Text>
+            <Text style={styles.label}>Heure Départ</Text>
             <View style={styles.rowInputContainer}>
             <Ionicons name="time-outline" size={24} color="#510D0A" style={styles.rowIcon} />
             <TextInput
@@ -156,7 +224,7 @@ export default function CreerActivitePage() {
         </View>
         {/* Heure d'Arrivée */}
         <View style={[styles.rowSection, styles.rowSectionMargin]}>
-            <Text style={styles.label}>Heure Retour*</Text>
+            <Text style={styles.label}>Heure Retour</Text>
             <View style={styles.rowInputContainer}>
             <Ionicons name="time-outline" size={24} color="#510D0A" style={styles.rowIcon} />
             <TextInput
@@ -209,10 +277,18 @@ export default function CreerActivitePage() {
           <Text style={styles.imageUploadText}>Glisser et déposer ou charger l'image</Text>
           <Ionicons name="cloud-upload-outline" size={24} color="#510D0A" />
         </TouchableOpacity>
+        {/* Tags */}
+        <Text style={styles.label}>Tags</Text>
+          <TextInput
+            style={styles.input}
+            placeholder="nature,randonnee,montagne"
+            value={tags}
+            onChangeText={setTags}
+          />
       
     <TouchableOpacity
             style={styles.createButton}
-            onPress={() => setPopupVisible(true)}
+            onPress={handleCreateActivity}
           >
             <Text style={styles.createButtonText}>Créer</Text>
           </TouchableOpacity>
