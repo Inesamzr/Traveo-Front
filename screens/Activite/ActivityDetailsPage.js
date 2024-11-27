@@ -156,7 +156,14 @@ export default function ActivityDetailsPage({ route, navigation }) {
             <Text style={styles.infoText}>{theme.label || 'Thème inconnu'}</Text>
           </View>
         </View>
-
+          {isOwner && (
+            <TouchableOpacity
+              style={styles.reservationsButton}
+              onPress={() => navigation.navigate('ActiviteReservations', { activity })}
+            >
+              <Text style={styles.reservationsButtonText}>Voir les réservations</Text>
+            </TouchableOpacity>
+          )}
           {/* Sections détaillées */}
           <View style={styles.section}>
             <View style={styles.sectionTitleContainer}>
@@ -532,4 +539,17 @@ const styles = StyleSheet.create({
     color: '#000',
     fontWeight: 'bold',
   },
+  reservationsButton: {
+    backgroundColor: '#CDD993',
+    paddingVertical: 12,
+    paddingHorizontal: 20,
+    borderRadius: 15,
+    alignSelf: 'center',
+    marginBottom: 15,
+  },
+  reservationsButtonText: {
+    color: '#510D0A',
+    fontSize: 16,
+    fontWeight: 'bold',
+  }
 });
