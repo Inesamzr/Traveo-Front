@@ -48,10 +48,10 @@ export default function ReviewCard({ id, userId, rating, comment, avatarColor, o
         {isAuthor && (
           <View style={styles.actions}>
             <TouchableOpacity onPress={() => onEdit(id)}>
-              <Ionicons name="pencil" size={20} color="#007BFF" />
+              <Ionicons name="pencil" size={20}  style={styles.editIcon}/>
             </TouchableOpacity>
             <TouchableOpacity onPress={() => onDelete(id)}>
-              <Ionicons name="trash" size={20} color="#FF0000" style={styles.iconSpacing} />
+              <Ionicons name="trash" size={20} color="#FF0000" style={styles.deleteIcon} />
             </TouchableOpacity>
           </View>
         )}
@@ -92,6 +92,21 @@ const styles = StyleSheet.create({
   },
   actions: {
     flexDirection: 'row',
+  },
+  editIcon: {
+    color: "#fff",
+    backgroundColor: "#386641",
+    padding: 5,
+    borderRadius: 20
+
+  },
+  deleteIcon: {
+    color: "#fff",
+    backgroundColor: "#BC4749",
+    padding: 5,
+    borderRadius: 20,
+    marginLeft: 5,
+
   },
   iconSpacing: {
     marginLeft: 10,
