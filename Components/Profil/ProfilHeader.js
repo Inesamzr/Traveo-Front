@@ -3,9 +3,14 @@ import { View, Text, StyleSheet, Image, TouchableOpacity, Alert } from 'react-na
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { logout } from '../../services/authService';
 import { useNavigation } from '@react-navigation/native';
+import { useLanguage } from '../../localization/LanguageContext';
+import texts from '../../localization/localization'
 
 export default function ProfilHeader({ name }) {
   const navigation = useNavigation();
+
+  const { language } = useLanguage();
+  const currentTexts = texts[language];
 
   const handleLogout = async () => {
     try {
@@ -29,6 +34,12 @@ export default function ProfilHeader({ name }) {
         />
       </TouchableOpacity>
       <Text style={styles.name}>{name}</Text>
+      <TouchableOpacity
+          style={styles.languageButton}
+          onPress={() => navigation.navigate('LanguageSelection')}
+        >
+          <Text style={styles.languageText}>{currentTexts.flag}</Text>
+        </TouchableOpacity>
     </View>
   );
 }
