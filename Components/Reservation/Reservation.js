@@ -5,32 +5,44 @@ import { useLanguage } from '../../localization/LanguageContext'; // Import du c
 import texts from '../../localization/localization'; // Import des traductions
 import { getActivityById } from '../../services/activityService'; // Service pour récupérer une activité
 import { getCityFromCoordinates } from '../../services/Nominatim'; // Service pour récupérer la ville
+import { getThemeById } from '../../services/themeService'; // Service pour récupérer un thème
 
 const Reservation = ({ activiteId, dateReservation, status }) => {
   const { language } = useLanguage(); // Récupération de la langue active
   const [activite, setActivite] = useState({});
   const [location, setLocation] = useState('');
+  const [theme, setTheme] = useState(null); // État pour stocker le thème
 
-  // Récupération des détails de l'activité et du lieu
+  // Récupération des détails de l'activité, du lieu et du thème
   useEffect(() => {
-    const fetchActivityDetails = async () => {
+    const fetchActivityAndThemeDetails = async () => {
       try {
         // Récupérer les détails de l'activité
         const activityData = await getActivityById(activiteId);
         setActivite(activityData);
-  
+
         // Récupérer la ville à partir des coordonnées
-        const city = await getCityFromCoordinates(activityData.latitude, activityData.longitude);
-        setLocation(city);
+        if (activityData.latitude && activityData.longitude) {
+          const city = await getCityFromCoordinates(activityData.latitude, activityData.longitude);
+          setLocation(city);
+        } else {
+          setLocation('Coordonnées non disponibles');
+        }
+
+        // Récupérer le thème si un themeId est présent
+        if (activityData.themeId) {
+          const themeData = await getThemeById(activityData.themeId);
+          setTheme(themeData);
+        }
       } catch (error) {
-        console.error('Erreur lors de la récupération des détails de l\'activité ou du lieu :', error);
+        console.error('Erreur lors de la récupération des détails de l\'activité ou du thème :', error);
         setLocation('Erreur lors de la récupération de la ville');
       }
     };
-  
-    fetchActivityDetails();
+
+    fetchActivityAndThemeDetails();
   }, [activiteId]);
-  
+
   return (
     <View
       style={styles.reservationCard}
@@ -50,27 +62,27 @@ const Reservation = ({ activiteId, dateReservation, status }) => {
 
         {/* Lieu */}
         <Text style={styles.reservationDetails}>
-          <MaterialCommunityIcons name="map-marker-outline" size={14} color="#BC4749" />{" "}
+          <MaterialCommunityIcons name="map-marker-outline" size={14} color="#BC4749" />{' '}
           {location || 'Lieu en cours de chargement...'}
         </Text>
 
         {/* Date */}
         <Text style={styles.reservationDetails}>
-          <MaterialCommunityIcons name="calendar-outline" size={14} color="#BC4749" />{" "}
+          <MaterialCommunityIcons name="calendar-outline" size={14} color="#BC4749" />{' '}
           {dateReservation}
         </Text>
 
         {/* Prix */}
         <Text style={styles.reservationDetails}>
-          <MaterialCommunityIcons name="currency-eur" size={16} color="#BC4749" />{" "}
+          <MaterialCommunityIcons name="currency-eur" size={16} color="#BC4749" />{' '}
           {activite.prix ? `${activite.prix}€` : 'Prix non disponible'}
         </Text>
 
         {/* Thème (facultatif, à afficher si disponible) */}
-        {activite.theme && (
+        {theme && (
           <Text style={styles.reservationDetails}>
-            <MaterialCommunityIcons name="tag-outline" size={14} color="#BC4749" />{" "}
-            {activite.theme}
+            <MaterialCommunityIcons name="tag-outline" size={14} color="#BC4749" />{' '}
+            {theme.label || 'Thème non disponible'}
           </Text>
         )}
       </View>
@@ -79,23 +91,23 @@ const Reservation = ({ activiteId, dateReservation, status }) => {
       <View
         style={[
           styles.statusBadge,
-          status === "À venir" ? styles.upcomingBadge : styles.pastBadge,
+          status === 'À venir' ? styles.upcomingBadge : styles.pastBadge,
         ]}
       >
         <Text
           style={[
             styles.statusText,
-            status === "À venir" ? styles.upcoming : styles.past,
+            status === 'À venir' ? styles.upcoming : styles.past,
           ]}
         >
-          {status === "À venir"
+          {status === 'À venir'
             ? texts[language].reservations.status.upcoming
             : texts[language].reservations.status.past}
         </Text>
       </View>
 
       {/* Bouton Laisser un avis */}
-      {status === "Passée" && (
+      {status === 'Passée' && (
         <TouchableOpacity style={styles.reviewButton}>
           <Text style={styles.reviewButtonText}>
             {texts[language].reservations.buttons.leaveReview}
@@ -183,6 +195,7 @@ const styles = StyleSheet.create({
 });
 
 export default Reservation;
+
 
 
 
