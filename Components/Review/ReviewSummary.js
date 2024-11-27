@@ -5,7 +5,7 @@ import { Ionicons } from '@expo/vector-icons';
 export default function ReviewSummary({ rating, reviewsCount }) {
   return (
     <View style={styles.container}>
-      <Text style={styles.rating}>{rating.toFixed(1)}</Text>
+      <Text style={styles.rating}>{rating && rating}</Text>
       <View style={styles.stars}>
         {Array.from({ length: 5 }).map((_, index) => (
           <Ionicons

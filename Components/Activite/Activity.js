@@ -2,31 +2,29 @@ import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet,TouchableOpacity } from 'react-native';
 import { MaterialCommunityIcons, FontAwesome5 } from '@expo/vector-icons';
 import { getCityFromCoordinates } from '../../services/Nominatim';
-
-const themeIcons = {
-  Aventure: <MaterialCommunityIcons name="hiking" size={16} color="#BC4749" />,
-  Cuisine: <FontAwesome5 name="utensils" size={14} color="#BC4749" />,
-  Spiritualité: <MaterialCommunityIcons name="meditation" size={16} color="#BC4749" />,
-  Créativité: <MaterialCommunityIcons name="brush" size={16} color="#BC4749" />,
-};
+import { getThemeById } from '../../services/themeService';
 
 const Activity = ({ ...activity }) => {
 
   const [adresse, setAdresse] = useState("");
+  const [theme, setTheme] = useState("");
+
 
   useEffect(() => {
     const fetchAdressLoc = async () => {
 
       const responseAdresse = await getCityFromCoordinates(activity.latitude, activity.longitude)
-      console.log("okofkzeofkzo ", responseAdresse)
       setAdresse(responseAdresse)
 
      }
-
+     const fetchTheme = async () => {
+      const responseTheme = await getThemeById(activity.themeId)
+      setTheme(responseTheme)
+     }
      fetchAdressLoc()
+     fetchTheme()
    }, [])
 
-  console.log("iciiiiii ", activity)
   return (
       <View style={styles.activityCard}>
         <MaterialCommunityIcons name="image-outline" size={40} color="#BC4749" />
@@ -37,15 +35,15 @@ const Activity = ({ ...activity }) => {
             <MaterialCommunityIcons name="map-marker-outline" size={14} color="#BC4749" /> {adresse}
           </Text>
           <Text style={styles.activityDetails}>
-            <MaterialCommunityIcons name="calendar-outline" size={14} color="#BC4749" /> {activity.dateDebut}
+            <MaterialCommunityIcons name="calendar-outline" size={14} color="#BC4749" /> {activity.dateDebut} / {activity.dateFin}
           </Text>
           <Text style={styles.activityDetails}>
-            {themeIcons[activity.theme] || <MaterialCommunityIcons name="help-circle-outline" size={16} color="#510D0A" />} {activity.themeId}
+            <MaterialCommunityIcons name={theme.image_default} size={16} color="#BC4749" /> {theme.label}
           </Text>
         </View>
         <View style={styles.activityRight}>
-          <Text style={styles.activityPrice}>{activity.prix}</Text>
-          <Text style={styles.activityParticipants}>{activity.nbPlaces}</Text>
+          <Text style={styles.activityPrice}>{activity.prix}€</Text>
+          <Text style={styles.activityParticipants}>x / {activity.nbPlaces}</Text>
         </View>
       </View>
   );

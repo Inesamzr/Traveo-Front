@@ -1,16 +1,45 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, Image, TouchableOpacity, ScrollView } from 'react-native';
 import { Ionicons, MaterialCommunityIcons, FontAwesome5 } from '@expo/vector-icons';
-
-const themeIcons = {
-  Aventure: <MaterialCommunityIcons name="hiking" size={16} color="#BC4749" />,
-  Cuisine: <FontAwesome5 name="utensils" size={14} color="#BC4749" />,
-  Spiritualité: <MaterialCommunityIcons name="meditation" size={16} color="#BC4749" />,
-  Créativité: <MaterialCommunityIcons name="brush" size={16} color="#BC4749" />,
-};
+import { getCityFromCoordinates } from '../../services/Nominatim';
+import { getUserById } from '../../services/userService';
+import { getThemeById } from '../../services/themeService';
 
 export default function ActivityDetailsPage({ route, navigation }) {
   const { activity } = route.params;
+  const [adresse, setAdresse] = useState("");
+  const [username, setUsername] = useState(""); 
+  const [theme, setTheme] = useState("");
+
+  useEffect(() => {
+    // Récupérer la ville basée sur les coordonnées
+    const fetchAdressLoc = async () => {
+      try {
+        const responseAdresse = await getCityFromCoordinates(activity.latitude, activity.longitude);
+        setAdresse(responseAdresse);
+      } catch (error) {
+        Alert.alert('Erreur', "Impossible de récupérer l'adresse.");
+      }
+    };
+
+    // Récupérer le username de l'utilisateur
+    const fetchUsername = async () => {
+      try {
+        const userData = await getUserById(activity.userId); 
+        setUsername(userData.firstName+'.'+userData.lastName);
+      } catch (error) {
+        Alert.alert('Erreur', "Impossible de récupérer les informations de l'utilisateur.");
+      }
+    };
+    const fetchTheme = async () => {
+      const responseTheme = await getThemeById(activity.themeId)
+      setTheme(responseTheme)
+     }
+
+    fetchAdressLoc();
+    fetchUsername();
+    fetchTheme()
+  }, [activity.userId]);
 
   return (
     <View style={styles.container}>
@@ -29,7 +58,7 @@ export default function ActivityDetailsPage({ route, navigation }) {
 
         {/* Conteneur avec le titre */}
         <View style={styles.titleContainer}>
-          <Text style={styles.title}>{activity.nom}</Text>
+          <Text style={styles.title}>{activity.nomActivite}</Text>
         </View>
 
         {/* Détails de l'activité */}
@@ -37,15 +66,15 @@ export default function ActivityDetailsPage({ route, navigation }) {
           <View style={styles.infoRow}>
             <View style={styles.infoItem}>
               <Ionicons name="person-circle-outline" size={20} color="#BC4749" />
-              <Text style={styles.infoText}>{activity.hote}</Text>
+              <Text style={styles.infoText}>{username}</Text>
             </View>
             <View style={styles.infoItem}>
               <Ionicons name="people-outline" size={20} color="#BC4749" />
-              <Text style={styles.infoText}>{activity.participants}</Text>
+              <Text style={styles.infoText}>x / {activity.nbPlaces}</Text>
             </View>
             <View style={styles.infoItem}>
-              {themeIcons[activity.theme]}
-              <Text style={styles.infoText}>{activity.theme}</Text>
+              <MaterialCommunityIcons name={theme.image_default} size={22} color="#BC4749" /> {theme.label}
+              <Text style={styles.infoText}>{theme.label}</Text>
             </View>
           </View>
 
@@ -59,26 +88,26 @@ export default function ActivityDetailsPage({ route, navigation }) {
           <View style={styles.sectionTitleContainer}>
             <Text style={styles.sectionTitle}>Lieu de RDV</Text>
             </View>
-            <Text style={styles.sectionContent}>{activity.adresse}</Text>
+            <Text style={styles.sectionContent}>{adresse}</Text>
           </View>
           <View style={styles.section}>
             <View style={styles.sectionTitleContainer}>
-                <Text style={styles.sectionTitle}>Date et Heure</Text>
+                <Text style={styles.sectionTitle}>Dates</Text>
             </View>
-            <Text style={styles.sectionContent}>{activity.date}</Text>
+            <Text style={styles.sectionContent}>du {activity.dateDebut} au {activity.dateFin}</Text>
             </View>
             <View style={styles.section}>
             <View style={styles.sectionTitleContainer}>
                 <Text style={styles.sectionTitle}>Prix</Text>
             </View>
-            <Text style={styles.sectionContent}>{activity.prix}</Text>
+            <Text style={styles.sectionContent}>{activity.prix} €</Text>
             </View>
             
             <View style={styles.section}>
             <View style={styles.sectionTitleContainer}>
                 <Text style={styles.sectionTitle}>Place Diponibles</Text>
             </View>
-            <Text style={styles.sectionContent}>{activity.participants}</Text>
+            <Text style={styles.sectionContent}>x / {activity.nbPlaces}</Text>
             </View>
             <View style={styles.section}>
             <View style={styles.sectionTitleContainer}>

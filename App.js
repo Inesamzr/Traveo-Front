@@ -14,6 +14,12 @@ import ActiviteNavigator from './Navigation/ActiviteNavigator';
 import ReservationNavigator from './Navigation/ReservationNavigator';
 import ProfilNavigator from './Navigation/ProfilNavigator';
 import ActivityDetailsPage from './screens/Activite/ActivityDetailsPage'
+import ThemesPage from './screens/Theme/ThemePage';
+import AddActivityThemePage from './screens/Theme/AddActivityThemePage';
+import EditThemePage from './screens/Theme/EditThemePage';
+import ActivityReviewsPage from './screens/Activite/ActivityReviewsPage';
+import AddReviewPage from './screens/Activite/AddReviewPage';
+import EditReviewPage from './screens/Activite/EditReviewPage';
 
 
 const Stack = createStackNavigator();
@@ -32,6 +38,15 @@ export default function App() {
           <Stack.Screen name="LanguageSelection" component={LanguageSelection} />
           <Stack.Screen name="ActivityList" component={ActivityListPage} />
           <Stack.Screen name="ActivityDetails" component={ActivityDetailsPage} />
+          <Stack.Screen name="Themes" component={ThemesPage} />
+          <Stack.Screen name="AddTheme" component={AddActivityThemePage} />
+          <Stack.Screen name="EditTheme" component={EditThemePage} />
+          <Stack.Screen name="ActivityReviews" component={ActivityReviewsPage} />
+          <Stack.Screen name="AddReview" component={AddReviewPage} />
+          <Stack.Screen name="EditReview" component={EditReviewPage} />
+
+
+
         </Stack.Navigator>
       </NavigationContainer>
     </LanguageProvider>
