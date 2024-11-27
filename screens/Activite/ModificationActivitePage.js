@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   Text,
@@ -11,30 +11,84 @@ import { Ionicons, FontAwesome5 } from '@expo/vector-icons';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import Header from '../../Components/Header';
 import Popup from '../../Components/Accueil/Popup';
+import { getThemes } from '../../services/themeService';
+import { editActivity } from '../../services/activityService';
+import { getThemeById } from '../../services/themeService';
 
 export default function ModificationActivitePage() {
   const navigation = useNavigation();
   const route = useRoute();
   const activity = route.params?.activity || {};
 
-  const [nom, setNom] = useState(activity.nom || '');
-  const [description, setDescription] = useState(activity.description || '');
-  const [theme, setTheme] = useState(activity.theme || '');
-  const [date, setDate] = useState(activity.date || '');
-  const [nombreDePlace, setNombreDePlace] = useState(activity.nombreDePlace || '');
-  const [prix, setPrix] = useState(activity.prix || '');
-  const [heureDepart, setHeureDepart] = useState(activity.heureDepart || '');
-  const [heureArrive, setHeureArrive] = useState(activity.heureArrive || '');
-  const [altitude, setAltitude] = useState(activity.altitude || '');
-  const [longitude, setLongitude] = useState(activity.longitude || '');
-  const [isThemeDropdownVisible, setThemeDropdownVisible] = useState(false);
-  const [isPopupVisible, setPopupVisible] = useState(false);
+  const [nom, setNom] = useState(activity.nomActivite || '');
+    const [themes, setThemes] = useState([]);
+    const [description, setDescription] = useState(activity.description || '');
+    const [themeId, setThemeId] = useState(activity.themeId || 'Choisir...');
+    const [dateDebut, setDateDebut] = useState(activity.dateDebut || '');
+    const [dateFin, setDateFin] = useState(activity.dateFin || '');
+    const [nombreDePlace, setNombreDePlace] = useState(activity.nbPlaces ? String(activity.nbPlaces) : ''); // Convertir en chaîne
+    const [prix, setPrix] = useState(activity.prix ? String(activity.prix) : ''); // Convertir en chaîne
+    const [tags, setTags] = useState(activity.tags || '');
+    const [altitude, setAltitude] = useState(activity.latitude ? String(activity.latitude) : ''); // Convertir en chaîne
+    const [longitude, setLongitude] = useState(activity.longitude ? String(activity.longitude) : ''); // Convertir en chaîne
+    const [currentThemeLabel, setCurrentThemeLabel] = useState('');
+    const [isThemeDropdownVisible, setThemeDropdownVisible] = useState(false);
+    const [isPopupVisible, setPopupVisible] = useState(false);
 
-  const themes = ['Cuisine', 'Créativité', 'Spiritualité', 'Aventure'];
+  useEffect(() => {
+    const fetchThemeAndThemes = async () => {
+      try {
+        // Charger le thème actuel
+        const currentTheme = await getThemeById(activity.themeId);
+        setThemeId(currentTheme.idTheme);
+        setCurrentThemeLabel(currentTheme.label);
+  
+        // Charger tous les thèmes
+        const allThemes = await getThemes();
+        setThemes(allThemes);
+      } catch (error) {
+        Alert.alert('Erreur', 'Impossible de charger les thèmes.');
+      }
+    };
+    fetchThemeAndThemes();
+  }, [activity.themeId]);
 
-  const handleSave = () => {
-    // Ajouter la logique pour sauvegarder les modifications ici
-    setPopupVisible(true);
+  const convertDateToISO = (dateStr) => {
+    const [day, month, year] = dateStr.split('/').map(Number);
+    if (!day || !month || !year) return null; // Vérifiez si la date est valide
+    return new Date(year, month - 1, day).toISOString().split('T')[0];
+  };
+
+
+
+  const handleSave = async () => {
+    if (!nom || !description || !themeId || !dateDebut || !dateFin || !nombreDePlace || !prix || !altitude || !longitude) {
+      Alert.alert('Erreur', 'Veuillez remplir tous les champs obligatoires.');
+      return;
+    }
+  
+    const updatedActivity = {
+      idActivite: activity.idActivite,
+      nomActivite: nom,
+      description,
+      themeId, 
+      dateDebut: convertDateToISO(dateDebut),
+      dateFin: convertDateToISO(dateFin),
+      nbPlaces: parseInt(nombreDePlace), 
+      prix: parseFloat(prix), 
+      latitude: parseFloat(altitude), 
+      longitude: parseFloat(longitude), 
+      tags: tags || '',
+      image: activity.image || 'https://example.com/default-image.jpg',
+      userId: activity.userId,
+    };
+  
+    try {
+      await editActivity(updatedActivity); // Assurez-vous que cette fonction est définie dans votre service API
+      setPopupVisible(true); // Affiche le popup en cas de succès
+    } catch (error) {
+      Alert.alert('Erreur', 'Impossible de modifier l\'activité.');
+    }
   };
 
   return (
@@ -68,7 +122,7 @@ export default function ModificationActivitePage() {
             style={styles.dropdown}
             onPress={() => setThemeDropdownVisible(!isThemeDropdownVisible)}
           >
-            <Text style={styles.dropdownText}>{theme || 'Choisir...'}</Text>
+            <Text style={styles.dropdownText}>{currentThemeLabel || 'Choisir...'}</Text>
             <Ionicons
               name={isThemeDropdownVisible ? 'chevron-up' : 'chevron-down'}
               size={24}
@@ -77,88 +131,121 @@ export default function ModificationActivitePage() {
           </TouchableOpacity>
           {isThemeDropdownVisible && (
             <View style={styles.dropdownMenu}>
-              {themes.map((item, index) => (
+              {themes.map((theme) => (
                 <TouchableOpacity
-                  key={index}
+                  key={theme.idTheme}
                   style={styles.dropdownItem}
                   onPress={() => {
-                    setTheme(item);
-                    setThemeDropdownVisible(false);
+                    setThemeId(theme.idTheme); // Définit l'ID du thème sélectionné
+                    setCurrentThemeLabel(theme.label); // Définit le label sélectionné
+                    setThemeDropdownVisible(false); // Ferme le menu déroulant
                   }}
                 >
-                  <Text style={styles.dropdownItemText}>{item}</Text>
+                  <Text style={styles.dropdownItemText}>{theme.label}</Text>
                 </TouchableOpacity>
               ))}
             </View>
           )}
 
-          <Text style={styles.label}>Date*</Text>
+          {/* Dates de début et fin */}
+        <View style={styles.rowContainer}>
+          {/* Date de début */}
+          <View style={styles.rowSection}>
+            <Text style={styles.label}>Date Début</Text>
+            <View style={styles.rowInputContainer}>
+              <Ionicons name="calendar-outline" size={24} color="#510D0A" style={styles.dateIcon} />
+              <TextInput
+                style={styles.rowInput}
+                placeholder="JJ/MM/AA"
+                value={dateDebut}
+                onChangeText={setDateDebut}
+              />
+            </View>
+          </View>
+          {/* Date de fin */}
+          <View style={[styles.rowSection, styles.rowSectionMargin]}>
+            <Text style={styles.label}>Date Fin</Text>
+            <View style={styles.rowInputContainer}>
+              <Ionicons name="calendar-outline" size={24} color="#510D0A" style={styles.dateIcon} />
+              <TextInput
+                style={styles.rowInput}
+                placeholder="JJ/MM/AA"
+                value={dateFin}
+                onChangeText={setDateFin}
+              />
+            </View>
+          </View>
+        </View>
+
+        <View style={styles.rowContainer}>
+          <View style={styles.rowSection}>
+            <Text style={styles.label}>Nombre de Place*</Text>
+            <View style={styles.rowInputContainer}>
+            <FontAwesome5 name="users" size={24} color="#510D0A" style={styles.rowIcon} />
+            <TextInput
+              style={styles.rowInput}
+              placeholder="Nombre de places"
+              value={nombreDePlace}
+              onChangeText={setNombreDePlace}
+              keyboardType="numeric"
+            />
+          </View>
+          </View>
+          <View style={[styles.rowSection, styles.rowSectionMargin]}>
+            <Text style={styles.label}>Prix*</Text>
+            <View style={styles.rowInputContainer}>
+            <FontAwesome5 name="euro-sign" size={24} color="#510D0A" style={styles.rowIcon} />
+            <TextInput
+              style={styles.rowInput}
+              placeholder="Prix"
+              value={prix}
+              onChangeText={setPrix}
+              keyboardType="numeric"
+            />
+          </View>
+        </View>
+        </View>
+
+
+        <View style={styles.rowContainer}>
+          <View style={styles.rowSection}>
+            <Text style={styles.label}>Latitude*</Text>
+            <View style={styles.rowInputContainer}>
+            <Ionicons name="locate-outline" size={24} color="#510D0A" style={styles.rowIcon} />
+            <TextInput
+              style={styles.rowInput}
+              placeholder="Latitude"
+              value={altitude}
+              onChangeText={setAltitude}
+              keyboardType="numeric"
+            />
+          </View>
+          </View>
+          <View style={[styles.rowSection, styles.rowSectionMargin]}>
+            <Text style={styles.label}>Longitude*</Text>
+            <View style={styles.rowInputContainer}>
+            <Ionicons name="compass-outline" size={24} color="#510D0A" style={styles.rowIcon} />
+            <TextInput
+              style={styles.rowInput}
+              placeholder="Longitude"
+              value={longitude}
+              onChangeText={setLongitude}
+              keyboardType="numeric"
+            />
+          </View>
+          </View>
+        </View>
+
+        <View style={styles.section}>
+          <Text style={styles.label}>Tags*</Text>
           <TextInput
             style={styles.input}
-            value={date}
-            onChangeText={setDate}
+            placeholder="Tags, séparés par des virgules"
+            value={tags}
+            onChangeText={setTags}
           />
+        </View>
 
-          <View style={styles.rowContainer}>
-            <View style={styles.rowSection}>
-              <Text style={styles.label}>Nombre de Place*</Text>
-              <TextInput
-                style={styles.rowInput}
-                value={nombreDePlace}
-                onChangeText={setNombreDePlace}
-                keyboardType="numeric"
-              />
-            </View>
-            <View style={[styles.rowSection, styles.rowSectionMargin]}>
-              <Text style={styles.label}>Prix*</Text>
-              <TextInput
-                style={styles.rowInput}
-                value={prix}
-                onChangeText={setPrix}
-                keyboardType="numeric"
-              />
-            </View>
-          </View>
-
-          <View style={styles.rowContainer}>
-            <View style={styles.rowSection}>
-              <Text style={styles.label}>Heure Départ*</Text>
-              <TextInput
-                style={styles.rowInput}
-                value={heureDepart}
-                onChangeText={setHeureDepart}
-              />
-            </View>
-            <View style={[styles.rowSection, styles.rowSectionMargin]}>
-              <Text style={styles.label}>Heure Arrivée*</Text>
-              <TextInput
-                style={styles.rowInput}
-                value={heureArrive}
-                onChangeText={setHeureArrive}
-              />
-            </View>
-          </View>
-
-          <View style={styles.rowContainer}>
-            <View style={styles.rowSection}>
-              <Text style={styles.label}>Altitude*</Text>
-              <TextInput
-                style={styles.rowInput}
-                value={altitude}
-                onChangeText={setAltitude}
-                keyboardType="numeric"
-              />
-            </View>
-            <View style={[styles.rowSection, styles.rowSectionMargin]}>
-              <Text style={styles.label}>Longitude*</Text>
-              <TextInput
-                style={styles.rowInput}
-                value={longitude}
-                onChangeText={setLongitude}
-                keyboardType="numeric"
-              />
-            </View>
-          </View>
 
           <TouchableOpacity style={styles.saveButton} onPress={handleSave}>
             <Text style={styles.saveButtonText}>Sauvegarder</Text>

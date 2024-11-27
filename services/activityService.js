@@ -40,3 +40,14 @@ export const createActivity = async (activity) => {
       : { message: "Erreur lors de la création de l'activité." };
   }
 };
+
+export const editActivity = async (activityId) => {
+  try {
+    const response = await axios.put(`${ACTIVITY_API_URL}/${activityId}`, activity);
+    return response.data;
+  } catch (error) {
+    throw error.response
+      ? error.response.data
+      : { message: "Erreur lors de la modification de l'activité." };
+  }
+};
