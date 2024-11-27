@@ -1,52 +1,76 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { useLanguage } from '../../localization/LanguageContext'; // Import du contexte
 import texts from '../../localization/localization'; // Import des traductions
+import { getActivityById } from '../../services/activityService'; // Service pour récupérer une activité
+import { getCityFromCoordinates } from '../../services/Nominatim'; // Service pour récupérer la ville
 
-const Reservation = ({ ...reservation }) => {
+const Reservation = ({ activiteId, dateReservation, status }) => {
   const { language } = useLanguage(); // Récupération de la langue active
+  const [activite, setActivite] = useState({});
+  const [location, setLocation] = useState('');
 
+  // Récupération des détails de l'activité et du lieu
+  useEffect(() => {
+    const fetchActivityDetails = async () => {
+      try {
+        // Récupérer les détails de l'activité
+        const activityData = await getActivityById(activiteId);
+        setActivite(activityData);
+  
+        // Récupérer la ville à partir des coordonnées
+        const city = await getCityFromCoordinates(activityData.latitude, activityData.longitude);
+        setLocation(city);
+      } catch (error) {
+        console.error('Erreur lors de la récupération des détails de l\'activité ou du lieu :', error);
+        setLocation('Erreur lors de la récupération de la ville');
+      }
+    };
+  
+    fetchActivityDetails();
+  }, [activiteId]);
+  
   return (
     <View
       style={styles.reservationCard}
       accessible={true}
-      accessibilityLabel={`${texts[language].reservations.title}: ${reservation.nom}, ${reservation.date}, ${reservation.status}`}
+      accessibilityLabel={`${texts[language].reservations.title}: ${activite.nomActivite || 'Chargement...'}, ${dateReservation}, ${status}`}
     >
       {/* Icône principale */}
       <MaterialCommunityIcons name="calendar" size={40} color="#BC4749" />
       <View style={styles.reservationInfo}>
-        {/* Titre de la réservation */}
-        <Text style={styles.reservationTitle}>{reservation.nom}</Text>
+        {/* Titre de l'activité */}
+        <Text style={styles.reservationTitle}>{activite.nomActivite || 'Chargement...'}</Text>
 
         {/* Description */}
         <Text style={styles.reservationDescription} numberOfLines={3}>
-          {reservation.description}
+          {activite.description || 'Description non disponible'}
         </Text>
 
         {/* Lieu */}
         <Text style={styles.reservationDetails}>
           <MaterialCommunityIcons name="map-marker-outline" size={14} color="#BC4749" />{" "}
-          {reservation.lieu}
+          {location || 'Lieu en cours de chargement...'}
         </Text>
 
         {/* Date */}
         <Text style={styles.reservationDetails}>
           <MaterialCommunityIcons name="calendar-outline" size={14} color="#BC4749" />{" "}
-          {reservation.date}
+          {dateReservation}
         </Text>
 
         {/* Prix */}
         <Text style={styles.reservationDetails}>
           <MaterialCommunityIcons name="currency-eur" size={16} color="#BC4749" />{" "}
-          {reservation.prix}
+          {activite.prix ? `${activite.prix}€` : 'Prix non disponible'}
         </Text>
 
         {/* Thème (facultatif, à afficher si disponible) */}
-        {reservation.theme && (
+        {activite.theme && (
           <Text style={styles.reservationDetails}>
             <MaterialCommunityIcons name="tag-outline" size={14} color="#BC4749" />{" "}
-            {reservation.theme}
+            {activite.theme}
           </Text>
         )}
       </View>
@@ -55,23 +79,23 @@ const Reservation = ({ ...reservation }) => {
       <View
         style={[
           styles.statusBadge,
-          reservation.status === "À venir" ? styles.upcomingBadge : styles.pastBadge,
+          status === "À venir" ? styles.upcomingBadge : styles.pastBadge,
         ]}
       >
         <Text
           style={[
             styles.statusText,
-            reservation.status === "À venir" ? styles.upcoming : styles.past,
+            status === "À venir" ? styles.upcoming : styles.past,
           ]}
         >
-          {reservation.status === "À venir"
+          {status === "À venir"
             ? texts[language].reservations.status.upcoming
             : texts[language].reservations.status.past}
         </Text>
       </View>
 
       {/* Bouton Laisser un avis */}
-      {reservation.status === "Passée" && (
+      {status === "Passée" && (
         <TouchableOpacity style={styles.reviewButton}>
           <Text style={styles.reviewButtonText}>
             {texts[language].reservations.buttons.leaveReview}
@@ -159,6 +183,7 @@ const styles = StyleSheet.create({
 });
 
 export default Reservation;
+
 
 
 
