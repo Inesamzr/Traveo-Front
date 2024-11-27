@@ -84,8 +84,8 @@ export default function ModificationActivitePage() {
     };
   
     try {
-      await editActivity(updatedActivity); // Assurez-vous que cette fonction est définie dans votre service API
-      setPopupVisible(true); // Affiche le popup en cas de succès
+      await editActivity(updatedActivity); 
+      setPopupVisible(true); 
     } catch (error) {
       Alert.alert('Erreur', 'Impossible de modifier l\'activité.');
     }
@@ -258,7 +258,7 @@ export default function ModificationActivitePage() {
         visible={isPopupVisible}
         onClose={() => {
           setPopupVisible(false);
-          navigation.goBack();
+          navigation.navigate('ActivityDetails', { activity: updatedActivity }); // Navigation avec l'activité mise à jour
         }}
         message="Activité modifiée avec succès !"
       />
@@ -411,7 +411,7 @@ const styles = StyleSheet.create({
         color: '#510D0A',
         marginBottom: 5, 
       },
-      createButton: {
+      saveButton: {
         backgroundColor: '#DBBBBA',
         paddingVertical: 15, 
         paddingHorizontal: 80, 
@@ -429,7 +429,7 @@ const styles = StyleSheet.create({
         elevation: 5, 
       },
       
-      createButtonText: {
+      saveButtonText: {
         color: '#510D0A',
         fontSize: 16,
         fontWeight: 'bold',
