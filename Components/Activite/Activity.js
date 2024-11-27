@@ -14,7 +14,6 @@ const Activity = ({ ...activity }) => {
     const fetchAdressLoc = async () => {
 
       const responseAdresse = await getCityFromCoordinates(activity.latitude, activity.longitude)
-      console.log("okofkzeofkzo ", responseAdresse)
       setAdresse(responseAdresse)
 
      }

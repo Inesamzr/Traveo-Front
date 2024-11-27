@@ -11,6 +11,11 @@ export const getThemes = async () => {
   return response.data;
 };
 
+export const getThemeById = async (themeId) => {
+  const response = await axios.get(`${USER_API_URL}${themeId}`);
+  return response.data;
+};
+
 export const createTheme = async (data) => {
   const response = await axios.post(`${USER_API_URL}`, data);
   return response.data;
