@@ -10,14 +10,6 @@ import { getAllActivities } from '../../services/activityService';
 import { getCityFromCoordinates } from '../../services/Nominatim';
 import { getThemes } from '../../services/themeService';
 
-
-const themeIcons = {
-  Aventure: <MaterialCommunityIcons name="hiking" size={16} color="#BC4749" />,
-  Cuisine: <FontAwesome5 name="utensils" size={14} color="#BC4749" />,
-  Spiritualité: <MaterialCommunityIcons name="meditation" size={16} color="#BC4749" />,
-  Créativité: <MaterialCommunityIcons name="brush" size={16} color="#BC4749" />,
-};
-
 export default function ActivitePage() {
   const navigation = useNavigation();
   const [searchText, setSearchText] = useState('');
