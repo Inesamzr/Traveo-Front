@@ -6,11 +6,11 @@ import {
   TouchableOpacity,
   StyleSheet,
   ScrollView,
+  Modal,
 } from 'react-native';
 import { Ionicons, FontAwesome5 } from '@expo/vector-icons';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import Header from '../../Components/Header';
-import Popup from '../../Components/Accueil/Popup';
 import { getThemes } from '../../services/themeService';
 import { editActivity } from '../../services/activityService';
 import { getThemeById } from '../../services/themeService';
@@ -34,6 +34,7 @@ export default function ModificationActivitePage() {
     const [currentThemeLabel, setCurrentThemeLabel] = useState('');
     const [isThemeDropdownVisible, setThemeDropdownVisible] = useState(false);
     const [isPopupVisible, setPopupVisible] = useState(false);
+    const [updatedActivity,setUpdatedActivity] = useState(null)
 
   useEffect(() => {
     const fetchThemeAndThemes = async () => {
@@ -67,7 +68,7 @@ export default function ModificationActivitePage() {
       return;
     }
   
-    const updatedActivity = {
+    const updatedActivityPayload = {
       idActivite: activity.idActivite,
       nomActivite: nom,
       description,
@@ -84,7 +85,8 @@ export default function ModificationActivitePage() {
     };
   
     try {
-      await editActivity(updatedActivity); 
+      const updatedActivityResponse = await editActivity(activity.idActivite, updatedActivityPayload);
+      setUpdatedActivity(updatedActivityResponse);
       setPopupVisible(true); 
     } catch (error) {
       Alert.alert('Erreur', 'Impossible de modifier l\'activité.');
@@ -254,14 +256,22 @@ export default function ModificationActivitePage() {
       </ScrollView>
 
       {/* Popup */}
-      <Popup
-        visible={isPopupVisible}
-        onClose={() => {
-          setPopupVisible(false);
-          navigation.navigate('ActivityDetails', { activity: updatedActivity }); // Navigation avec l'activité mise à jour
-        }}
-        message="Activité modifiée avec succès !"
-      />
+      <Modal transparent={true} visible={isPopupVisible} animationType="fade">
+        <View style={styles.overlay}>
+          <View style={styles.popupContainer}>
+            <Text style={styles.popupMessage}>Activité modifiée avec succès !</Text>
+            <TouchableOpacity
+              style={styles.closeButton}
+              onPress={() => {
+                setPopupVisible(false);
+                navigation.navigate('ActivityDetails',{activity:updatedActivity}); 
+              }}
+            >
+              <Text style={styles.closeButtonText}>Fermer</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
     </>
   );
 }
@@ -432,6 +442,36 @@ const styles = StyleSheet.create({
       saveButtonText: {
         color: '#510D0A',
         fontSize: 16,
+        fontWeight: 'bold',
+      },
+      overlay: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: 'rgba(0, 0, 0, 0.5)',
+      },
+      popupContainer: {
+        width: 300,
+        padding: 20,
+        backgroundColor: 'white',
+        borderRadius: 10,
+        alignItems: 'center',
+      },
+      popupMessage: {
+        fontSize: 16,
+        color: '#510D0A',
+        textAlign: 'center',
+        marginBottom: 20,
+      },
+      closeButton: {
+        backgroundColor: '#510D0A',
+        paddingVertical: 10,
+        paddingHorizontal: 20,
+        borderRadius: 5,
+      },
+      closeButtonText: {
+        color: 'white',
+        fontSize: 14,
         fontWeight: 'bold',
       },
 });

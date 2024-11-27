@@ -41,9 +41,12 @@ export const createActivity = async (activity) => {
   }
 };
 
-export const editActivity = async (activityId) => {
+export const editActivity = async (activityId, updatedActivity) => {
   try {
-    const response = await axios.put(`${ACTIVITY_API_URL}/${activityId}`, activity);
+    const response = await axios.put(
+      `${ACTIVITY_API_URL}/${activityId}`,
+      updatedActivity
+    );
     return response.data;
   } catch (error) {
     throw error.response
