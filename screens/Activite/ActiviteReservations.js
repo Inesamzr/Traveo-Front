@@ -10,7 +10,7 @@ import { Ionicons } from '@expo/vector-icons';
 import Header from '../../Components/Header';
 
 export default function ActiviteReservations({ navigation, route }) {
-  const { activity } = route.params; // Récupération des informations de l'activité
+  const { activity } = route.params;
 
   // Données fictives
   const reservations = [
@@ -23,30 +23,30 @@ export default function ActiviteReservations({ navigation, route }) {
     { id: 7, name: 'Camille.Z37', email: 'Annulé', status: 'cancelled' },
   ];
 
-  // Nombre total de participants confirmés
   const confirmedCount = reservations.filter((r) => r.status === 'confirmed').length;
 
   return (
     <View style={styles.container}>
-      <View style={styles.header}>
-        <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
-          <Ionicons name="arrow-back" size={24} color="#510D0A" />
-        </TouchableOpacity>
-      </View>
-      <Header title='Réservations activité'/>
+      <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
+        <Ionicons name="arrow-back" size={24} color="#510D0A" />
+      </TouchableOpacity>
 
-      <Text style={styles.activityTitle}>{activity.nomActivite}</Text>
-
-      <View style={styles.participantsInfo}>
-        <Ionicons name="people-outline" size={24} color="#510D0A" />
-        <Text style={styles.participantsText}>
-          {confirmedCount}/{activity.nbPlaces}
-        </Text>
-      </View>
+      <Header title="Réservations activité" />
 
       <FlatList
         data={reservations}
         keyExtractor={(item) => item.id.toString()}
+        ListHeaderComponent={() => (
+          <>
+            <Text style={styles.activityTitle}>{activity.nomActivite}</Text>
+            <View style={styles.participantsInfo}>
+              <Ionicons name="people-outline" size={24} color="#510D0A" />
+              <Text style={styles.participantsText}>
+                {confirmedCount}/{activity.nbPlaces}
+              </Text>
+            </View>
+          </>
+        )}
         renderItem={({ item }) => (
           <View
             style={[
@@ -82,7 +82,12 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   backButton: {
-    padding: 5,
+    position: 'absolute',
+    top: 40,
+    left: 20,
+    padding: 8,
+    borderRadius: 20,
+    zIndex: 2,
   },
   headerTitle: {
     color: '#FFF',
@@ -95,6 +100,7 @@ const styles = StyleSheet.create({
     color: '#510D0A',
     textAlign: 'center',
     marginBottom: 20,
+    marginTop:85,
   },
   participantsInfo: {
     flexDirection: 'row',
@@ -116,10 +122,10 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   confirmedItem: {
-    backgroundColor: '#DFF6DD',
+    backgroundColor: '#CDD993',
   },
   cancelledItem: {
-    backgroundColor: '#F6DDDD',
+    backgroundColor: '#DBBBBA',
   },
   reservationIndex: {
     fontSize: 18,

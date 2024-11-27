@@ -475,7 +475,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   reservationsButton: {
-    backgroundColor: '#510D0A',
+    backgroundColor: '#CDD993',
     paddingVertical: 12,
     paddingHorizontal: 20,
     borderRadius: 15,
@@ -483,7 +483,7 @@ const styles = StyleSheet.create({
     marginBottom: 15,
   },
   reservationsButtonText: {
-    color: '#CDD993',
+    color: '#510D0A',
     fontSize: 16,
     fontWeight: 'bold',
   }
