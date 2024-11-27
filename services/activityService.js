@@ -1,10 +1,8 @@
 import axios from 'axios';
 
 //const ACTIVITY_API_URL = 'http://10.193.2.198:8086/api/activities';
-//const ACTIVITY_API_URL = 'http://162.38.37.37:8086/api/activities';
 const ACTIVITY_API_URL = 'http://162.38.37.37:8086/api/activities';
 //const ACTIVITY_API_URL = 'http://192.168.1.54:8086/api/activities';
-
 
 
 // Récupérer toutes les activités
