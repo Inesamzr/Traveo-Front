@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const RESERVATION_API_URL = 'http://162.38.32.231:8085/api/reservations';
+const RESERVATION_API_URL = 'http://10.193.2.198:8085/api/reservations';
 
 // Récupérer toutes les réservations
 export const getAllReservations = async () => {
