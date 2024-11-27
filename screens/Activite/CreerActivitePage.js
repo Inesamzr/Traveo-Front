@@ -6,9 +6,9 @@ import {
   TouchableOpacity,
   StyleSheet,
   ScrollView,
+  Alert,
 } from 'react-native';
 import { Ionicons, FontAwesome5 } from '@expo/vector-icons';
-import { Picker } from '@react-native-picker/picker';
 import { useNavigation } from '@react-navigation/native';
 import Header from '../../Components/Header';
 import Popup from '../../Components/Accueil/Popup';
@@ -23,11 +23,10 @@ export default function CreerActivitePage() {
   const [description, setDescription] = useState('');
   const [themeId, setThemeId] = useState(null);
   const [themes, setThemes] = useState([]);
-  const [date, setDate] = useState('');
+  const [dateDebut, setDateDebut] = useState('');
+  const [dateFin, setDateFin] = useState('');
   const [nombreDePlace, setNombreDePlace] = useState('');
   const [prix, setPrix] = useState('');
-  const [heureDepart, setHeureDepart] = useState('');
-  const [heureArrive, setHeureArrive] = useState('');
   const [altitude, setAltitude] = useState('');
   const [longitude, setLongitude] = useState('');
   const [tags, setTags] = useState('');
@@ -56,15 +55,16 @@ export default function CreerActivitePage() {
 
   // Gestion de la soumission du formulaire
   const handleCreateActivity = async () => {
-    if (!nom || !description || !themeId || !date || !nombreDePlace || !prix || !altitude || !longitude) {
+    if (!nom || !description || !themeId || !dateDebut || !dateFin || !nombreDePlace || !prix || !altitude || !longitude) {
       Alert.alert('Erreur', 'Veuillez remplir tous les champs obligatoires.');
       return;
     }
 
     // Convertir la date en format ISO-8601
-    const dateISO = convertDateToISO(date);
-    if (!dateISO) {
-      Alert.alert('Erreur', 'La date entrée est invalide. Utilisez le format JJ/MM/AAAA.');
+    const dateDebutISO = convertDateToISO(dateDebut);
+    const dateFinISO = convertDateToISO(dateFin);
+    if (!dateDebutISO || !dateFinISO) {
+      Alert.alert('Erreur', 'Les dates entrées sont invalides. Utilisez le format JJ/MM/AAAA.');
       return;
     }
 
@@ -78,8 +78,8 @@ export default function CreerActivitePage() {
       nomActivite: nom,
       description,
       themeId,
-      dateDebut: dateISO,
-      dateFin: dateISO, 
+      dateDebut: dateDebutISO,
+      dateFin: dateFinISO, 
       nbPlaces: parseInt(nombreDePlace),
       prix: parseFloat(prix),
       latitude: parseFloat(altitude),
@@ -162,16 +162,32 @@ export default function CreerActivitePage() {
         )}
 
         {/* Date */}
-        <Text style={styles.label}>Date*</Text>
-        <View style={styles.dateContainer}>
-        <Ionicons name="calendar-outline" size={24} color="#510D0A" style={styles.dateIcon} />
-        <TextInput
-            style={styles.dateInput}
-            placeholder="JJ/MM/AA"
-            value={date}
-            onChangeText={setDate}
-        />
-        </View>
+        <View style={styles.rowContainer}>
+            <View style={styles.rowSection}>
+              <Text style={styles.label}>Date Début*</Text>
+              <View style={styles.rowInputContainer}>
+              <TextInput
+                style={styles.rowInput}
+                placeholder="JJ/MM/AAAA"
+                value={dateDebut}
+                onChangeText={setDateDebut}
+              />
+            </View>
+            </View>
+
+            <View style={[styles.rowSection, styles.rowSectionMargin]}>
+              <Text style={styles.label}>Date Fin*</Text>
+              <View style={styles.rowInputContainer}>
+              <TextInput
+                style={styles.rowInput}
+                placeholder="JJ/MM/AAAA"
+                value={dateFin}
+                onChangeText={setDateFin}
+              />
+            </View>
+          </View>
+          </View>
+
 
         {/* Nombre de Place et Prix */}
         <View style={styles.rowContainer}>
@@ -200,38 +216,6 @@ export default function CreerActivitePage() {
                 value={prix}
                 onChangeText={setPrix}
                 keyboardType="numeric"
-            />
-            </View>
-        </View>
-        </View>
-
-
-        
-        {/* Heure de Départ et Heure d'Arrivée */}
-        <View style={styles.rowContainer}>
-        {/* Heure de Départ */}
-        <View style={styles.rowSection}>
-            <Text style={styles.label}>Heure Départ</Text>
-            <View style={styles.rowInputContainer}>
-            <Ionicons name="time-outline" size={24} color="#510D0A" style={styles.rowIcon} />
-            <TextInput
-                style={styles.rowInput}
-                placeholder="6:00"
-                value={heureDepart}
-                onChangeText={setHeureDepart}
-            />
-            </View>
-        </View>
-        {/* Heure d'Arrivée */}
-        <View style={[styles.rowSection, styles.rowSectionMargin]}>
-            <Text style={styles.label}>Heure Retour</Text>
-            <View style={styles.rowInputContainer}>
-            <Ionicons name="time-outline" size={24} color="#510D0A" style={styles.rowIcon} />
-            <TextInput
-                style={styles.rowInput}
-                placeholder="12:00"
-                value={heureArrive}
-                onChangeText={setHeureArrive}
             />
             </View>
         </View>
