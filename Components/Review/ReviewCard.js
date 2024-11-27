@@ -12,18 +12,21 @@ export default function ReviewCard({ id, userId, rating, comment, avatarColor, o
     const getAuthName = async () => {
       const user = await getUserById(userId);
       setAuthorName(user.username);
-      console.log(authorName);
     }
 
     const checkUser = async () => {
       
       const loggedInUserId = await AsyncStorage.getItem("userId");
-      setIsAuthor(loggedInUserId === userId);
+      setIsAuthor(parseInt(loggedInUserId, 10) === userId);
+
+      console.log(userId, " " , loggedInUserId, " ", isAuthor)
+      console.log(userId, typeof userId, loggedInUserId, typeof loggedInUserId, isAuthor);
+
     };
 
     getAuthName();
     checkUser();
-  }, [userId]);
+  }, []);
 
   return (
     <View style={[styles.container, { backgroundColor: avatarColor }]}>
