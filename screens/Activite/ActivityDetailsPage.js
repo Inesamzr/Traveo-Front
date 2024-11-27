@@ -120,7 +120,13 @@ export default function ActivityDetailsPage({ route, navigation }) {
               <Text style={styles.infoText}>{theme.label || 'Thème inconnu'}</Text>
             </View>
           </View>
-
+          {isOwner && (
+            <TouchableOpacity
+              style={styles.reservationsButton}
+            >
+              <Text style={styles.reservationsButtonText}>Voir les réservations</Text>
+            </TouchableOpacity>
+          )}
           {/* Sections détaillées */}
           <View style={styles.section}>
             <View style={styles.sectionTitleContainer}>

@@ -84,14 +84,14 @@ export default function CreerActivitePage() {
       prix: parseFloat(prix),
       latitude: parseFloat(altitude),
       longitude: parseFloat(longitude),
-      tags: rags || '', 
+      tags: tags || '', 
       image: 'https://example.com/default-image.jpg', 
       userId: parseInt(userId), 
     };
 
     try {
       await createActivity(newActivity);
-      setPopupVisible(true); // Affiche le popup en cas de succès
+      setPopupVisible(true); 
     } catch (error) {
       Alert.alert('Erreur', 'Impossible de créer l\'activité.');
     }
