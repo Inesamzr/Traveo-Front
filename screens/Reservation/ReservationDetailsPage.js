@@ -21,19 +21,10 @@ export default function ReservationDetailsPage({ route, navigation }) {
       if (!reviewsData || reviewsData.length === 0) {
         Alert.alert('Avis', 'Aucun avis disponible pour cette réservation.');
         return;
-      }
-  
-      // Calculer la moyenne des notes
-      const totalRating = reviewsData.reduce((sum, review) => sum + review.note, 0);
-      const averageRating = totalRating / reviewsData.length;
-
-      console.log(averageRating)
-  
+      }  
       // Naviguer vers la page ActivityReviews avec les avis et la moyenne
       navigation.navigate('ActivityReviews', {
         reviews: reviewsData,
-        rating: averageRating.toFixed(1), // Arrondi à une décimale
-        reviewsCount: reviewsData.length,
       });
     } catch (error) {
       Alert.alert('Erreur', "Impossible de charger les avis pour cette réservation.");

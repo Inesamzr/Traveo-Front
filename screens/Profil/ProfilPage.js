@@ -8,6 +8,7 @@ import texts from '../../localization/localization';
 import { useLanguage } from '../../localization/LanguageContext';
 import { getUserById, updateUserProfile } from '../../services/userService';
 import { getUserActivities } from '../../services/activityService';
+import { getReviewsOfUser } from '../../services/reviewService';
 
 
 export default function ProfilPage({ route, navigation }) {
@@ -57,8 +58,18 @@ export default function ProfilPage({ route, navigation }) {
       }
     }
 
+    const fetchReviews = async () => {
+      try {
+        const userReviews = await getReviewsOfUser(userId)
+        setReviews(userReviews);
+      } catch (error) {
+        Alert.alert('Erreur', "Impossible de charger les données des reviews de l'utilisateurs");
+      }
+    }
+
     fetchUserData();
-    fetchActiviteData()
+    fetchActiviteData();
+    fetchReviews();
   }, [userId]);
 
 
@@ -144,7 +155,10 @@ export default function ProfilPage({ route, navigation }) {
       { role === "admin" &&
         <ProfilButton label="Thèmes d'activités" onPress={() => navigation.navigate('Themes')}/>
       }
-      <ReviewsSection reviews={reviews} rating={4.8} reviewsCount={reviews.length} />
+      { reviews && (
+          <ReviewsSection reviews={reviews}/>
+      )
+      }
     </ScrollView>
   );
 }
