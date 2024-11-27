@@ -106,20 +106,27 @@ export default function ActivityDetailsPage({ route, navigation }) {
 
         {/* Détails de l'activité */}
         <View style={styles.detailsContainer}>
-          <View style={styles.infoRow}>
-            <View style={styles.infoItem}>
-              <Ionicons name="person-circle-outline" size={20} color="#BC4749" />
-              <Text style={styles.infoText}>{username}</Text>
-            </View>
-            <View style={styles.infoItem}>
-              <Ionicons name="people-outline" size={20} color="#BC4749" />
-              <Text style={styles.infoText}>x / {activity.nbPlaces}</Text>
-            </View>
-            <View style={styles.infoItem}>
-              <MaterialCommunityIcons name={theme.image_default || 'help-circle-outline'} size={22} color="#BC4749" />
-              <Text style={styles.infoText}>{theme.label || 'Thème inconnu'}</Text>
-            </View>
+        <View style={styles.infoRow}>
+          <TouchableOpacity
+            style={styles.infoItem}
+            onPress={() => navigation.navigate('Profil', { userId: activity.userId })}
+          >
+            <Ionicons name="person-circle-outline" size={20} color="#BC4749" />
+            <Text style={styles.infoText}>{username}</Text>
+          </TouchableOpacity>
+          <View style={styles.infoItem}>
+            <Ionicons name="people-outline" size={20} color="#BC4749" />
+            <Text style={styles.infoText}>x / {activity.nbPlaces}</Text>
           </View>
+          <View style={styles.infoItem}>
+            <MaterialCommunityIcons
+              name={theme.image_default || 'help-circle-outline'}
+              size={22}
+              color="#BC4749"
+            />
+            <Text style={styles.infoText}>{theme.label || 'Thème inconnu'}</Text>
+          </View>
+        </View>
 
           {/* Sections détaillées */}
           <View style={styles.section}>
