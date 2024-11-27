@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { TouchableOpacity, View, StyleSheet, ScrollView, Text, ActivityIndicator, Alert } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import ProfilHeader from '../../Components/Profil/ProfilHeader';
 import ProfilField from '../../Components/Profil/ProfilField';
 import ProfilButton from '../../Components/Profil/ProfilButton';
@@ -10,12 +11,13 @@ import { getUserById, updateUserProfile } from '../../services/userService';
 import { getUserActivities } from '../../services/activityService';
 import { getReviewsOfUser } from '../../services/reviewService';
 
-
 export default function ProfilPage({ route, navigation }) {
+  const { userId } = route.params;
   const { language } = useLanguage();
   const currentTexts = texts[language];
 
   const [loading, setLoading] = useState(true); // Indicateur de chargement
+  const [isCurrentUser, setIsCurrentUser] = useState(false); // Vérifie si le userId correspond
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
   const [username, setUsername] = useState('');
@@ -26,9 +28,18 @@ export default function ProfilPage({ route, navigation }) {
   const [activities, setActivities] = useState([]);
   const [reviews, setReviews] = useState([]); // Avis utilisateur
 
-  const { userId } = route.params;
-
   useEffect(() => {
+    const checkCurrentUser = async () => {
+      try {
+        const storedUserId = await AsyncStorage.getItem('userId');
+        setIsCurrentUser(parseInt(storedUserId) === userId);
+        console.log(storedUserId , " ", userId)
+        console.log(parseInt(storedUserId) === userId)
+      } catch (error) {
+        console.error("Erreur lors de la récupération de l'ID utilisateur :", error);
+      }
+    };
+
     const fetchUserData = async () => {
       try {
         if (!userId) {
@@ -39,8 +50,8 @@ export default function ProfilPage({ route, navigation }) {
         setLastName(userData.lastName);
         setEmail(userData.email);
         setUsername(userData.username);
-        setPhoneNumber(userData.phoneNumber)
-        setRole(userData.role)
+        setPhoneNumber(userData.phoneNumber);
+        setRole(userData.role);
       } catch (error) {
         Alert.alert('Erreur', "Impossible de charger les données utilisateur.");
       } finally {
@@ -50,28 +61,27 @@ export default function ProfilPage({ route, navigation }) {
 
     const fetchActiviteData = async () => {
       try {
-        const ActivitesData = await getUserActivities(userId)
-        setActivities(ActivitesData)
-
+        const ActivitesData = await getUserActivities(userId);
+        setActivities(ActivitesData);
       } catch (error) {
-        Alert.alert('Erreur', "Impossible de charger les données des activites de l'utilisateurs");
+        Alert.alert('Erreur', "Impossible de charger les données des activités de l'utilisateur");
       }
-    }
+    };
 
     const fetchReviews = async () => {
       try {
-        const userReviews = await getReviewsOfUser(userId)
+        const userReviews = await getReviewsOfUser(userId);
         setReviews(userReviews);
       } catch (error) {
-        Alert.alert('Erreur', "Impossible de charger les données des reviews de l'utilisateurs");
+        Alert.alert('Erreur', "Impossible de charger les données des avis de l'utilisateur");
       }
-    }
+    };
 
+    checkCurrentUser();
     fetchUserData();
     fetchActiviteData();
     fetchReviews();
-  }, [userId]);
-
+  }, [userId, isCurrentUser]);
 
   const handleFieldChange = (field, value) => {
     if (field === 'firstName') {
@@ -80,7 +90,7 @@ export default function ProfilPage({ route, navigation }) {
         setUsername(`${value}.${lastName.substring(0, 2).toLowerCase()}`); // Met à jour le username par défaut
       }
     }
-  
+
     if (field === 'lastName') {
       setLastName(value);
       if (firstName) {
@@ -93,7 +103,7 @@ export default function ProfilPage({ route, navigation }) {
   const handleSave = async () => {
     setLoading(true);
     try {
-      await updateUserProfile(userId, {firstName, lastName, email, userId, username, phoneNumber} ); // Met à jour les données utilisateur
+      await updateUserProfile(userId, { firstName, lastName, email, userId, username, phoneNumber }); // Met à jour les données utilisateur
       setIsModified(false); // Réinitialise l'état de modification
       Alert.alert('Succès', 'Profil mis à jour avec succès.');
     } catch (error) {
@@ -114,51 +124,51 @@ export default function ProfilPage({ route, navigation }) {
 
   return (
     <ScrollView style={styles.container} contentContainerStyle={styles.content}>
-      <ProfilHeader name={`${username}`}/>
-      <View style={styles.fields}>
-        <ProfilField
-          label={currentTexts.firstNamePlaceholder}
-          value={firstName}
-          icon="person"
-          editable
-          onChangeText={(value) => handleFieldChange('firstName', value)}
-        />
-        <ProfilField
-          label={currentTexts.lastNamePlaceholder}
-          value={lastName}
-          icon="person"
-          editable
-          onChangeText={(value) => handleFieldChange('lastName', value)}
-        />
+      <ProfilHeader name={`${username}`} />
+      {isCurrentUser && (
+        <View style={styles.fields}>
           <ProfilField
-          label={currentTexts.phoneNumber}
-          value={phoneNumber}
-          icon="call-outline"
-          editable
-          keyboardType="phone-pad"
-          onChangeText={(value) => handleFieldChange('phoneNumber', value)}
-        />
-        <ProfilField
-          label="Email"
-          value={email}
-          icon="mail"
-          onChangeText={(value) => handleFieldChange('email', value)}
-        />
-      </View>
-      {isModified && (
+            label={currentTexts.firstNamePlaceholder}
+            value={firstName}
+            icon="person"
+            editable
+            onChangeText={(value) => handleFieldChange('firstName', value)}
+          />
+          <ProfilField
+            label={currentTexts.lastNamePlaceholder}
+            value={lastName}
+            icon="person"
+            editable
+            onChangeText={(value) => handleFieldChange('lastName', value)}
+          />
+          <ProfilField
+            label={currentTexts.phoneNumber}
+            value={phoneNumber}
+            icon="call-outline"
+            editable
+            keyboardType="phone-pad"
+            onChangeText={(value) => handleFieldChange('phoneNumber', value)}
+          />
+          <ProfilField
+            label="Email"
+            value={email}
+            icon="mail"
+            onChangeText={(value) => handleFieldChange('email', value)}
+          />
+        </View>
+      )}
+      {isCurrentUser && isModified && (
         <TouchableOpacity style={styles.saveButton} onPress={handleSave}>
           <Text style={styles.saveButtonText}>Enregistrer</Text>
         </TouchableOpacity>
       )}
-      <ProfilButton label="Mes activités" onPress={() => navigation.navigate('ActivityList', {activities})} />
-      <ProfilButton label="Mes réservations" onPress={() => navigation.navigate('Reservations')} />
-      { role === "admin" &&
-        <ProfilButton label="Thèmes d'activités" onPress={() => navigation.navigate('Themes')}/>
-      }
-      { reviews && (
-          <ReviewsSection reviews={reviews}/>
-      )
-      }
+      {isCurrentUser && (
+        <>
+          <ProfilButton label="Mes activités" onPress={() => navigation.navigate('ActivityList', { activities })} />
+          {role === 'admin' && <ProfilButton label="Thèmes d'activités" onPress={() => navigation.navigate('Themes')} />}
+        </>
+      )}
+      <ReviewsSection reviews={reviews} />
     </ScrollView>
   );
 }
