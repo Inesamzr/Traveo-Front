@@ -1,18 +1,46 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, Image, TouchableOpacity, ScrollView } from 'react-native';
-import { Ionicons, MaterialCommunityIcons, FontAwesome5 } from '@expo/vector-icons';
+import {
+  View,
+  Text,
+  StyleSheet,
+  Image,
+  TouchableOpacity,
+  ScrollView,
+  Alert,
+  Modal,
+} from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
 import { getCityFromCoordinates } from '../../services/Nominatim';
 import { getUserById } from '../../services/userService';
 import { getThemeById } from '../../services/themeService';
+import { deleteActivity } from '../../services/activityService'; 
+
 
 export default function ActivityDetailsPage({ route, navigation }) {
   const { activity } = route.params;
-  const [adresse, setAdresse] = useState("");
-  const [username, setUsername] = useState(""); 
-  const [theme, setTheme] = useState("");
+  const [adresse, setAdresse] = useState('');
+  const [username, setUsername] = useState('');
+  const [theme, setTheme] = useState('');
+  const [userId, setUserId] = useState(null);
+  const [isOwner, setIsOwner] = useState(false);
+  const [isDeletePopupVisible, setDeletePopupVisible] = useState(false);
+
 
   useEffect(() => {
-    // Récupérer la ville basée sur les coordonnées
+    const fetchUserData = async () => {
+      try {
+        const storedUserId = await AsyncStorage.getItem('userId');
+        setUserId(Number(storedUserId));
+
+        if (Number(storedUserId) === activity.userId) {
+          setIsOwner(true);
+        }
+      } catch (error) {
+        Alert.alert('Erreur', "Impossible de récupérer l'identifiant utilisateur.");
+      }
+    };
+
     const fetchAdressLoc = async () => {
       try {
         const responseAdresse = await getCityFromCoordinates(activity.latitude, activity.longitude);
@@ -22,29 +50,44 @@ export default function ActivityDetailsPage({ route, navigation }) {
       }
     };
 
-    // Récupérer le username de l'utilisateur
     const fetchUsername = async () => {
       try {
-        const userData = await getUserById(activity.userId); 
-        setUsername(userData.firstName+'.'+userData.lastName);
+        const userData = await getUserById(activity.userId);
+        setUsername(userData.firstName + '.' + userData.lastName);
       } catch (error) {
         Alert.alert('Erreur', "Impossible de récupérer les informations de l'utilisateur.");
       }
     };
-    const fetchTheme = async () => {
-      const responseTheme = await getThemeById(activity.themeId)
-      setTheme(responseTheme)
-     }
 
+    // Récupérer le thème
+    const fetchTheme = async () => {
+      try {
+        const responseTheme = await getThemeById(activity.themeId);
+        setTheme(responseTheme);
+      } catch (error) {
+        Alert.alert('Erreur', "Impossible de récupérer le thème.");
+      }
+    };
+
+    fetchUserData();
     fetchAdressLoc();
     fetchUsername();
-    fetchTheme()
+    fetchTheme();
   }, [activity.userId]);
+
+  const handleDeleteActivity = async () => {
+    try {
+      await deleteActivity(activity.idActivite);
+      Alert.alert('Succès', "L'activité a été supprimée.");
+      navigation.navigate('ActivitePage'); 
+    } catch (error) {
+      Alert.alert('Erreur', "Impossible de supprimer l'activité.");
+    }
+  };
 
   return (
     <View style={styles.container}>
-      <ScrollView style = {styles.contenu}>
-        {/* Image avec l'icône de retour */}
+      <ScrollView style={styles.contenu}>
         <View style={styles.imageContainer}>
           <Image
             source={require('../../assets/activity-image-placeholder.png')}
@@ -73,37 +116,40 @@ export default function ActivityDetailsPage({ route, navigation }) {
               <Text style={styles.infoText}>x / {activity.nbPlaces}</Text>
             </View>
             <View style={styles.infoItem}>
-              <MaterialCommunityIcons name={theme.image_default} size={22} color="#BC4749" /> {theme.label}
-              <Text style={styles.infoText}>{theme.label}</Text>
+              <MaterialCommunityIcons name={theme.image_default || 'help-circle-outline'} size={22} color="#BC4749" />
+              <Text style={styles.infoText}>{theme.label || 'Thème inconnu'}</Text>
             </View>
           </View>
 
+          {/* Sections détaillées */}
           <View style={styles.section}>
             <View style={styles.sectionTitleContainer}>
-                <Text style={styles.sectionTitle}>Description</Text>
+              <Text style={styles.sectionTitle}>Description</Text>
             </View>
             <Text style={styles.sectionContent}>{activity.description}</Text>
-            </View>
+          </View>
           <View style={styles.section}>
-          <View style={styles.sectionTitleContainer}>
-            <Text style={styles.sectionTitle}>Lieu de RDV</Text>
+            <View style={styles.sectionTitleContainer}>
+              <Text style={styles.sectionTitle}>Lieu de RDV</Text>
             </View>
             <Text style={styles.sectionContent}>{adresse}</Text>
           </View>
           <View style={styles.section}>
             <View style={styles.sectionTitleContainer}>
-                <Text style={styles.sectionTitle}>Dates</Text>
+              <Text style={styles.sectionTitle}>Dates</Text>
             </View>
-            <Text style={styles.sectionContent}>du {activity.dateDebut} au {activity.dateFin}</Text>
-            </View>
-            <View style={styles.section}>
+            <Text style={styles.sectionContent}>
+              du {activity.dateDebut} au {activity.dateFin}
+            </Text>
+          </View>
+          <View style={styles.section}>
             <View style={styles.sectionTitleContainer}>
-                <Text style={styles.sectionTitle}>Prix</Text>
+              <Text style={styles.sectionTitle}>Prix</Text>
             </View>
             <Text style={styles.sectionContent}>{activity.prix} €</Text>
-            </View>
-            
-            <View style={styles.section}>
+          </View>
+          
+          <View style={styles.section}>
             <View style={styles.sectionTitleContainer}>
                 <Text style={styles.sectionTitle}>Place Diponibles</Text>
             </View>
@@ -133,19 +179,66 @@ export default function ActivityDetailsPage({ route, navigation }) {
             </View>
 
         </View>
-      {/* Boutons en bas */}
-      <View style={styles.buttonContainer}>
-        <TouchableOpacity style={styles.registerButton}>
-          <Text style={styles.registerButtonText}>M'inscrire</Text>
 
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.reviewButton}
+        {/* Boutons en bas */}
+        <View style={styles.buttonContainer}>
+        {isOwner && (
+            <>
+              <TouchableOpacity
+                style={styles.editButton}
+                onPress={() => navigation.navigate('EditActivite', { activity })}
+              >
+                <Text style={styles.editButtonText}>Modifier</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={styles.deleteButton}
+                onPress={() => setDeletePopupVisible(true)}
+              >
+                <Text style={styles.deleteButtonText}>Supprimer</Text>
+              </TouchableOpacity>
+            </>
+          )}
+          {!isOwner && (
+            <TouchableOpacity style={styles.registerButton}>
+              <Text style={styles.registerButtonText}>M'inscrire</Text>
+            </TouchableOpacity>
+          )}
+          <TouchableOpacity style={styles.reviewButton}
         onPress={() => navigation.navigate('ActivityReviews', { reviews: activity.reviews, rating: 3, reviewsCount: activity.reviews.length })}
         >
           <Text style={styles.reviewButtonText}>Avis</Text>
         </TouchableOpacity>
-      </View>
+        </View>
       </ScrollView>
+
+      {/* Popup de suppression */}
+      <Modal transparent visible={isDeletePopupVisible} animationType="fade">
+        <View style={styles.overlay}>
+          <View style={styles.popupContainer}>
+            <Text style={styles.popupMessage}>
+              Êtes-vous sûr de vouloir supprimer cette activité ?
+            </Text>
+            <View style={styles.popupButtons}>
+              <TouchableOpacity
+                style={styles.cancelButton}
+                onPress={() => setDeletePopupVisible(false)}
+              >
+                <Text style={styles.cancelButtonText}>Annuler</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={styles.confirmButton}
+                onPress={() => {
+                  setDeletePopupVisible(false);
+                  handleDeleteActivity();
+                }}
+              >
+                <Text style={styles.confirmButtonText}>Confirmer</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+      </Modal>
+
     </View>
   );
 }
@@ -308,5 +401,70 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: 'bold',
   },
-  
+  editButton: 
+  { 
+    backgroundColor: '#510D0A', 
+    padding: 10, 
+    borderRadius: 20 
+  },
+  editButtonText: { 
+    color: 'white',
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
+  deleteButton: {
+    backgroundColor: '#BC4749',
+    paddingVertical: 10,
+    paddingHorizontal: 30,
+    borderRadius: 25,
+  },
+  deleteButtonText: {
+    color: '#FFF',
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
+  overlay: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+  },
+  popupContainer: {
+    width: 300,
+    padding: 20,
+    backgroundColor: 'white',
+    borderRadius: 10,
+    alignItems: 'center',
+  },
+  popupMessage: {
+    fontSize: 16,
+    textAlign: 'center',
+    marginBottom: 20,
+    color: '#510D0A',
+  },
+  popupButtons: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    width: '100%',
+  },
+  cancelButton: {
+    backgroundColor: '#CDD993',
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    borderRadius: 5,
+  },
+  cancelButtonText: {
+    color: '#000',
+    fontWeight: 'bold',
+  },
+  confirmButton: {
+    backgroundColor: '#BC4749',
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    borderRadius: 5,
+  },
+  confirmButtonText: {
+    color: '#FFF',
+    fontWeight: 'bold',
+  },
 });
