@@ -5,7 +5,7 @@ import { Ionicons } from '@expo/vector-icons';
 import Header from '../../Components/Header';
 
 export default function ActivityReviewsPage({ route, navigation }) {
-  const { reviews, rating, reviewsCount } = route.params;
+  const { reviews } = route.params;
 
   const handleAddReviewPress = () => {
     navigation.navigate('AddReview');
@@ -17,7 +17,7 @@ export default function ActivityReviewsPage({ route, navigation }) {
       <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backIcon}>
         <Ionicons name="arrow-back" size={24} color="#510D0A" />
       </TouchableOpacity>
-      <ReviewsSection reviews={reviews} rating={rating} reviewsCount={reviewsCount} />
+      <ReviewsSection reviews={reviews} />
       <TouchableOpacity style={styles.addReviewButton} onPress={handleAddReviewPress}>
         <Text style={styles.addReviewButtonText}>Ajouter un avis</Text>
       </TouchableOpacity>
