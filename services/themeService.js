@@ -13,7 +13,7 @@ export const getThemes = async () => {
 };
 
 export const getThemeById = async (themeId) => {
-  const response = await axios.get(`${USER_API_URL}${themeId}`);
+  const response = await axios.get(`${USER_API_URL}/${themeId}`);
   return response.data;
 };
 
