@@ -7,12 +7,15 @@ import {
   TouchableOpacity,
   ScrollView,
   Alert,
+  Modal,
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
 import { getCityFromCoordinates } from '../../services/Nominatim';
 import { getUserById } from '../../services/userService';
 import { getThemeById } from '../../services/themeService';
+import { deleteActivity } from '../../services/activityService'; 
+
 
 export default function ActivityDetailsPage({ route, navigation }) {
   const { activity } = route.params;
@@ -21,16 +24,15 @@ export default function ActivityDetailsPage({ route, navigation }) {
   const [theme, setTheme] = useState('');
   const [userId, setUserId] = useState(null);
   const [isOwner, setIsOwner] = useState(false);
+  const [isDeletePopupVisible, setDeletePopupVisible] = useState(false);
+
 
   useEffect(() => {
-    // Récupérer les informations utilisateur
     const fetchUserData = async () => {
       try {
-        // Récupérer le userId depuis AsyncStorage
         const storedUserId = await AsyncStorage.getItem('userId');
         setUserId(Number(storedUserId));
 
-        // Comparer le userId
         if (Number(storedUserId) === activity.userId) {
           setIsOwner(true);
         }
@@ -39,7 +41,6 @@ export default function ActivityDetailsPage({ route, navigation }) {
       }
     };
 
-    // Récupérer la ville basée sur les coordonnées
     const fetchAdressLoc = async () => {
       try {
         const responseAdresse = await getCityFromCoordinates(activity.latitude, activity.longitude);
@@ -49,7 +50,6 @@ export default function ActivityDetailsPage({ route, navigation }) {
       }
     };
 
-    // Récupérer le username de l'utilisateur
     const fetchUsername = async () => {
       try {
         const userData = await getUserById(activity.userId);
@@ -75,10 +75,19 @@ export default function ActivityDetailsPage({ route, navigation }) {
     fetchTheme();
   }, [activity.userId]);
 
+  const handleDeleteActivity = async () => {
+    try {
+      await deleteActivity(activity.idActivite);
+      Alert.alert('Succès', "L'activité a été supprimée.");
+      navigation.navigate('ActivitePage'); 
+    } catch (error) {
+      Alert.alert('Erreur', "Impossible de supprimer l'activité.");
+    }
+  };
+
   return (
     <View style={styles.container}>
       <ScrollView style={styles.contenu}>
-        {/* Image avec l'icône de retour */}
         <View style={styles.imageContainer}>
           <Image
             source={require('../../assets/activity-image-placeholder.png')}
@@ -173,17 +182,27 @@ export default function ActivityDetailsPage({ route, navigation }) {
 
         {/* Boutons en bas */}
         <View style={styles.buttonContainer}>
-          {isOwner && (
-            <TouchableOpacity
-              style={styles.editButton}
-              onPress={() => navigation.navigate('EditActivite', { activity })}
-            >
-              <Text style={styles.editButtonText}>Modifier</Text>
+        {isOwner && (
+            <>
+              <TouchableOpacity
+                style={styles.editButton}
+                onPress={() => navigation.navigate('EditActivite', { activity })}
+              >
+                <Text style={styles.editButtonText}>Modifier</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={styles.deleteButton}
+                onPress={() => setDeletePopupVisible(true)}
+              >
+                <Text style={styles.deleteButtonText}>Supprimer</Text>
+              </TouchableOpacity>
+            </>
+          )}
+          {!isOwner && (
+            <TouchableOpacity style={styles.registerButton}>
+              <Text style={styles.registerButtonText}>M'inscrire</Text>
             </TouchableOpacity>
           )}
-          <TouchableOpacity style={styles.registerButton}>
-            <Text style={styles.registerButtonText}>M'inscrire</Text>
-          </TouchableOpacity>
           <TouchableOpacity style={styles.reviewButton}
         onPress={() => navigation.navigate('ActivityReviews', { reviews: activity.reviews, rating: 3, reviewsCount: activity.reviews.length })}
         >
@@ -191,6 +210,35 @@ export default function ActivityDetailsPage({ route, navigation }) {
         </TouchableOpacity>
         </View>
       </ScrollView>
+
+      {/* Popup de suppression */}
+      <Modal transparent visible={isDeletePopupVisible} animationType="fade">
+        <View style={styles.overlay}>
+          <View style={styles.popupContainer}>
+            <Text style={styles.popupMessage}>
+              Êtes-vous sûr de vouloir supprimer cette activité ?
+            </Text>
+            <View style={styles.popupButtons}>
+              <TouchableOpacity
+                style={styles.cancelButton}
+                onPress={() => setDeletePopupVisible(false)}
+              >
+                <Text style={styles.cancelButtonText}>Annuler</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={styles.confirmButton}
+                onPress={() => {
+                  setDeletePopupVisible(false);
+                  handleDeleteActivity();
+                }}
+              >
+                <Text style={styles.confirmButtonText}>Confirmer</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+      </Modal>
+
     </View>
   );
 }
@@ -364,5 +412,59 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: 'bold',
   },
-  
+  deleteButton: {
+    backgroundColor: '#BC4749',
+    paddingVertical: 10,
+    paddingHorizontal: 30,
+    borderRadius: 25,
+  },
+  deleteButtonText: {
+    color: '#FFF',
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
+  overlay: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+  },
+  popupContainer: {
+    width: 300,
+    padding: 20,
+    backgroundColor: 'white',
+    borderRadius: 10,
+    alignItems: 'center',
+  },
+  popupMessage: {
+    fontSize: 16,
+    textAlign: 'center',
+    marginBottom: 20,
+    color: '#510D0A',
+  },
+  popupButtons: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    width: '100%',
+  },
+  cancelButton: {
+    backgroundColor: '#CDD993',
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    borderRadius: 5,
+  },
+  cancelButtonText: {
+    color: '#000',
+    fontWeight: 'bold',
+  },
+  confirmButton: {
+    backgroundColor: '#BC4749',
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    borderRadius: 5,
+  },
+  confirmButtonText: {
+    color: '#FFF',
+    fontWeight: 'bold',
+  },
 });
