@@ -5,8 +5,10 @@ import ReviewCard from './ReviewCard';
 import { deleteReview } from '../../services/reviewService';
 import { useNavigation } from '@react-navigation/native';
 
-export default function ReviewsSection({ reviews, rating, reviewsCount}) {
+export default function ReviewsSection({ reviews }) {
   const [visibleReviews, setVisibleReviews] = useState(2); // Nombre d'avis visibles
+  const reviewsCount = reviews.length
+  const rating = (reviews.reduce((sum, review) => sum + review.note, 0)/reviewsCount).toFixed(1)
 
   const navigation = useNavigation()
 
