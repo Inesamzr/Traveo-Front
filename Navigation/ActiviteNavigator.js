@@ -6,6 +6,8 @@ import ActivityDetailsPage from '../screens/Activite/ActivityDetailsPage';
 import ActivityReviewsPage from '../screens/Activite/ActivityReviewsPage';
 import CreerActivitePage from '../screens/Activite/CreerActivitePage';
 import ModificationActivitePage from '../screens/Activite/ModificationActivitePage';
+import ActiviteReservations from '../screens/Activite/ActiviteReservations';
+
 const Stack = createStackNavigator();
 
 export default function ActiviteNavigator() {
@@ -38,6 +40,11 @@ export default function ActiviteNavigator() {
       <Stack.Screen 
         name="EditActivite" 
         component={ModificationActivitePage} 
+        options={{ headerShown: false }} 
+      />
+      <Stack.Screen 
+        name="ActiviteReservations" 
+        component={ActiviteReservations} 
         options={{ headerShown: false }} 
       />
     </Stack.Navigator>

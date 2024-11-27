@@ -123,6 +123,7 @@ export default function ActivityDetailsPage({ route, navigation }) {
           {isOwner && (
             <TouchableOpacity
               style={styles.reservationsButton}
+              onPress={() => navigation.navigate('ActiviteReservations', { activity })}
             >
               <Text style={styles.reservationsButtonText}>Voir les réservations</Text>
             </TouchableOpacity>
@@ -473,4 +474,17 @@ const styles = StyleSheet.create({
     color: '#FFF',
     fontWeight: 'bold',
   },
+  reservationsButton: {
+    backgroundColor: '#510D0A',
+    paddingVertical: 12,
+    paddingHorizontal: 20,
+    borderRadius: 15,
+    alignSelf: 'center',
+    marginBottom: 15,
+  },
+  reservationsButtonText: {
+    color: '#CDD993',
+    fontSize: 16,
+    fontWeight: 'bold',
+  }
 });
