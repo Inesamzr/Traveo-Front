@@ -457,17 +457,6 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: 'bold',
   },
-  reviewButton: {
-    backgroundColor: '#F2D0C9',
-    paddingVertical: 10,
-    paddingHorizontal: 30,
-    borderRadius: 25,
-  },
-  reviewButtonText: {
-    color: '#510D0A',
-    fontSize: 16,
-    fontWeight: 'bold',
-  },
   editButton: 
   { 
     backgroundColor: '#510D0A', 
