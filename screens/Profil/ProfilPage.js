@@ -17,7 +17,7 @@ export default function ProfilPage({ route, navigation }) {
   const currentTexts = texts[language];
 
   const [loading, setLoading] = useState(true); // Indicateur de chargement
-  const [isCurrentUser, setIsCurrentUser] = useState(false); // Vérifie si le userId correspond
+  const [isCurrentUser, setIsCurrentUser] = useState(true); // Vérifie si le userId correspond
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
   const [username, setUsername] = useState('');
@@ -29,16 +29,6 @@ export default function ProfilPage({ route, navigation }) {
   const [reviews, setReviews] = useState([]); // Avis utilisateur
 
   useEffect(() => {
-    const checkCurrentUser = async () => {
-      try {
-        const storedUserId = await AsyncStorage.getItem('userId');
-        setIsCurrentUser(parseInt(storedUserId) === userId);
-        console.log(storedUserId , " ", userId)
-        console.log(parseInt(storedUserId) === userId)
-      } catch (error) {
-        console.error("Erreur lors de la récupération de l'ID utilisateur :", error);
-      }
-    };
 
     const fetchUserData = async () => {
       try {
@@ -61,10 +51,12 @@ export default function ProfilPage({ route, navigation }) {
 
     const fetchActiviteData = async () => {
       try {
-        const ActivitesData = await getUserActivities(userId);
-        setActivities(ActivitesData);
+        const activitesData = await getUserActivities(userId);
+        console.log("djdjjdjdjjdjdjdj " , activitesData.data)
+        setActivities(activitesData.data);
+        console.log("djdjjdjdjjdjdjdj " , activitesData.data)
       } catch (error) {
-        Alert.alert('Erreur', "Impossible de charger les données des activités de l'utilisateur");
+        console.lof('Erreur', "Impossible de charger les données des activités de l'utilisateur");
       }
     };
 
@@ -72,16 +64,16 @@ export default function ProfilPage({ route, navigation }) {
       try {
         const userReviews = await getReviewsOfUser(userId);
         setReviews(userReviews);
+        console.log("fnzenf ", userReviews)
       } catch (error) {
-        Alert.alert('Erreur', "Impossible de charger les données des avis de l'utilisateur");
+        console.log('Erreur', "Impossible de charger les données des avis de l'utilisateur");
       }
     };
 
-    checkCurrentUser();
     fetchUserData();
     fetchActiviteData();
     fetchReviews();
-  }, [userId, isCurrentUser]);
+  }, []);
 
   const handleFieldChange = (field, value) => {
     if (field === 'firstName') {
@@ -164,11 +156,13 @@ export default function ProfilPage({ route, navigation }) {
       )}
       {isCurrentUser && (
         <>
-          <ProfilButton label="Mes activités" onPress={() => navigation.navigate('ActivityList', { activities })} />
+          <ProfilButton label="Mes activités" onPress={() => navigation.navigate('ActivityListUser', { activities })} />
           {role === 'admin' && <ProfilButton label="Thèmes d'activités" onPress={() => navigation.navigate('Themes')} />}
         </>
       )}
-      <ReviewsSection reviews={reviews} />
+      {reviews && reviews != 0 && (
+        <ReviewsSection reviews={reviews} />
+      )}
     </ScrollView>
   );
 }

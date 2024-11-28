@@ -21,6 +21,8 @@ import ActivityReviewsPage from './screens/Activite/ActivityReviewsPage';
 import AddReviewPage from './screens/Activite/AddReviewPage';
 import EditReviewPage from './screens/Activite/EditReviewPage';
 import ReservationListPage from './screens/Reservation/ReservationListPage';
+import ProfilPageOthers from './screens/Profil/ProfilPageOthers';
+import ActivityListPageUser from './screens/Activite/ActivityListPageUser';
 
 
 const Stack = createStackNavigator();
@@ -46,6 +48,9 @@ export default function App() {
           <Stack.Screen name="AddReview" component={AddReviewPage} />
           <Stack.Screen name="EditReview" component={EditReviewPage} />
           <Stack.Screen name="ReservationList" component={ReservationListPage} />
+          <Stack.Screen name="ProfilPageOthers" component={ProfilPageOthers} />
+          <Stack.Screen name="ActivityListUser" component={ActivityListPageUser} />
+
 
         </Stack.Navigator>
       </NavigationContainer>
