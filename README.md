@@ -53,7 +53,7 @@ cd Traveo-Front
 
 Dans le répertoire du projet, installez toutes les dépendances nécessaires en exécutant :
 
-```bash
+```
 npm install
 ```
 
