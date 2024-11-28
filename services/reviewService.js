@@ -1,7 +1,8 @@
 import axios from 'axios';
 
-const API_URL = 'http://10.193.2.198:8088/api/avis';
+//const API_URL = 'http://10.193.2.198:8088/api/avis';
 //const API_URL = 'http://162.38.37.37:8088/api/avis';
+const API_URL = 'http://162.38.32.231:8088/api/avis'
 
 
 export const fetchReviewsByReservationId = async (reservationId) => {
@@ -27,7 +28,9 @@ export const updateReview = async (reviewId, data) => {
 };
 
 export const getReviewsOfUser = async (userId) => {
+  console.log(`${API_URL}/host/${userId}`)
   const response = await axios.get(`${API_URL}/host/${userId}`)
+  console.log(response.data)
   return response.data
 }
   

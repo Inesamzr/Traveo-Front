@@ -30,7 +30,7 @@ export default function ActivityListPage({ route, navigation }) {
     } else {
       setLoading(false);
     }
-  }, [initialActivities]);
+  }, []);
 
   // Filtrer les activités en fonction de la recherche
   useEffect(() => {

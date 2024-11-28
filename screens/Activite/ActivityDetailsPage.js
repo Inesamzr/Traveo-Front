@@ -138,7 +138,7 @@ export default function ActivityDetailsPage({ route, navigation }) {
         <View style={styles.infoRow}>
           <TouchableOpacity
             style={styles.infoItem}
-            onPress={() => navigation.navigate('Profil', { userId: activity.userId })}
+            onPress={() => navigation.navigate('ProfilPageOthers', { userId: activity.userId })}
           >
             <Ionicons name="person-circle-outline" size={20} color="#BC4749" />
             <Text style={styles.infoText}>{username}</Text>

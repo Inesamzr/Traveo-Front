@@ -156,7 +156,7 @@ export default function ProfilPage({ route, navigation }) {
       )}
       {isCurrentUser && (
         <>
-          <ProfilButton label="Mes activités" onPress={() => navigation.navigate('ActivityListUser', { activities })} />
+          <ProfilButton label="Mes activités" onPress={() => navigation.navigate('ActivityListUser', { userId })} />
           {role === 'admin' && <ProfilButton label="Thèmes d'activités" onPress={() => navigation.navigate('Themes')} />}
         </>
       )}

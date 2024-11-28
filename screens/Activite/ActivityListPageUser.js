@@ -3,12 +3,27 @@ import { View, ScrollView, StyleSheet, TextInput, Text, TouchableOpacity, Alert,
 import { Ionicons } from '@expo/vector-icons';
 import Activity from '../../Components/Activite/Activity';
 import Header from '../../Components/Header';
+import { getActivityById, getUserActivities } from '../../services/activityService';
 
 export default function ActivityListPageUser({ route, navigation }) {
-  const {activities} = route.params || {};
-  const [allActivities, setAllActivities] = useState(activities);
-  const [filteredActivities, setFilteredActivities] = useState([]);
+  const userId = route.params.userId;
+  const [allActivities, setAllActivities] = useState([]);
   const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    const fetchActivities = async () => {
+      try {
+        console.log("fznefn zoiefjio ", userId)
+        const data = await getUserActivities(userId);
+        setAllActivities(data);
+      } catch (error) {
+        Alert.alert("Erreur", "Impossible de charger les activités.");
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchActivities
+  }, []);
 
 
   if (loading) {
@@ -29,16 +44,9 @@ export default function ActivityListPageUser({ route, navigation }) {
 
       <Header title="Activités" />
 
-      <TouchableOpacity
-        style={styles.iconadd}
-        onPress={() => navigation.navigate('CreerActivite')}
-      >
-        <Ionicons name="add" size={26} color="#510D0A" />
-      </TouchableOpacity>
-
       {/* Liste des activités */}
       <ScrollView contentContainerStyle={styles.activitiesList}>
-        {filteredActivities.map((activity) => (
+        {allActivities.map((activity) => (
           <TouchableOpacity
             key={activity.idActivite}
             onPress={() => navigation.navigate('ActivityDetails', { activity })}
@@ -46,7 +54,7 @@ export default function ActivityListPageUser({ route, navigation }) {
             <Activity {...activity} />
           </TouchableOpacity>
         ))}
-        {filteredActivities.length === 0 && (
+        {allActivities.length === 0 && (
           <Text style={styles.noActivitiesText}>Aucune activité trouvée</Text>
         )}
       </ScrollView>

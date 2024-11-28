@@ -27,7 +27,7 @@ export default function AddReviewPage({ route, navigation }) {
     console.log(isoDate)
 
     const dataResult = await addReview({note: rating, commentaire: comment, userId, idActivite: activiteId, dateAvis: isoDate})
-    navigation.goBack();
+    navigation.navigate("ReservationList");
   };
 
   return (
