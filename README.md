@@ -42,7 +42,7 @@ npm -v   # Attendu : 8.x.x ou supérieur
 
 Clonez le dépôt Git du projet sur votre machine locale :
 
-```bash
+```
 git clone https://github.com/Inesamzr/Traveo-Front.git
 cd Traveo-Front
 ```
@@ -65,7 +65,7 @@ npm install
 
 Pour lancer l'application en mode développement, exécutez :
 
-```bash
+```
 npx expo start --clear
 ```
 
@@ -88,7 +88,7 @@ Si vous rencontrez des problèmes lors de l'installation ou du lancement, voici 
 
 Parfois, les modules peuvent être corrompus ou mal installés. Pour les réinstaller :
 
-```bash
+```
 rm -rf node_modules package-lock.json
 npm install
 ```
@@ -97,13 +97,13 @@ npm install
 
 Expo fournit un outil pour diagnostiquer les problèmes :
 
-```bash
+```
 npx expo doctor
 ```
 
 Si des problèmes sont détectés, vous pouvez tenter de les corriger automatiquement :
 
-```bash
+```
 npx expo doctor --fix-dependencies
 ```
 
