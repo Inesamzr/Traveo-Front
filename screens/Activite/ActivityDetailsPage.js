@@ -248,11 +248,6 @@ export default function ActivityDetailsPage({ route, navigation }) {
               <Text style={styles.registerButtonText}>M'inscrire</Text>
             </TouchableOpacity>
           )}
-          <TouchableOpacity style={styles.reviewButton}
-        onPress={() => navigation.navigate('ActivityReviews', { reviews: activity.reviews, rating: 3, reviewsCount: activity.reviews.length })}
-        >
-          <Text style={styles.reviewButtonText}>Avis</Text>
-        </TouchableOpacity>
         </View>
       </ScrollView>
 

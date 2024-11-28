@@ -5,9 +5,11 @@ import Header from '../../Components/Header';
 import { addReview } from '../../services/reviewService';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-export default function AddReviewPage({ navigation }) {
+export default function AddReviewPage({ route, navigation }) {
   const [rating, setRating] = useState(0);
   const [comment, setComment] = useState('');
+
+  const activiteId = route.params.activiteId
 
   const handleStarPress = (star) => {
     setRating(star);
@@ -24,7 +26,7 @@ export default function AddReviewPage({ navigation }) {
     const isoDate = today.toISOString().split('T')[0];
     console.log(isoDate)
 
-    const dataResult = await addReview({note: rating, commentaire: comment, userId, idActivite: 1, dateAvis: isoDate})
+    const dataResult = await addReview({note: rating, commentaire: comment, userId, idActivite: activiteId, dateAvis: isoDate})
     navigation.goBack();
   };
 

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { View, ScrollView, StyleSheet, Text, TouchableOpacity } from 'react-native';
 import Reservation from '../../Components/Reservation/Reservation';
 import Header from '../../Components/Header';
-import { getAllReservations } from '../../services/reservationService'; // Service pour récupérer les réservations
+import { getAllReservations, getReservationsByUserId } from '../../services/reservationService'; // Service pour récupérer les réservations
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 function ReservationListPage({ navigation }) {
@@ -18,12 +18,8 @@ function ReservationListPage({ navigation }) {
         setUserId(storedUserId);
 
         // Récupération des réservations depuis l'API
-        const response = await getAllReservations();
-        // Filtrer les réservations pour l'utilisateur connecté
-        const userReservations = response.filter(
-          (reservation) => reservation.userId === parseInt(storedUserId)
-        );
-        setReservations(userReservations);
+        const response = await getReservationsByUserId(storedUserId);
+        setReservations(response);
       } catch (error) {
         console.error('Erreur lors de la récupération des réservations :', error);
       } finally {
@@ -58,7 +54,6 @@ function ReservationListPage({ navigation }) {
             <Reservation
               activiteId={reservation.activiteId} // Envoi de l'ID de l'activité
               dateReservation={reservation.dateReservation} // Envoi de la date
-              status={calculateStatus(reservation.dateReservation)} // Calcul et envoi du statut
             />
           </TouchableOpacity>
         ))}

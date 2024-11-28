@@ -10,6 +10,7 @@ export const fetchReviewsByReservationId = async (reservationId) => {
 };
 
 export const addReview = async (data) => {
+  console.log(data)
   const response = await axios.post(`${API_URL}`, data);
   return response.data; 
 };
