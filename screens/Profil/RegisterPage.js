@@ -18,6 +18,7 @@ export default function RegisterPage() {
   const [phoneNumber, setPhoneNumber] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
+  const [userId, setUserId] = useState(null)
   
 
   const handleRegister = async () => {
@@ -44,14 +45,14 @@ export default function RegisterPage() {
       };
 
       const response = await register(userData);
-      const userId = response.id
+      setUserId(response.id)
       console.log("user idddddd : ", userId)
 
-      Alert.alert('Succès', 'Compte créé avec succès.');
-      navigation.navigate('Profil', {userId}); // Redirection vers la page de connexion après l'inscription
+      console.log('Succès', 'Compte créé avec succès.');
+      navigation.navigate('Profil', {userId: response.id}); // Redirection vers la page de connexion après l'inscription
     } catch (error) {
       console.error(error);
-      Alert.alert('Erreur', "Impossible de créer l'utilisateur. Veuillez réessayer.");
+      console.log('Erreur', "Impossible de créer l'utilisateur. Veuillez réessayer.");
     } finally {
       setLoading(false);
     }
