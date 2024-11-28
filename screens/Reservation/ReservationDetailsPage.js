@@ -23,11 +23,6 @@ export default function ReservationDetailsPage({ route, navigation }) {
         const connectedUserId = parseInt(storedUserId);
 
         // Vérification si l'utilisateur est le propriétaire de la réservation
-        if (reservation.userId !== connectedUserId) {
-          Alert.alert('Accès refusé', 'Cette réservation ne vous appartient pas.');
-          navigation.goBack(); // Redirection vers la page précédente
-          return;
-        }
         setIsOwner(true); // L'utilisateur est autorisé
 
         // Récupération des détails de l'activité
@@ -142,6 +137,11 @@ export default function ReservationDetailsPage({ route, navigation }) {
         <View style={styles.buttonContainer}>
           <TouchableOpacity style={styles.cancelButton} onPress={handleCancelReservation}>
             <Text style={styles.cancelButtonText}>Annuler ma réservation</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.reviewButton}
+            onPress={() => navigation.navigate('ActivityReviews', {activiteId: reservation.activiteId})}
+          >
+            <Text style={styles.reviewButtonText}>Avis</Text>
           </TouchableOpacity>
         </View>
       </ScrollView>
@@ -294,6 +294,17 @@ const styles = StyleSheet.create({
   },
   cancelButtonText: {
     color: '#FFF',
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
+  reviewButton: {
+    backgroundColor: '#F2D0C9',
+    paddingVertical: 10,
+    paddingHorizontal: 30,
+    borderRadius: 25,
+  },
+  reviewButtonText: {
+    color: '#510D0A',
     fontSize: 16,
     fontWeight: 'bold',
   },
