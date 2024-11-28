@@ -31,7 +31,7 @@ nvm use 18
 
 Assurez-vous que Node.js et npm sont correctement installés en vérifiant leurs versions :
 
-```bash
+```
 node -v  # Attendu : v18.x.x
 npm -v   # Attendu : 8.x.x ou supérieur
 ```
