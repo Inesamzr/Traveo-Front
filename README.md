@@ -22,7 +22,7 @@ Si vous n'avez pas encore NVM (Node Version Manager) installé, suivez les instr
 
 Une fois NVM installé, exécutez les commandes suivantes pour installer Node.js version 18 :
 
-```bash
+```
 nvm install 18
 nvm use 18
 ```
