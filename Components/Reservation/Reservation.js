@@ -6,12 +6,16 @@ import texts from '../../localization/localization'; // Import des traductions
 import { getActivityById } from '../../services/activityService'; // Service pour récupérer une activité
 import { getCityFromCoordinates } from '../../services/Nominatim'; // Service pour récupérer la ville
 import { getThemeById } from '../../services/themeService'; // Service pour récupérer un thème
+import { useNavigation } from '@react-navigation/native';
 
-const Reservation = ({ activiteId, dateReservation, status }) => {
+const Reservation = ({ activiteId, dateReservation }) => {
   const { language } = useLanguage(); // Récupération de la langue active
   const [activite, setActivite] = useState({});
   const [location, setLocation] = useState('');
   const [theme, setTheme] = useState(null); // État pour stocker le thème
+  const [status, setStatus] = useState("Passée")
+
+  const navigation = useNavigation();
 
   // Récupération des détails de l'activité, du lieu et du thème
   useEffect(() => {
@@ -20,7 +24,17 @@ const Reservation = ({ activiteId, dateReservation, status }) => {
         // Récupérer les détails de l'activité
         const activityData = await getActivityById(activiteId);
         setActivite(activityData);
-
+  
+        // Comparer les dates pour définir le statut
+        const today = new Date(); // Date actuelle
+        const activityEndDate = new Date(activityData.dateFin); // Convertir la date de fin en objet Date
+  
+        if (activityEndDate >= today) {
+          setStatus('À venir');
+        } else {
+          setStatus('Passée');
+        }
+  
         // Récupérer la ville à partir des coordonnées
         if (activityData.latitude && activityData.longitude) {
           const city = await getCityFromCoordinates(activityData.latitude, activityData.longitude);
@@ -28,7 +42,7 @@ const Reservation = ({ activiteId, dateReservation, status }) => {
         } else {
           setLocation('Coordonnées non disponibles');
         }
-
+  
         // Récupérer le thème si un themeId est présent
         if (activityData.themeId) {
           const themeData = await getThemeById(activityData.themeId);
@@ -39,9 +53,10 @@ const Reservation = ({ activiteId, dateReservation, status }) => {
         setLocation('Erreur lors de la récupération de la ville');
       }
     };
-
+  
     fetchActivityAndThemeDetails();
   }, [activiteId]);
+  
 
   return (
     <View
@@ -108,7 +123,9 @@ const Reservation = ({ activiteId, dateReservation, status }) => {
 
       {/* Bouton Laisser un avis */}
       {status === 'Passée' && (
-        <TouchableOpacity style={styles.reviewButton}>
+        <TouchableOpacity style={styles.reviewButton}
+        onPress={() => navigation.navigate("AddReview", {activiteId: activite.idActivite})}
+        >
           <Text style={styles.reviewButtonText}>
             {texts[language].reservations.buttons.leaveReview}
           </Text>
