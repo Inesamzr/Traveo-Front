@@ -1,14 +1,27 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, StyleSheet, ScrollView, TouchableOpacity, Text } from 'react-native';
 import ReviewsSection from '../../Components/Review/ReviewsSection';
 import { Ionicons } from '@expo/vector-icons';
 import Header from '../../Components/Header';
+import { fetchReviewsByReservationId } from '../../services/reviewService';
 
 export default function ActivityReviewsPage({ route, navigation }) {
-  const { reviews } = route.params;
+  const { activiteId } = route.params;
+  const [reviews, setReviews] = useState([])
+
+  useEffect(() => {
+    const fetchDetails = async () => {
+        const response = await fetchReviewsByReservationId(activiteId)
+        setReviews(response);
+        console.log(response)
+     }
+     fetchDetails();
+  },[activiteId])
+
 
   const handleAddReviewPress = () => {
-    navigation.navigate('AddReview');
+    console.log(".  " , activiteId)
+    navigation.navigate('AddReview', {activiteId});
   };
 
   return (
